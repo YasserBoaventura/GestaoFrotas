@@ -28,7 +28,7 @@ public class ControllerVeiculo {
 		this.serviceVeiculo=serviceVeiculo; 
 	}
      @PostMapping("/salvar")
-	public ResponseEntity<String> savlar( @RequestBody Veiculo veiculo){
+	public ResponseEntity<String> savlar(@RequestBody Veiculo veiculo){
 	 
 		try {
 			String frase=this.serviceVeiculo.salvar(veiculo);

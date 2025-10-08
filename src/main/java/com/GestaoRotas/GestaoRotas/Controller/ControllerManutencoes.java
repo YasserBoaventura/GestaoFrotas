@@ -16,73 +16,73 @@ import java.util.List;
 @RequestMapping("/manutencoes")
 public class ControllerManutencoes {
 
-    private final  ServiceManutencoes manutencaoService;
-
+    private final ServiceManutencoes manutencaoService;
+ 
 	@Autowired
 	public ControllerManutencoes(ServiceManutencoes  manutencaoService) {
 		this.manutencaoService=manutencaoService;
 	}
   @PostMapping("/save")
-	    public ResponseEntity<String> cadastrar(@RequestBody Manutencao manutencao) {
-	       try {
-	    	   String frase=this.manutencaoService.salvar(manutencao);
-	    	  if(frase.isEmpty()|| frase.isBlank()) {
-	    		  return new ResponseEntity<>( HttpStatus.NO_CONTENT);
-	    	  }
-	    	  else {
-	    	   return new ResponseEntity<>(frase, HttpStatus.OK);
-	    	  }
-	    	   }catch(Exception e) {
-	    		  return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-	       }
+public ResponseEntity<String> cadastrar(@RequestBody Manutencao manutencao) {
+   try {
+	   String frase=this.manutencaoService.salvar(manutencao);
+	  if(frase.isEmpty()|| frase.isBlank()) {
+		  return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	  } 
+	  else {
+	   return new ResponseEntity<>(frase, HttpStatus.OK);
+	  }
+	   }catch(Exception e) {
+		  return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+   }
 	    	
-	    }
+}
 
-	    @GetMapping("/findByIdVeiculo/{veiculoId}")
-	    public ResponseEntity<List<Manutencao>> listarPorVeiculo(@PathVariable long veiculoId) {
-	    try {
-	    	List<Manutencao>  lista=this.manutencaoService.listarPorVeiculo(veiculoId);
-	    	if(lista.isEmpty()) {
-	    		 return new ResponseEntity<>(HttpStatus.NO_CONTENT);	    	
-	    		} else {
-	    	 	return new ResponseEntity<>(lista, HttpStatus.OK);
-	    		}
+@GetMapping("/findByIdVeiculo/{veiculoId}")
+public ResponseEntity<List<Manutencao>> listarPorVeiculo(@PathVariable long veiculoId) {
+try {
+	List<Manutencao>  lista=this.manutencaoService.listarPorVeiculo(veiculoId);
+	if(lista.isEmpty()) {
+		 return new ResponseEntity<>(HttpStatus.NO_CONTENT);	    	
+		} else {
+	 	return new ResponseEntity<>(lista, HttpStatus.OK);
+		}
 	    	
 	    }catch(Exception e) {
 	    	return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 	    }
 	    } 
 
-	    @DeleteMapping("/deleteById/{id}")
-	    public ResponseEntity<String> excluir(@PathVariable Long id) {
-	        try {
-	            String frase = manutencaoService.deleteById(id);
+    @DeleteMapping("/deleteById/{id}")
+    public ResponseEntity<String> excluir(@PathVariable Long id) {
+        try {
+            String frase = manutencaoService.deleteById(id);
 
-	            if (frase.equals("Manutenção não encontrada")) {
-	                return new ResponseEntity<>(frase, HttpStatus.NOT_FOUND);
-	            }
+            if (frase.equals("Manutenção não encontrada")) {
+                return new ResponseEntity<>(frase, HttpStatus.NOT_FOUND);
+            }
 
-	            return new ResponseEntity<>(frase, HttpStatus.OK);
+            return new ResponseEntity<>(frase, HttpStatus.OK);
 
-	        } catch (Exception e) {
-	            return new ResponseEntity<>("Erro ao deletar manutenção", HttpStatus.BAD_REQUEST);
-	        }
-	    }
-	    @GetMapping("/findAll")
-	    public ResponseEntity<List<Manutencao>>  findAll(){
-	    	 try {
-	    	List<Manutencao> lista=this.manutencaoService.findAll();
-	    	if(lista.isEmpty()) {
-	    		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	    	}else {
-	    		return new ResponseEntity<>(lista, HttpStatus.OK);
-	    	}
-	    	 }catch(Exception e) {
-	    		 return new ResponseEntity<>(null,  HttpStatus.BAD_REQUEST); 
-	    	 }
-	    	 
-	    }
-	    	    //  Buscar manutenções por tipo
+        } catch (Exception e) {
+            return new ResponseEntity<>("Erro ao deletar manutenção", HttpStatus.BAD_REQUEST);
+    }
+    }  
+    @GetMapping("/findAll")
+    public ResponseEntity<List<Manutencao>>  findAll(){
+    	 try {
+    	List<Manutencao> lista=this.manutencaoService.findAll();
+    	if(lista.isEmpty()) {
+    		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    	}else {
+    		return new ResponseEntity<>(lista, HttpStatus.OK);
+    	}
+    	 }catch(Exception e) {
+    		return new ResponseEntity<>(null,  HttpStatus.BAD_REQUEST); 
+    	 }
+    	 
+    }
+	 //  Buscar manutenções por tipo
     @GetMapping("/tipo/{tipoManutencao}")
     public ResponseEntity<List<Manutencao>> listarPorTipo(@PathVariable String tipoManutencao) {
         try {
@@ -101,14 +101,19 @@ public class ControllerManutencoes {
     @GetMapping("/findById/{id}")
     public ResponseEntity <Manutencao> findById(@PathVariable long id){
     	 try {
-    	Manutencao  manutencao=	this.manutencaoService.findById(id);
+    	Manutencao  manutencao=this.manutencaoService.findById(id);
     	return new ResponseEntity<>(manutencao, HttpStatus.OK);
     	}catch(Exception e) {
     	return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     		   
     	}
     }
-	    	}
+    
+    
+    
+    
+}
+
 	    
 	    
 	    

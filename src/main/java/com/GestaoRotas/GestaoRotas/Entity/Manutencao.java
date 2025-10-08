@@ -35,7 +35,7 @@ public class Manutencao {
 
     @Column(length = 500)
     private String descricao;
-
+                             
     private Double custo;
 
     private String oficina;
@@ -45,6 +45,7 @@ public class Manutencao {
     @JoinColumn(name = "veiculo_id", nullable = false)
     private Veiculo veiculo;
     
+
 
 }
  

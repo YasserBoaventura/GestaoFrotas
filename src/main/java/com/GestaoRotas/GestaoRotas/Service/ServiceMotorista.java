@@ -38,10 +38,16 @@ public class ServiceMotorista {
 		  this.repositoryMotorista.save(motorista);
 		  return "Motorista actualizado com sucesso" ;
 	  }
+	  //Busca pelo id do motorista
 	 public Motorista findById(long id) {
            Motorista motorista  =new Motorista();
            motorista =this.repositoryMotorista.findById(id).get();
 	 return motorista;
 	 } 	
+	 //Faz a busca pelo nome do motorista
+	 public List<Motorista> findByNome(String nomeMotorista){
+    List<Motorista> lista=this.repositoryMotorista.findByNomeContainingIgnoreCase(nomeMotorista);
+	 return lista;
+	 }
 	
 }

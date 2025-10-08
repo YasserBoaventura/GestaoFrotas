@@ -26,11 +26,13 @@ public class ServiceManutencoes {
   this.repositoryManuntencao.save(manutencao);
 	return "Manutencao salva com sucesso";
 	}
+ 
  public String deleteById(Long id) { 
 	    if (!repositoryManuntencao.existsById(id)) {
 	        return "Manutenção não encontrada";
-	    } 
-
+	    }  else if(repositoryManuntencao.existsById(id)) {
+	    	
+	    }
 	  this.repositoryManuntencao.deleteById(id);
 	    repositoryManuntencao.flush(); // força execução imediata
 
