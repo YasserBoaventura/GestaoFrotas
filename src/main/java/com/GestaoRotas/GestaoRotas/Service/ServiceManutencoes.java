@@ -62,6 +62,7 @@ public class ServiceManutencoes {
 	 List<Manutencao> lista=  this.repositoryManuntencao.findByVeiculoId(veiculoId);
 	   return lista;
  }
+ 
 
  public List<Manutencao> listarPorTipo(String tipo) {
      return repositoryManuntencao.findBytipoManutencao(tipo);

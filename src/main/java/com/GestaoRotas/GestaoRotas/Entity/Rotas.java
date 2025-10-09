@@ -1,4 +1,5 @@
 package com.GestaoRotas.GestaoRotas.Entity;
+import java.time.Duration;
 import java.util.*;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
@@ -21,7 +22,14 @@ public class Rotas {
 	    private Long id;
  
 	    private String origem; 
+	    
 	    private String destino;
+	    
+	    private double distancia;
+	    
+	    private Duration duration;
+	    
+	    
 
 	    // Relacionamento com motoristas
 	    @ManyToMany

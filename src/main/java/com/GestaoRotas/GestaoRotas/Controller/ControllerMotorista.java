@@ -30,9 +30,8 @@ public class ControllerMotorista {
 	}
 	
 	@PostMapping("/save")
-	public ResponseEntity<String> save( @RequestBody Motorista motorista){
-		
-		try {
+	public ResponseEntity<String> save(@RequestBody Motorista motorista){
+	 try {
 	   String frase=this.serviceMotorista.salvar(motorista);
 	   if(frase.isEmpty()) {
 		   return new ResponseEntity<>(HttpStatus.NO_CONTENT);
