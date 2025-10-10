@@ -36,4 +36,6 @@ public class Motorista {
 	    @ManyToMany(mappedBy = "motoristas")
 	    private List<Rotas> rotas;
 
+	    @OneToMany(mappedBy = "")
+	    private List<Viagem> viagens;
 }

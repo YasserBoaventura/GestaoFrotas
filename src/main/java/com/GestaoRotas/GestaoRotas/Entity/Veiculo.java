@@ -23,7 +23,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Veiculo {
+public class Veiculo {  
 
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

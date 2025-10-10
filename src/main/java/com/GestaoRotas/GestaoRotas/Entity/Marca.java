@@ -1,15 +1,11 @@
 package com.GestaoRotas.GestaoRotas.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import java.util.*;
 
 @Entity
 @Table(name = "marca")
@@ -27,6 +23,10 @@ public class Marca {
 	 	private Long id;
 		private String nome;
 		
+		
+		@OneToMany(mappedBy = "marca")
+		private List<Veiculo> veiculo;
+       		
 	
 
 }

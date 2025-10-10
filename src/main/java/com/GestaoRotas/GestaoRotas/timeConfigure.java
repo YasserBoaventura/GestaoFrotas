@@ -8,6 +8,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 //Classe que faz a serializacao e desecerializacao
 
+
+
 @Configuration
 public class timeConfigure {
 
@@ -16,5 +18,5 @@ public class timeConfigure {
 		   ObjectMapper mapper = new ObjectMapper();
 	        mapper.registerModule(new JavaTimeModule());
 	        return mapper;
-	    }
-}
+	    }  
+}  
