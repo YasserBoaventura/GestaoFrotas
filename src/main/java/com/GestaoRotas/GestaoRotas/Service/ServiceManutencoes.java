@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
+
+import com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Manutencao;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryManutencao;
 
@@ -67,9 +69,36 @@ public class ServiceManutencoes {
  public List<Manutencao> listarPorTipo(String tipo) {
      return repositoryManuntencao.findBytipoManutencao(tipo);
  } 
+ //relatorio de manuntencoes feitas por cada veiculo
+ public List<RelatorioManutencaoDTO> gerarRelatorioPorVeiculo() {
+     return  repositoryManuntencao.relatorioPorVeiculo();
+ } 
  
- 
- 
- 
- 
+ // Alertas – manutenções atrasadas 
+  //as manutencoes dos proximos 30 dias
+public List<String> gerarAlertas() {
+     List<String> alertas = new ArrayList<>();
+
+     // Manutenções vencidas
+     repositoryManuntencao.findManutencoesVencidas()
+         .forEach(m -> alertas.add("⚠️ Revisão vencida do veículo " 
+             + m.getVeiculo().getPlaca() 
+             + " desde " + m.getProxima_revisao()));
+
+     // Próximas manutenções
+     repositoryManuntencao.findProximasManutencoes()
+         .forEach(m -> alertas.add("ℹ️ Próxima revisão do veículo " 
+             + m.getVeiculo().getPlaca() 
+             + " em " + m.getProxima_revisao()));
+     
+     
+  // Próximas manutenções em até 7 dias
+     repositoryManuntencao.findManutencoesProximas7Dias()
+         .forEach(m -> alertas.add("⏰ Atenção! Veículo " 
+             + m.getVeiculo().getPlaca() 
+             + " precisa de manutenção em até 7 dias (em " 
+             + m.getProxima_revisao() + ")"));
+
+     return alertas;
+ }
 }

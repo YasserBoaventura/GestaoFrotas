@@ -1,6 +1,8 @@
 package com.GestaoRotas.GestaoRotas.Entity;
 
 import java.time.LocalDate;
+import jakarta.persistence.*;
+import com.GestaoRotas.GestaoRotas.Model.TipoManutencao;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,14 +28,17 @@ public class Manutencao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private LocalDate data;
+    
+    @Column(name = "proxima_revisao") 
+    private LocalDate proxima_revisao;
 
     private Integer quilometragem;
 
-    private String tipoManutencao;
+    @Enumerated(EnumType.STRING)  //Preventiva e Corretiva
+    private TipoManutencao tipoManutencao;
+   
 
-    @Column(length = 500)
+    @Column(length = 500) 
     private String descricao;
                              
     private Double custo;

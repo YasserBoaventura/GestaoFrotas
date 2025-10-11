@@ -11,10 +11,9 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
  
+	
+	//Lista a viagem por id do motorista 
   public List<Viagem> findByMotorista_Id(Long id);
-
-  
-    
 
 	//Mostra o motorista totalViagens , totalEmKm e totalCombustivel usado
     @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioMotoristaDTO(" +
@@ -22,6 +21,7 @@ public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
     	       "FROM Viagem v GROUP BY v.motorista.nome")
     	   List<RelatorioMotoristaDTO> relatorioPorMotorista();
  
+    
 	//Mostra o a plca do veiculo , totalViagens , totalEmKm e totalConbustivel usado
   @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioPorVeiculoDTO(" +
 	       "v.veiculo.tipo, COUNT(v), SUM(v.quilometragem), SUM(v.combustivelUsado)) " +

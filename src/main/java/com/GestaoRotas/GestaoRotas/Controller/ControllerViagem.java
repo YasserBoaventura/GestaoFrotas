@@ -94,9 +94,11 @@ public class ControllerViagem {
     public ResponseEntity<List<RelatorioMotoristaDTO>> relatorioPorMotorista() {
         return ResponseEntity.ok(serviceViagem.relatorioPorMotorista());
     }
-    //Mostra o plca do carro , totalViagens , totalEmKm e totalConbustivel usado
+    //Mostra o placa do carro , totalViagens , totalEmKm e totalConbustivel usado
     @GetMapping("/veiculos")
      public ResponseEntity<List<RelatorioPorVeiculoDTO>> relatorioPorVeiculo() {
         return ResponseEntity.ok(serviceViagem.gerarRelatorioPorVeiculo());
-    }   
+    }
+    
+    
 } 

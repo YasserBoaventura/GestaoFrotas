@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+
+import com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Manutencao;
 import com.GestaoRotas.GestaoRotas.Service.ServiceManutencoes;
 
@@ -98,19 +100,31 @@ try {
         }
     }
     
-    @GetMapping("/findById/{id}")
-    public ResponseEntity <Manutencao> findById(@PathVariable long id){
-    	 try {
+    @GetMapping("/findById/{id}") 
+    public ResponseEntity<Manutencao> findById(@PathVariable long id){
+    	 try {  
     	Manutencao  manutencao=this.manutencaoService.findById(id);
     	return new ResponseEntity<>(manutencao, HttpStatus.OK);
     	}catch(Exception e) {
     	return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     		   
-    	}
+    	}          
+    }  
+    //verr relatorio de manutencoes por veiculo
+    @GetMapping("/veiculos")
+    public ResponseEntity<List<RelatorioManutencaoDTO>> relatorioPorVeiculo() {
+        return ResponseEntity.ok(manutencaoService.gerarRelatorioPorVeiculo());
     }
-    
-    
-    
+     //// Alertas – manutenções atrasadas NB que ja foram vencidas
+     //e de dos proximos 30 dias
+    @GetMapping("/alertas")
+    public ResponseEntity<List<String>> listarAlertas() {
+        List<String> alertas = manutencaoService.gerarAlertas();
+        if(alertas.isEmpty()) {
+            return ResponseEntity.ok(List.of("✅ Nenhum alerta de manutenção no momento."));
+        }
+        return ResponseEntity.ok(alertas);
+    }
     
 }
 
