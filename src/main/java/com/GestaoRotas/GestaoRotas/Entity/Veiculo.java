@@ -33,7 +33,7 @@ public class Veiculo {
 	private Integer ano;
 	private String tipo;
 	
-    @ManyToOne
+    @ManyToOne 
     @JoinColumn(name = "marca_id", nullable = false)
 	private  Marca marca;
 	

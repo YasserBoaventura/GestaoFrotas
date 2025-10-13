@@ -98,7 +98,7 @@ public class ControllerViagem {
     @GetMapping("/veiculos")
      public ResponseEntity<List<RelatorioPorVeiculoDTO>> relatorioPorVeiculo() {
         return ResponseEntity.ok(serviceViagem.gerarRelatorioPorVeiculo());
-    }
+    }  
     
     
 } 

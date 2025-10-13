@@ -83,7 +83,7 @@ try {
     		return new ResponseEntity<>(null,  HttpStatus.BAD_REQUEST); 
     	 }
     	 
-    }
+    }  
 	 //  Buscar manutenções por tipo
     @GetMapping("/tipo/{tipoManutencao}")
     public ResponseEntity<List<Manutencao>> listarPorTipo(@PathVariable String tipoManutencao) {
@@ -125,7 +125,7 @@ try {
         }
         return ResponseEntity.ok(alertas);
     }
-    
+      
 }
 
 	    
