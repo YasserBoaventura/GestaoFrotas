@@ -15,7 +15,7 @@ public interface RepositoryAbastecimentos extends JpaRepository<abastecimentos, 
    public List<Object[]> relatorioPorVeiculo();
 
     // Relatório por período
-    @Query("SELECT a.veiculo.placa, SUM(a.quantidade), SUM(a.valorTotal), AVG(a.precoPorLitro) " +
+     @Query("SELECT a.veiculo.placa, SUM(a.quantidade), SUM(a.valorTotal), AVG(a.precoPorLitro) " +
            "FROM abastecimentos a WHERE a.data BETWEEN :inicio AND :fim GROUP BY a.veiculo.placa")
    public List<Object[]> relatorioPorPeriodo(LocalDate inicio, LocalDate fim);
 

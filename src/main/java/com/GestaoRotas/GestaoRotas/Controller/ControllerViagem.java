@@ -2,6 +2,7 @@ package com.GestaoRotas.GestaoRotas.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,14 +44,16 @@ public class ControllerViagem {
 	public ResponseEntity<List<Viagem>> findAll(){
 		try {
 			List<Viagem> lista=this.serviceViagem.findAll();
+			if(lista.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
 			return new ResponseEntity<>(lista, HttpStatus.OK);
 			
 		}catch(Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);  
 		}
-	
 	}
-	
+	//
 	@DeleteMapping("/deleteById/{id}")
     public ResponseEntity<String> excluir(@PathVariable Long id) {
         try {
@@ -63,6 +66,7 @@ public class ControllerViagem {
             return new ResponseEntity<>("Erro ao deletar Viagem", HttpStatus.BAD_REQUEST);
     }
 	}
+	//busca por viagem pelo iD do motorista
 	@GetMapping("/findByIdMotorista/{id}")
 	public ResponseEntity<List<Viagem>> findByIDMotorista(@PathVariable long id){
 		try {
@@ -88,16 +92,26 @@ public class ControllerViagem {
 			return new ResponseEntity<>("Erro: ", HttpStatus.BAD_REQUEST); 
 		}
 	}
-	 //Mostra o nome do mortista do carro , totalViagens , totalEmKm e totalConbustivel usado
+	 //Mostra o relatorio nome do mortista do carro , totalViagens , totalEmKm e totalConbustivel usado
 	
     @GetMapping("/motoristas")
     public ResponseEntity<List<RelatorioMotoristaDTO>> relatorioPorMotorista() {
         return ResponseEntity.ok(serviceViagem.relatorioPorMotorista());
     }
-    //Mostra o placa do carro , totalViagens , totalEmKm e totalConbustivel usado
+    //Mostra o relatorio placa do carro , totalViagens , totalEmKm e totalConbustivel usado
     @GetMapping("/veiculos")
      public ResponseEntity<List<RelatorioPorVeiculoDTO>> relatorioPorVeiculo() {
         return ResponseEntity.ok(serviceViagem.gerarRelatorioPorVeiculo());
+    }  
+    @GetMapping("/findById/{id}")
+    public ResponseEntity<Viagem> findById(@PathVariable long id){
+    	try {
+    		Viagem viagem=this.serviceViagem.findById(id);
+    		if(viagem!=null) return new ResponseEntity<>(viagem, HttpStatus.OK);
+        	}catch(Exception e) {
+    		 return new ResponseEntity<>(null , HttpStatus.BAD_REQUEST);
+    	}
+    	return null;
     }  
     
     

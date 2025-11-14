@@ -22,7 +22,7 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
     	       "m.veiculo.placa, COUNT(m), SUM(m.custo), AVG(m.custo)) " +
     	       "FROM Manutencao m WHERE m.veiculo IS NOT NULL GROUP BY m.veiculo.placa")
     	List<RelatorioManutencaoDTO> relatorioPorVeiculo();
-     
+             
     
      // Alertas – manutenções atrasadas 
      @Query("SELECT m FROM Manutencao m WHERE m.proxima_revisao< CURRENT_DATE")
@@ -30,7 +30,7 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
    
      // Próximas manutenções dentro de 30  dias    
      @Query(value = "SELECT * FROM manutencoes  m WHERE m.proxima_revisao BETWEEN CURRENT_DATE AND DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY)", nativeQuery = true)
-     List<Manutencao> findProximasManutencoes();
+    List<Manutencao> findProximasManutencoes();
 
         //buscar as manuntencoes da proxima semana
      @Query(value = "SELECT * FROM manutencoes m WHERE m.proxima_revisao BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL 7 DAY", nativeQuery = true)

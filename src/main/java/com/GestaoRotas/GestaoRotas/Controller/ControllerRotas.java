@@ -55,8 +55,7 @@ public class ControllerRotas {
 	 }
 	 @GetMapping("/findAll")
 	public ResponseEntity<List<Rotas>> findAll(){
-		
-		 try {
+		try {
 			 List<Rotas> lista=this.serviceRotas.findAll();
 			 return new ResponseEntity<>(lista, HttpStatus.OK);
 			 

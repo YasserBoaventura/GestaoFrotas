@@ -29,10 +29,12 @@ public class SericeRotas {
 	 rotas.setId(id);
 	 repositoryRotas.save(rotas);
 		return "Rota actualizada com sucesso";
-		
 	}
 	  public List<Rotas> findAll() {
 	   List<Rotas> lista=this.repositoryRotas.findAll();
 		return lista;  
+	  }
+	public Rotas findById(long id) {
+	  return this.repositoryRotas.findById(id).get();
 	  }
 }

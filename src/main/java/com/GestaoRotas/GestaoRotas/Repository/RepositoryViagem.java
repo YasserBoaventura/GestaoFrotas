@@ -8,7 +8,9 @@ import com.GestaoRotas.GestaoRotas.DTO.RelatorioPorVeiculoDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Viagem;
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
  
 	
@@ -25,7 +27,7 @@ public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
 	//Mostra o a plca do veiculo , totalViagens , totalEmKm e totalConbustivel usado
   @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioPorVeiculoDTO(" +
 	       "v.veiculo.tipo, COUNT(v), SUM(v.quilometragem), SUM(v.combustivelUsado)) " +
-	       "FROM Viagem v GROUP BY v.veiculo.tipo")
+	        "FROM Viagem v GROUP BY v.veiculo.tipo")
 	List<RelatorioPorVeiculoDTO> relatorioPorVeiculo(); 
 }
    

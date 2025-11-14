@@ -8,7 +8,7 @@ import com.GestaoRotas.GestaoRotas.Entity.Motorista;
 @Repository
 public interface RepositoryMotorista  extends JpaRepository<Motorista, Long>{
  
-
+  //Buscar o motorista pelo nome ignorando o espacos com ContainingIgnoreCase
     List<Motorista> findByNomeContainingIgnoreCase(String nome);
 	
 }

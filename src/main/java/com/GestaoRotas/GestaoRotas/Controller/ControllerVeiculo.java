@@ -3,6 +3,7 @@ package com.GestaoRotas.GestaoRotas.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,13 +13,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.GestaoRotas.GestaoRotas.DTO.VeiculoDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Service.ServiceVeiculo;
 import java.util.*;
 
 
 @RestController
-@RequestMapping("/veiculos")
+@RequestMapping("/api/veiculos")
+@CrossOrigin("*")
 public class ControllerVeiculo {
     
 	 private final ServiceVeiculo serviceVeiculo;
@@ -45,9 +48,9 @@ public class ControllerVeiculo {
 		}
 	} 
      @GetMapping("/findAll")
-     public ResponseEntity<List<Veiculo>> findAll(){
+     public ResponseEntity<List<VeiculoDTO>> findAll(){
     	  try {
-    		 List<Veiculo> lista=this.serviceVeiculo.findAll();
+    		 List<VeiculoDTO> lista=this.serviceVeiculo.findAll();
          if(lista.isEmpty()) {
     			return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
     		 }
@@ -87,4 +90,6 @@ public class ControllerVeiculo {
     		 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     	 }  
      }
+     
+     
 }

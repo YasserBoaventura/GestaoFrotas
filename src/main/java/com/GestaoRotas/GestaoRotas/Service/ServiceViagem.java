@@ -59,6 +59,11 @@ public class ServiceViagem {
         return repositoriViagem.relatorioPorVeiculo();  
     }
     
+    //Busca pelo o id da viagem
+    public Viagem findById(long id) {
+    	return this.repositoriViagem.findById(id).get();
+    }
+    
 	                   
 	
 }

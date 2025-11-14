@@ -44,7 +44,7 @@ public class Veiculo {
     private Motorista motorista;
     
     
-
+       
     @OneToMany(mappedBy = "veiculo")
     private List<Manutencao> manutencoes;
 }

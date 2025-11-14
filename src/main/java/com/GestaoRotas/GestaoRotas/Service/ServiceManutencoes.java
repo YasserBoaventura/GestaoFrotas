@@ -33,11 +33,9 @@ public class ServiceManutencoes {
 	    if (!repositoryManuntencao.existsById(id)) {
 	        return "Manutenção não encontrada";
 	    }  else if(repositoryManuntencao.existsById(id)) {
-	    	
+	       this.repositoryManuntencao.deleteById(id);
+	       repositoryManuntencao.flush(); // força execução imediata
 	    }
-	  this.repositoryManuntencao.deleteById(id);
-	    repositoryManuntencao.flush(); // força execução imediata
-
 	    if (repositoryManuntencao.existsById(id)) { 
 	        return "Erro: manutenção não foi removida";
 	    }

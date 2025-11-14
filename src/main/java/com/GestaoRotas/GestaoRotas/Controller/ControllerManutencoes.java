@@ -35,6 +35,7 @@ public ResponseEntity<String> cadastrar(@RequestBody Manutencao manutencao) {
 	   return new ResponseEntity<>(frase, HttpStatus.OK);
 	  }
 	   }catch(Exception e) {
+		   e.printStackTrace();
 		  return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
    }
 	    	

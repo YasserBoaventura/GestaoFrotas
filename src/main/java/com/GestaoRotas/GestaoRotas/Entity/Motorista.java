@@ -8,6 +8,9 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -21,8 +24,8 @@ public class Motorista {
 	    private Long id;
 
 	    private String nome;
-
-	    private String cnh;
+         
+	    private String cnh;  
 
 	    private String categoria; // Categoria da CNH
 
@@ -30,6 +33,7 @@ public class Motorista {
 
 	    // Relação com Veiculos (um motorista pode ter vários veículos)
 	    @OneToMany(mappedBy = "motorista")
+	    @JsonIgnore
 	    private List<Veiculo> veiculos;
 
 	    // Relação com Rotas (um motorista pode estar em várias rotas)

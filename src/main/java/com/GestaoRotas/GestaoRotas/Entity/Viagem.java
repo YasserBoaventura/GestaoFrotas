@@ -25,7 +25,7 @@ public class Viagem {
     @ManyToOne
     @JoinColumn(name = "veiculo_id", nullable = false)
     private Veiculo veiculo;
-
+       
     @ManyToOne
     @JoinColumn(name = "motorista_id", nullable = false)
     private Motorista motorista; 
