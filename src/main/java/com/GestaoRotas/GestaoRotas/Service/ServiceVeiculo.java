@@ -6,6 +6,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.GestaoRotas.GestaoRotas.DTO.VeiculoDTO;
+import com.GestaoRotas.GestaoRotas.Entity.Marca;
+import com.GestaoRotas.GestaoRotas.Entity.Motorista;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
 
@@ -43,16 +45,29 @@ public class ServiceVeiculo {
 	                      .map(this::convertToDTO)
 	                      .collect(Collectors.toList());
 	    }
+	  //Depois da DTO ser convertidade
 	    
-	    private VeiculoDTO convertToDTO(Veiculo veiculo) {
-	        return new VeiculoDTO(
-	            veiculo.getId(),
-	            veiculo.getPlaca(),
-	            veiculo.getModelo(),
-	            veiculo.getAno(),
-	            veiculo.getTipo(),
-	            veiculo.getMarca(),
-	            veiculo.getMotorista()
-	        );
-	    }	
+	  private VeiculoDTO convertToDTO(Veiculo veiculo) {
+		    return new VeiculoDTO(
+		        veiculo.getId(),
+		        veiculo.getMatricula(),      // placa
+		        veiculo.getModelo(),         // modelo 
+		        veiculo.getAnoFabricacao(),  // ano
+		        determinarTipoVeiculo(veiculo.getModelo()), // tipo
+		        veiculo.getMarca(),
+		        veiculo.getMotoristas()      // Set<Motorista>
+		    );
+		}
+
+		// Método auxiliar para determinar tipo
+		private String determinarTipoVeiculo(String modelo) {
+		    if (modelo == null) return "OUTRO";
+		    modelo = modelo.toUpperCase();
+		    if (modelo.contains("CAMINHAO")) return "CAMINHAO";
+		    if (modelo.contains("VAN")) return "VAN";
+		    if (modelo.contains("CARRO")) return "CARRO";
+		    if (modelo.contains("MOTO")) return "MOTO";
+		    return "OUTRO";
+		}	
+	        
 }

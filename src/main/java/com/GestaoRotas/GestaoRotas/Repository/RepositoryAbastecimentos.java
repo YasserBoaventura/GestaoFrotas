@@ -1,22 +1,39 @@
 package com.GestaoRotas.GestaoRotas.Repository;
 import java.time.LocalDate;
+import  jakarta.persistence.*;
+
 import java.util.*;
 import jakarta.persistence.*;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.GestaoRotas.GestaoRotas.DTO.RelatorioCombustivelDTO;
 import com.GestaoRotas.GestaoRotas.Entity.abastecimentos;
 
 public interface RepositoryAbastecimentos extends JpaRepository<abastecimentos, Long>{
 
-	 // Relatório geral por veículo
-    @Query("SELECT a.veiculo.placa, SUM(a.quantidade), SUM(a.valorTotal), AVG(a.precoPorLitro) " +
-           "FROM abastecimentos a GROUP BY a.veiculo.placa")
-   public List<Object[]> relatorioPorVeiculo();
+ 
+    @Query("SELECT a FROM abastecimentos a WHERE a.veiculo.id = :veiculoId")
+    List<abastecimentos> findByVeiculoId(@Param("veiculoId") Long veiculoId);
 
-    // Relatório por período
-     @Query("SELECT a.veiculo.placa, SUM(a.quantidade), SUM(a.valorTotal), AVG(a.precoPorLitro) " +
-           "FROM abastecimentos a WHERE a.data BETWEEN :inicio AND :fim GROUP BY a.veiculo.placa")
-   public List<Object[]> relatorioPorPeriodo(LocalDate inicio, LocalDate fim);
+    @Query("SELECT a FROM abastecimentos a WHERE a.tipoCombustivel = :tipoCombustivel")
+    List<abastecimentos> findByTipoCombustivel(@Param("tipoCombustivel") String tipoCombustivel);
 
+    // ✅ RELATÓRIO SIMPLES - retorna lista de objetos
+    @Query("SELECT a.veiculo.matricula, SUM(a.quantidadeLitros), SUM(a.quantidadeLitros * a.precoPorLitro), AVG(a.precoPorLitro) " +
+           "FROM abastecimentos a " + // USE O NOME CORRETO
+           "GROUP BY a.veiculo.matricula")
+    List<Object[]> relatorioPorVeiculo();
+
+    @Query("SELECT a.veiculo.matricula, SUM(a.quantidadeLitros), SUM(a.quantidadeLitros * a.precoPorLitro), AVG(a.precoPorLitro) " +
+           "FROM abastecimentos a " + // USE O NOME CORRETO
+           "WHERE DATE(a.dataAbastecimento) BETWEEN :inicio AND :fim " +
+           "GROUP BY a.veiculo.matricula")
+    List<Object[]> relatorioPorPeriodo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
+    
 }
+
+
+
+

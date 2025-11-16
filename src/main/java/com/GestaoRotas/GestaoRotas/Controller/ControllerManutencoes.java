@@ -40,6 +40,15 @@ public ResponseEntity<String> cadastrar(@RequestBody Manutencao manutencao) {
    }
 	    	
 }
+  @PutMapping("/update/{id}")
+  public ResponseEntity<String>update(@RequestBody Manutencao manutecao, @PathVariable long id){
+	  try{
+		  String frase=this.manutencaoService.update(manutecao, id);
+		  return new ResponseEntity<>(frase, HttpStatus.OK);
+	  }catch(Exception e) {
+		  return new ResponseEntity<>("Erro Ao tentar actualizar a manuntecao ", HttpStatus.BAD_REQUEST);
+	}
+  }
 
 @GetMapping("/findByIdVeiculo/{veiculoId}")
 public ResponseEntity<List<Manutencao>> listarPorVeiculo(@PathVariable long veiculoId) {
@@ -56,20 +65,17 @@ try {
 	    }
 	    } 
 
-    @DeleteMapping("/deleteById/{id}")
-    public ResponseEntity<String> excluir(@PathVariable Long id) {
-        try {
-            String frase = manutencaoService.deleteById(id);
-
-            if (frase.equals("Manutenção não encontrada")) {
-                return new ResponseEntity<>(frase, HttpStatus.NOT_FOUND);
+@DeleteMapping("/deleteById/{id}")
+   public ResponseEntity<String> excluir(@PathVariable Long id) {
+      try {
+     String frase = manutencaoService.deleteById(id);
+   if (frase.equals("Manutenção não encontrada")) {
+      return new ResponseEntity<>(frase, HttpStatus.NOT_FOUND);
             }
-
-            return new ResponseEntity<>(frase, HttpStatus.OK);
-
-        } catch (Exception e) {
-            return new ResponseEntity<>("Erro ao deletar manutenção", HttpStatus.BAD_REQUEST);
-    }
+      return new ResponseEntity<>(frase, HttpStatus.OK);
+    } catch (Exception e) {
+         return new ResponseEntity<>("Erro ao deletar manutenção", HttpStatus.BAD_REQUEST);
+}
     }  
     @GetMapping("/findAll")
     public ResponseEntity<List<Manutencao>>  findAll(){
@@ -88,17 +94,17 @@ try {
 	 //  Buscar manutenções por tipo
     @GetMapping("/tipo/{tipoManutencao}")
     public ResponseEntity<List<Manutencao>> listarPorTipo(@PathVariable String tipoManutencao) {
-        try {
-            List<Manutencao> lista = manutencaoService.listarPorTipo(tipoManutencao);
-            
-            if (lista.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return new ResponseEntity<>(lista, HttpStatus.OK);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    try {
+        List<Manutencao> lista = manutencaoService.listarPorTipo(tipoManutencao);
+        
+        if (lista.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(lista, HttpStatus.OK);
         }
+    } catch (Exception e) {
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    }
     }
     
     @GetMapping("/findById/{id}") 
@@ -116,17 +122,18 @@ try {
     public ResponseEntity<List<RelatorioManutencaoDTO>> relatorioPorVeiculo() {
         return ResponseEntity.ok(manutencaoService.gerarRelatorioPorVeiculo());
     }
-     //// Alertas – manutenções atrasadas NB que ja foram vencidas
-     //e de dos proximos 30 dias
-    @GetMapping("/alertas")
-    public ResponseEntity<List<String>> listarAlertas() {
+    
+    @GetMapping("/gerarAltertas")
+    public ResponseEntity<List<String>> getAlertas() {
         List<String> alertas = manutencaoService.gerarAlertas();
-        if(alertas.isEmpty()) {
-            return ResponseEntity.ok(List.of("✅ Nenhum alerta de manutenção no momento."));
-        }
         return ResponseEntity.ok(alertas);
     }
-      
+    
+    @GetMapping("/simplificado")  //os dois geram alertas mais esse simplificado
+    public ResponseEntity<List<String>> getAlertasSimplificado() {
+        List<String> alertas = manutencaoService.gerarAlertasSimplificado();
+        return ResponseEntity.ok(alertas);
+    }
 }
 
 	    

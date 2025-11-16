@@ -37,7 +37,7 @@ public class ServiceViagem {
 		return "deletado com sucesso";
 	}
 	public List<Viagem> findByIdMotorista(long id){
-		return this.repositoriViagem.findByMotorista_Id(id);
+		return this.repositoriViagem.findByMotoristaId(id);
 	} 
 	
 	public String update(Viagem viagem , long id) {

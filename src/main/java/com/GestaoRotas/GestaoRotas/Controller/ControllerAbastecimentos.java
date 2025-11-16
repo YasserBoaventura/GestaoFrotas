@@ -3,6 +3,7 @@ package com.GestaoRotas.GestaoRotas.Controller;
 import jakarta.persistence.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -30,91 +31,93 @@ import com.GestaoRotas.GestaoRotas.Service.ServiceAbastecimentos;
 public class ControllerAbastecimentos {
 
 	
-	  private final ServiceAbastecimentos abastecimentos;
-	  
-	   @Autowired
-	   public ControllerAbastecimentos(ServiceAbastecimentos abastecimentos) {
-		this.abastecimentos=abastecimentos;   
-	   }
-	   
+  private final ServiceAbastecimentos abastecimentosService;
+  
+   @Autowired
+   public ControllerAbastecimentos(ServiceAbastecimentos abastecimentos) {
+	this.abastecimentosService=abastecimentos;   
+   }
+   
 	   // sava o abastecimento
-	   @PostMapping("/save")
-	    public ResponseEntity<String> salvar(@RequestBody abastecimentos abastecimento) {
-	       try {
-	    	  String frase=this.abastecimentos.save(abastecimento);
-	    	  if(frase.isEmpty()) {
-	    		  return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	    	  }
-	    	  return new ResponseEntity<>(frase, HttpStatus.OK);  
-	    	  
-	       }catch(Exception e) {
-	    	  return new ResponseEntity<>("Erro", HttpStatus.BAD_REQUEST);
-	       }
-	    }
-      // relatio de abastecimento por veiculo 
-	    @GetMapping("/relatorio")
-	    public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorVeiculo() {
-	        return ResponseEntity.ok(abastecimentos.relatorioPorVeiculo());
-	    }
- 
-	    //busca relatorios por periodo dataInicio e dataFim
-	    @GetMapping("/relatorio/periodo")
-	    public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorPeriodo(
-	            @RequestParam LocalDate inicio,
-	            @RequestParam LocalDate fim) {
-	        return ResponseEntity.ok(abastecimentos.relatorioPorPeriodo(inicio, fim));
-              
-	    }
+   @PostMapping("/save")
+public ResponseEntity<String> salvar(@RequestBody abastecimentos abastecimento) {
+   try {
+	  String frase=this.abastecimentosService.save(abastecimento);
+	  if(frase.isEmpty()) {
+		  return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	  }
+	  return new ResponseEntity<>(frase, HttpStatus.OK);  
+	  
+   }catch(Exception e) {
+	  return new ResponseEntity<>("Erro", HttpStatus.BAD_REQUEST);
+       }
+    }                 
+
+
+   // relatio de abastecimento por veiculo 
+@GetMapping("/relatorio")
+public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorVeiculo() {
+    return ResponseEntity.ok(abastecimentosService.relatorioPorVeiculo());
+}
+
+//busca relatorios por periodo dataInicio e dataFim
+@GetMapping("/relatorio/periodo")
+public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorPeriodo(
+        @RequestParam LocalDate inicio,
+        @RequestParam LocalDate fim) {
+    return ResponseEntity.ok(abastecimentosService.relatorioPorPeriodo(inicio, fim));
+    
+}  
 	    //Busca todos os abastecimentos  
-	    @GetMapping("/findAll")
-	    public ResponseEntity<List<abastecimentos>> findAll(){
-	       try {
-	    	    List<abastecimentos> lista=this.abastecimentos.findAll() ;
-	    	    if(lista.isEmpty()) {
-	    	    	return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	    	    	  } else if(lista!=null) {
-	    	    		  return new ResponseEntity<>(lista, HttpStatus.OK);
-	    	    		 }
-	    	     }catch(Exception e) {
-	    	   return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-	    	  }
-	        return null;   
-	       }
-	    @DeleteMapping("/deleteById/{id}")
-	    public ResponseEntity<String> deleteById(@PathVariable long id){
-	     try { 
-	    	  String frase=this.abastecimentos.deletar(id);
-	    	  return new ResponseEntity<>(frase, HttpStatus.OK);
-	   
-	     }catch(Exception e) {
-	    	 return new ResponseEntity<>("Erro", HttpStatus.BAD_REQUEST);
-	     }
-	    	
-	    }
+@GetMapping("/findAll")
+public ResponseEntity<List<abastecimentos>> findAll(){
+	 try {
+		  List<abastecimentos> lista=this.abastecimentosService.findAll();
+		   if(lista.isEmpty()) {
+			   return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		   }
+		 return new ResponseEntity<>(lista, HttpStatus.OK);
+		}catch(Exception e) {
+		 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+	 } 
+       
+  
+   }
+@DeleteMapping("/deleteById/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable long id){
+     try { 
+    	  String frase=this.abastecimentosService.deletar(id);
+    	  return new ResponseEntity<>(frase, HttpStatus.OK);
+   }catch(Exception e) {
+	   e.getStackTrace();
+    	 return new ResponseEntity<>("Erro", HttpStatus.BAD_REQUEST);
+    }
+	
+}
 	    
-	    @GetMapping("/findById/{id}")
-	    public ResponseEntity<abastecimentos> findById(@PathVariable long id){
-	    	try {
-	    		abastecimentos abastecimento=new abastecimentos();
-	    		if(abastecimento==null) 
-	    			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	    	
-	       return new ResponseEntity<>(abastecimento,HttpStatus.OK);
-	    	  }catch(Exception e) {
-	    		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-	    	}
-	    }
+@GetMapping("/findById/{id}")
+public ResponseEntity<abastecimentos> findById(@PathVariable long id){
+	try {
+		abastecimentos abastecimento=new abastecimentos();
+		if(abastecimento==null) 
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	
+   return new ResponseEntity<>(abastecimento,HttpStatus.OK);
+	  }catch(Exception e) {
+		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+	}
+}
 	    @PutMapping("/update/{id}")
-	    public ResponseEntity<String> update(abastecimentos abastecimento, long id){
-	    	try {
-	    		String frase=this.abastecimentos.update(abastecimento, id);
-	    		if(frase==null) {
-	    			return new ResponseEntity<>( HttpStatus.NO_CONTENT);
-	    		}
-	    		return new ResponseEntity<>(frase, HttpStatus.OK);
-	    	}catch(Exception e) {
-	    		return new ResponseEntity<>(HttpStatus.OK);
-	    	}
+public ResponseEntity<String> update(abastecimentos abastecimento, long id){
+	try {
+		String frase=this.abastecimentosService.update(abastecimento, id);
+		if(frase==null) {
+			return new ResponseEntity<>( HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<>(frase, HttpStatus.OK);
+	}catch(Exception e) {
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 	    }
 	       	
 	    

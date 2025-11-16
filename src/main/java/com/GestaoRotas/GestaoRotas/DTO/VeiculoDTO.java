@@ -1,5 +1,5 @@
 package com.GestaoRotas.GestaoRotas.DTO;
-
+import java.util.*;
 import org.springframework.stereotype.Service;
 
 import com.GestaoRotas.GestaoRotas.Entity.Marca;
@@ -16,13 +16,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class VeiculoDTO {
 
-	    private Long id;
-	    private String placa;
-	    private String modelo;
-	    private Integer ano;
-	    private String tipo;
-	    private Marca marca;
-	    private Motorista motorista;
+	private Long id;
+    private String placa;
+    private String modelo;
+    private Integer ano;
+    private String tipo;
+    private Marca marca;
+	private Set<Motorista> motoristas; 
 	  
 	} 
 

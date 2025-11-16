@@ -20,8 +20,7 @@ public class ServiceManutencoes {
 			
 	@Autowired
 	public ServiceManutencoes(RepositoryManutencao repositoryManuntencao) {
-	
-		this.repositoryManuntencao=repositoryManuntencao;
+	     this.repositoryManuntencao=repositoryManuntencao;
 	}
 	
  public String salvar(Manutencao manutencao) {
@@ -72,31 +71,91 @@ public class ServiceManutencoes {
      return  repositoryManuntencao.relatorioPorVeiculo();
  } 
  
- // Alertas – manutenções atrasadas 
-  //as manutencoes dos proximos 30 dias
-public List<String> gerarAlertas() {
-     List<String> alertas = new ArrayList<>();
 
-     // Manutenções vencidas
-     repositoryManuntencao.findManutencoesVencidas()
-         .forEach(m -> alertas.add("⚠️ Revisão vencida do veículo " 
-             + m.getVeiculo().getPlaca() 
-             + " desde " + m.getProxima_revisao()));
+ // Alertas – manutenções atrasadas e dos próximos 30 dias
+ public List<String> gerarAlertas() {
+ List<String> alertas = new ArrayList<>();
 
-     // Próximas manutenções
-     repositoryManuntencao.findProximasManutencoes()
-         .forEach(m -> alertas.add("ℹ️ Próxima revisão do veículo " 
-             + m.getVeiculo().getPlaca() 
-             + " em " + m.getProxima_revisao()));
-     
-     
-  // Próximas manutenções em até 7 dias
-     repositoryManuntencao.findManutencoesProximas7Dias()
-         .forEach(m -> alertas.add("⏰ Atenção! Veículo " 
-             + m.getVeiculo().getPlaca() 
-             + " precisa de manutenção em até 7 dias (em " 
-             + m.getProxima_revisao() + ")"));
-
-     return alertas;
+ // Manutenções vencidas
+ repositoryManuntencao.findManutencoesVencidas()
+     .forEach(m -> {
+         String placa = m.getVeiculo() != null ? m.getVeiculo().getMatricula() : "Veículo não encontrado";
+         String detalhes = "";
+         
+ if (m.getProximaManutencaoData() != null) {
+     detalhes = "desde " + m.getProximaManutencaoData();
+ } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null) {
+     detalhes = "atingiu " + m.getVeiculo().getKilometragemAtual() + "km (limite: " + m.getProximaManutencaoKm() + "km)";
  }
+         
+         alertas.add("⚠️ Revisão vencida do veículo " + placa + " - " + detalhes);
+     });
+
+     // Próximas manutenções (30 dias ou 1000km)
+ repositoryManuntencao.findProximasManutencoes()
+     .forEach(m -> {
+         if (m.isVencida()) return; // Não mostrar como próxima se está vencida
+ 
+ String placa = m.getVeiculo() != null ? m.getVeiculo().getMatricula() : "Veículo não encontrado";
+ String detalhes = "";
+ 
+ if (m.getProximaManutencaoData() != null) {
+     long diasRestantes = java.time.temporal.ChronoUnit.DAYS.between(
+         java.time.LocalDate.now(), m.getProximaManutencaoData());
+     detalhes = "em " + diasRestantes + " dias (" + m.getProximaManutencaoData() + ")";
+ } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null) {
+     double kmRestantes = m.getProximaManutencaoKm() - m.getVeiculo().getKilometragemAtual();
+     detalhes = "faltam " + kmRestantes + "km";
+ }
+ 
+ alertas.add("ℹ️ Próxima revisão do veículo " + placa + " - " + detalhes);
+ });
+
+ // Manutenções muito próximas (7 dias ou 200km)
+ repositoryManuntencao.findManutencoesProximas7Dias()
+     .forEach(m -> {
+         if (m.isVencida()) return; // Não mostrar como próxima se está vencida
+         
+         String placa = m.getVeiculo() != null ? m.getVeiculo().getMatricula() : "Veículo não encontrado";
+         String detalhes = "";
+         
+         if (m.getProximaManutencaoData() != null) {
+             long diasRestantes = java.time.temporal.ChronoUnit.DAYS.between(
+                 java.time.LocalDate.now(), m.getProximaManutencaoData());
+             detalhes = "em " + diasRestantes + " dias";
+         } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null) {
+             double kmRestantes = m.getProximaManutencaoKm() - m.getVeiculo().getKilometragemAtual();
+             detalhes = "faltam " + kmRestantes + "km";
+         } 
+             System.out.println("-----");
+         alertas.add("⏰ Atenção! Veículo " + placa + " precisa de manutenção em até 7 dias (" + detalhes + ")");
+     });
+
+ return alertas;
+ }
+ 
+ // Método alternativo mais simples
+ public List<String> gerarAlertasSimplificado() {
+     List<String> alertas = new ArrayList<>();
+     
+     // Manutenções vencidas
+     List<Manutencao> vencidas =repositoryManuntencao.findManutencoesVencidas();
+     for (Manutencao m : vencidas) {
+         String placa = m.getVeiculo().getMatricula();
+         alertas.add("🚨 MANUTENÇÃO VENCIDA - Veículo: " + placa + 
+                    " | Tipo: " + m.getTipoManutencao());
+     }
+     
+     // Próximas manutenções (7 dias)
+     List<Manutencao> proximas = repositoryManuntencao.findManutencoesProximas7Dias();
+     for (Manutencao m : proximas) {
+         if (!m.isVencida()) { // Só adicionar se não estiver vencida
+             String placa = m.getVeiculo().getMatricula();
+             alertas.add("🔔 MANUTENÇÃO PRÓXIMA - Veículo: " + placa + 
+                        " | Tipo: " + m.getTipoManutencao());
+         }
+     }
+    return alertas;
+ }
+ 
 }

@@ -18,28 +18,45 @@ import jakarta.persistence.*;
 @Setter
 @Table(name = "motoristas") 
 public class Motorista {
+	    @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+        
+        @Column(nullable = false, length = 100)
+        private String nome;
+        
+        @Column(name = "numero_carta", unique = true, length = 20)
+        private String numeroCarta;
+        
+        @Column(unique = true, length = 100)
+        private String email;
+        
+        @Column(length = 20)
+        private String telefone;
+        
+        @Column(name = "data_nascimento")
+        private java.time.LocalDate dataNascimento;
+        
+        // ManyToMany com Veiculo
+        @ManyToMany(mappedBy = "motoristas")
+        private Set<Veiculo> veiculos = new HashSet<>();
+        
+        // OneToMany com Viagem 
+        @OneToMany(mappedBy = "motorista", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+        private List<Viagem> viagens = new ArrayList<>();
+        
+      
+        // Métodos auxiliares
+        public void addViagem(Viagem viagem) {
+            viagens.add(viagem);
+            viagem.setMotorista(this);
+        }
+        
+        // Método calculado
+        public Long getTotalViagensConcluidas() {  
+            return viagens.stream()
+                .filter(v -> "CONCLUIDA".equals(v.getStatus()))
+                .count();
+        }
+    }
 
-        @Id
-	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    private Long id;
-
-	    private String nome;
-         
-	    private String cnh;  
-
-	    private String categoria; // Categoria da CNH
-
-	    private String contato;
-
-	    // Relação com Veiculos (um motorista pode ter vários veículos)
-	    @OneToMany(mappedBy = "motorista")
-	    @JsonIgnore
-	    private List<Veiculo> veiculos;
-
-	    // Relação com Rotas (um motorista pode estar em várias rotas)
-	    @ManyToMany(mappedBy = "motoristas")
-	    private List<Rotas> rotas;
-
-	    @OneToMany(mappedBy = "")
-	    private List<Viagem> viagens;
-}

@@ -1,6 +1,8 @@
 package com.GestaoRotas.GestaoRotas.Entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import com.GestaoRotas.GestaoRotas.Model.TipoManutencao;
 
@@ -24,34 +26,72 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Manutencao {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    @Column(name = "proxima_revisao") 
-    private LocalDate proxima_revisao;
-
-    private Integer quilometragem;
-
-    @Enumerated(EnumType.STRING)  //Preventiva e Corretiva
-    private TipoManutencao tipoManutencao;
-   
-
-    @Column(length = 500) 
-    private String descricao;
-                             
-    private Double custo;
-
-    private String oficina;
-
-    // Muitas manutenções estão ligadas a 1 veículo
-    @ManyToOne
-    @JoinColumn(name = "veiculo_id", nullable = false)
-    private Veiculo veiculo;
-    
-
-
+      //------> namuntecao
+         @Id
+	    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	    private Long id;
+	    
+	    @Column(name = "data_manutencao")
+	    private LocalDateTime dataManutencao;
+	    
+	    @Column(name = "tipo_manutencao", length = 50)
+	    private String tipoManutencao; // "PREVENTIVA", "CORRETIVA", "TROCA_OLEO", "REVISAO"
+	    
+	    @Column(length = 500)
+	    private String descricao;
+	    
+	    private Double custo;
+	    
+	    @Column(name = "kilometragem_veiculo")
+	    private Double kilometragemVeiculo;
+	
+	    
+	    // ✅ CAMPOS NOVOS NECESSÁRIOS
+	    @Column(name = "proxima_manutencao_km")
+	    private Integer proximaManutencaoKm;
+	    
+	    @Column(name = "proxima_manutencao_data")
+	    private LocalDate proximaManutencaoData;
+	    
+	    
+	    // ManyToOne com Veiculo
+	    @ManyToOne(fetch = FetchType.LAZY)
+	    @JoinColumn(name = "veiculo_id", nullable = false)
+	    private Veiculo veiculo;
+	    
+	   
+	    
+	    public Manutencao(Veiculo veiculo, String tipoManutencao, String descricao, Double custo) {
+	        this.veiculo = veiculo;
+	        this.tipoManutencao = tipoManutencao;
+	        this.descricao = descricao;
+	        this.custo = custo;
+	        this.dataManutencao = LocalDateTime.now();
+	    }
+	    
+	  
+	    // Método auxiliar
+	    @PrePersist
+	    public void prePersist() {
+	        if (dataManutencao == null) {
+	            dataManutencao = LocalDateTime.now();
+	        }
+	    }
+	    //  Método corrigido - use este nome no seu código
+	    public LocalDate getProximaRevisao() {
+	        return this.proximaManutencaoData;
+	    }
+	    
+	    // Método auxiliar para verificar se está vencida
+	    public boolean isVencida() {
+	        if (proximaManutencaoData != null && proximaManutencaoData.isBefore(LocalDate.now())) {
+	            return true;
+	        }
+	        if (proximaManutencaoKm != null && veiculo != null && veiculo.getKilometragemAtual() != null && 
+	            veiculo.getKilometragemAtual() >= proximaManutencaoKm) {
+	            return true;
+	        }
+	        return false;
+	    }
+	
 }
- 
-

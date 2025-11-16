@@ -1,6 +1,8 @@
 package com.GestaoRotas.GestaoRotas.Repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.time.LocalDateTime;
 import java.util.*;
 
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioMotoristaDTO;
@@ -14,20 +16,37 @@ import org.springframework.stereotype.Repository;
 public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
  
 	
-	//Lista a viagem por id do motorista 
-  public List<Viagem> findByMotorista_Id(Long id);
+    // Lista viagens por id do motorista 
+    List<Viagem> findByMotoristaId(Long motoristaId);
 
-	//Mostra o motorista totalViagens , totalEmKm e totalCombustivel usado
+    // Relatório por motorista - CORRIGIDO
     @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioMotoristaDTO(" +
-    	       "v.motorista.nome, COUNT(v), SUM(v.quilometragem), SUM(v.combustivelUsado)) " +
-    	       "FROM Viagem v GROUP BY v.motorista.nome")
-    	   List<RelatorioMotoristaDTO> relatorioPorMotorista();
- 
-    
-	//Mostra o a plca do veiculo , totalViagens , totalEmKm e totalConbustivel usado
-  @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioPorVeiculoDTO(" +
-	       "v.veiculo.tipo, COUNT(v), SUM(v.quilometragem), SUM(v.combustivelUsado)) " +
-	        "FROM Viagem v GROUP BY v.veiculo.tipo")
-	List<RelatorioPorVeiculoDTO> relatorioPorVeiculo(); 
+           "v.motorista.nome, " +
+           "COUNT(v), " +
+           "COALESCE(SUM(v.kilometragemFinal - v.kilometragemInicial), 0), " +
+           "COALESCE(SUM(a.quantidadeLitros), 0)) " +
+           "FROM Viagem v " +
+           "LEFT JOIN v.abastecimentos a " +
+           "WHERE v.status = 'CONCLUIDA' " +
+           "GROUP BY v.motorista.id, v.motorista.nome")
+    List<RelatorioMotoristaDTO> relatorioPorMotorista();
+
+    // Relatório por veículo - CORRIGIDO
+    @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioPorVeiculoDTO(" +
+           "v.veiculo.matricula, " +
+           "COUNT(v), " +
+           "COALESCE(SUM(v.kilometragemFinal - v.kilometragemInicial), 0), " +
+           "COALESCE(SUM(a.quantidadeLitros), 0)) " +
+           "FROM Viagem v " +
+           "LEFT JOIN v.abastecimentos a " +
+           "WHERE v.status = 'CONCLUIDA' " +
+           "GROUP BY v.veiculo.id, v.veiculo.matricula")
+    List<RelatorioPorVeiculoDTO> relatorioPorVeiculo();
+
+    // Consultas adicionais úteis
+    List<Viagem> findByStatus(String status);
+    List<Viagem> findByVeiculoId(Long veiculoId);
+    List<Viagem> findByDataHoraPartidaBetween(LocalDateTime start, LocalDateTime end);
+
 }
    
