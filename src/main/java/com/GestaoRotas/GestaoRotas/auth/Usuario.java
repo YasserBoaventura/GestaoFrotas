@@ -22,15 +22,15 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Usuario implements UserDetails{
-
+        
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String username;
 	private String password;
-	//private String email;
+	private String email;
 	private String role;
-          
+    private String resetToken;
 	@Override
 	@JsonIgnore
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -47,6 +47,11 @@ public class Usuario implements UserDetails{
 	@Override
 	public String getUsername() {
 		return username;
+	}
+
+	public Object orElseThrow(Object object) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

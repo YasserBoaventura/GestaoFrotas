@@ -24,7 +24,7 @@ public class ControllerMarca {
 	 @Autowired
 	 public ControllerMarca(ServiceMarca serviceMarca) {
 		 
-		 this.serviceMarca=serviceMarca;
+		this.serviceMarca=serviceMarca;
 	 } 
 	 
 	 @PostMapping("/save") 
@@ -57,17 +57,17 @@ public class ControllerMarca {
 		    }
 	 }
 	 
-	 @GetMapping("/findAll")
-	 public ResponseEntity<List<Marca>> findAll(){
-		 try {
-		  List<Marca> lista=this.serviceMarca.findAll();
-		  if(lista.isEmpty()) {
-			  return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		  }
-		  return new ResponseEntity<>(lista, HttpStatus.OK);
-	    }catch(Exception e) {
-		 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-		 
-	 }
+ @GetMapping("/findAll")
+ public ResponseEntity<List<Marca>> findAll(){
+	 try {
+	  List<Marca> lista=this.serviceMarca.findAll();
+	  if(lista.isEmpty()) {
+		  return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	  }
+	  return new ResponseEntity<>(lista, HttpStatus.OK);
+    }catch(Exception e) {
+	 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+	 
+ }
 	 }
 }

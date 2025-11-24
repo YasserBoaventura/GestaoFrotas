@@ -16,13 +16,13 @@ import org.springframework.stereotype.Repository;
 public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
  
 	
-    // Lista viagens por id do motorista 
+    // Lista viagens por id do motorista  
     List<Viagem> findByMotoristaId(Long motoristaId);
 
     // Relatório por motorista - CORRIGIDO
     @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioMotoristaDTO(" +
            "v.motorista.nome, " +
-           "COUNT(v), " +
+           "COUNT(v), " + 
            "COALESCE(SUM(v.kilometragemFinal - v.kilometragemInicial), 0), " +
            "COALESCE(SUM(a.quantidadeLitros), 0)) " +
            "FROM Viagem v " +

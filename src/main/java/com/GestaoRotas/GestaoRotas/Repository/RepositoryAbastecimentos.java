@@ -20,7 +20,7 @@ public interface RepositoryAbastecimentos extends JpaRepository<abastecimentos, 
     @Query("SELECT a FROM abastecimentos a WHERE a.tipoCombustivel = :tipoCombustivel")
     List<abastecimentos> findByTipoCombustivel(@Param("tipoCombustivel") String tipoCombustivel);
 
-    // ✅ RELATÓRIO SIMPLES - retorna lista de objetos
+    //  RELATÓRIO SIMPLES - retorna lista de objetos
     @Query("SELECT a.veiculo.matricula, SUM(a.quantidadeLitros), SUM(a.quantidadeLitros * a.precoPorLitro), AVG(a.precoPorLitro) " +
            "FROM abastecimentos a " + // USE O NOME CORRETO
            "GROUP BY a.veiculo.matricula")

@@ -58,7 +58,7 @@ public ResponseEntity<String> salvar(@RequestBody abastecimentos abastecimento) 
 @GetMapping("/relatorio")
 public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorVeiculo() {
     return ResponseEntity.ok(abastecimentosService.relatorioPorVeiculo());
-}
+}  
 
 //busca relatorios por periodo dataInicio e dataFim
 @GetMapping("/relatorio/periodo")
@@ -107,7 +107,7 @@ public ResponseEntity<abastecimentos> findById(@PathVariable long id){
 		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 	}
 }
-	    @PutMapping("/update/{id}")
+@PutMapping("/update/{id}")
 public ResponseEntity<String> update(abastecimentos abastecimento, long id){
 	try {
 		String frase=this.abastecimentosService.update(abastecimento, id);
@@ -118,7 +118,7 @@ public ResponseEntity<String> update(abastecimentos abastecimento, long id){
 	}catch(Exception e) {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	    }
+	 }
 	       	
 	    
 }

@@ -79,18 +79,18 @@ public class ControllerViagem {
 			return new ResponseEntity<>(null ,HttpStatus.BAD_REQUEST);
 		}
 	}
-	@PutMapping("/update/{id}")
-	public ResponseEntity<String> update(@RequestBody Viagem viagem, @PathVariable long id){
-		try {
-			String frase=this.serviceViagem.update(viagem, id);
-			if(frase.equals("nao existem uma viagem com id")) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
-			}
-			return new ResponseEntity<>(frase, HttpStatus.OK);
-			
-		}catch(Exception e) {
-			return new ResponseEntity<>("Erro: ", HttpStatus.BAD_REQUEST); 
+@PutMapping("/update/{id}")
+public ResponseEntity<String> update(@RequestBody Viagem viagem, @PathVariable long id){
+	try {
+		String frase=this.serviceViagem.update(viagem, id);
+		if(frase.equals("nao existem uma viagem com id")) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
 		}
+		return new ResponseEntity<>(frase, HttpStatus.OK);
+		
+	}catch(Exception e) {
+		return new ResponseEntity<>("Erro: ", HttpStatus.BAD_REQUEST); 
+	}
 	}
 	 //Mostra o relatorio nome do mortista do carro , totalViagens , totalEmKm e totalConbustivel usado
 	

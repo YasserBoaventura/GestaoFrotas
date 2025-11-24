@@ -27,9 +27,9 @@ public class Motorista {
         
         @Column(name = "numero_carta", unique = true, length = 20)
         private String numeroCarta;
-        
+         
         @Column(unique = true, length = 100)
-        private String email;
+        private String email; 
         
         @Column(length = 20)
         private String telefone;

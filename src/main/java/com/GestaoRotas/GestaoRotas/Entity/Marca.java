@@ -26,9 +26,7 @@ public class Marca {
 	@Column(nullable = false, unique = true, length = 100)
 	private String nome;
 
-	@Column(name = "pais_origem", length = 50)
-	private String paisOrigem;
-	
+    @JsonIgnore
 	@OneToMany(mappedBy = "marca", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	    private List<Veiculo> veiculos = new ArrayList<>();
 	    

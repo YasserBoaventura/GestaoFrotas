@@ -46,7 +46,7 @@ public class abastecimentos {
 	    private Viagem viagem;
 	    
 
-	    // ✅ MÉTODO CALCULADO (não armazenado)  //valor total da favor a pagar
+	    //  MÉTODO CALCULADO (não armazenado)  //valor total da favor a pagar
 	    public Double getValorTotal() {
 	        if (quantidadeLitros != null && precoPorLitro != null) {
 	            return quantidadeLitros * precoPorLitro;

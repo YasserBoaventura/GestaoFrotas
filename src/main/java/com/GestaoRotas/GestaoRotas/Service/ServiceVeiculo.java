@@ -14,8 +14,6 @@ import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
 @Service
 public class ServiceVeiculo {
 
-	
-	
 	private final RepositoryVeiculo repositoryVeiculo;
 	
 	@Autowired 
@@ -27,37 +25,46 @@ public class ServiceVeiculo {
 		 return "Veiculo Salvo com sucesso";
 	}
 	
-	 
 	public String update(Veiculo veiculo, long id) {
-		
-		 veiculo.setId(id);
+		veiculo.setId(id);
 		this.repositoryVeiculo.save(veiculo);
 		return "veiculo actualizado com sucesso";
 	}
 	public String deletar(long id) {
 		this.repositoryVeiculo.deleteById(id);
-		return "Veiculo deletado com sucesso";
+		return "Veiculo deletado com sucess";
 	}
-	  
-	  public List<VeiculoDTO> findAll() {
+	
+	  public List<Veiculo> findAll() {
 	        List<Veiculo> veiculos = repositoryVeiculo.findAll();
-	        return veiculos.stream()
-	                      .map(this::convertToDTO)
-	                      .collect(Collectors.toList());
+	         return veiculos;
 	    }
-	  //Depois da DTO ser convertidade
 	    
-	  private VeiculoDTO convertToDTO(Veiculo veiculo) {
-		    return new VeiculoDTO(
-		        veiculo.getId(),
-		        veiculo.getMatricula(),      // placa
-		        veiculo.getModelo(),         // modelo 
-		        veiculo.getAnoFabricacao(),  // ano
-		        determinarTipoVeiculo(veiculo.getModelo()), // tipo
-		        veiculo.getMarca(),
-		        veiculo.getMotoristas()      // Set<Motorista>
-		    );
-		}
+private VeiculoDTO convertToDTO(Veiculo veiculo) {
+    VeiculoDTO dto = new VeiculoDTO();
+    dto.setId(veiculo.getId());
+    dto.setModelo(veiculo.getModelo());
+    dto.setMatricula(veiculo.getMatricula());
+    dto.setAnoFabricacao(veiculo.getAnoFabricacao());
+    dto.setCapacidadeTanque(veiculo.getCapacidadeTanque());
+    dto.setKilometragemAtual(veiculo.getKilometragemAtual());
+    
+    // Informações da marca
+    if (veiculo.getMarca() != null) {
+        dto.setMarcaNome(veiculo.getMarca().getNome());
+        dto.setMarcaId(veiculo.getMarca().getId());
+    }
+    
+    // Métodos calculados
+    dto.setMediaConsumo(veiculo.getMediaConsumo());
+    dto.setTotalViagensConcluidas(veiculo.getViagens().stream()
+        .filter(v -> "CONCLUIDA".equals(v.getStatus()))
+        .collect(Collectors.toList())
+        .size());
+        
+    return dto;
+}
+	
 
 		// Método auxiliar para determinar tipo
 		private String determinarTipoVeiculo(String modelo) {

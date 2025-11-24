@@ -21,10 +21,18 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-	@Autowired
-	private JwtServiceGenerator jwtService;
-	@Autowired
-	private UserDetailsService userDetailsService;
+
+	private  final JwtServiceGenerator jwtService;
+
+	private final UserDetailsService userDetailsService;
+	//melhorado com inversao de controle com o o construtor
+	public JwtAuthenticationFilter(JwtServiceGenerator jwtService,UserDetailsService userDetailsService ) {
+		 this.jwtService=jwtService;
+		 this.userDetailsService=userDetailsService;
+	}
+
+	
+	
 
 	@Override
 	protected void doFilterInternal(
@@ -35,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		final String authHeader = request.getHeader("Authorization");
 		final String jwt;
 		final String userEmail;
-		if(authHeader == null || !authHeader.startsWith("Bearer ")) {
+		if(authHeader == null || !authHeader.startsWith("Bearer")) {
 			filterChain.doFilter(request,response);
 			return;
 		}

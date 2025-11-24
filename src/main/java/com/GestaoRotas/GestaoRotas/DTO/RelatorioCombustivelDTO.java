@@ -9,7 +9,6 @@ import lombok.Data;
 @Setter
 @Getter
 @Data
-
 @NoArgsConstructor
 public class RelatorioCombustivelDTO {
 
@@ -20,7 +19,7 @@ public class RelatorioCombustivelDTO {
 	    private Double totalGasto;
 	    private Double mediaPorLitro;
 
-    // ✅ Construtor para a query JPA (ORDEM DOS PARÂMETROS É IMPORTANTE!)
+    //  Construtor para a query JPA (ORDEM DOS PARÂMETROS É IMPORTANTE!)
     public RelatorioCombustivelDTO(String veiculo, Double totalLitros, Double totalGasto, Double mediaPorLitro) {
         this.veiculo = veiculo;
         this.totalLitros = totalLitros != null ? totalLitros : 0.0;

@@ -25,6 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 
 @Setter
@@ -54,23 +56,26 @@ public class Veiculo {
 	    private Double kilometragemAtual;
 	    
 	    
-	    // ManyToOne com Marca
-	    @ManyToOne(fetch = FetchType.LAZY)
-	    @JoinColumn(name = "marca_id", nullable = false)
+	    @ManyToOne(fetch = FetchType.EAGER)
+	    @JoinColumn(name = "marca_id")
 	    private Marca marca;
-	    
 	    // OneToMany com Abastecimento
-	    @OneToMany(mappedBy = "veiculo", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	    private List<abastecimentos> abastecimentoss = new ArrayList<>();
+	    @JsonIgnore
+     @OneToMany(mappedBy = "veiculo", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	 private List<abastecimentos> abastecimentoss = new ArrayList<>();
 	    
 	    // OneToMany com Manutencao
+	    @JsonIgnore
+
 	    @OneToMany(mappedBy = "veiculo", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	    private List<Manutencao> manutencoes = new ArrayList<>();
-	    
+	    @JsonIgnore
 	    // OneToMany com Viagem
 	    @OneToMany(mappedBy = "veiculo", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	    private List<Viagem> viagens = new ArrayList<>();
-	    
+	   
+	    @JsonIgnore
+
 	    // ManyToMany com Motorista
 	    @ManyToMany
 	    @JoinTable(
@@ -83,7 +88,7 @@ public class Veiculo {
 	    public void addMotorista(Motorista motorista) {
 	        motoristas.add(motorista);
 	        motorista.getVeiculos().add(this);
-	    }
+	    } 
 	    
 	    public void removeMotorista(Motorista motorista) {
 	        motoristas.remove(motorista);

@@ -42,7 +42,13 @@ public class GlobalExceptionHandler {
 		ex.printStackTrace();
 		return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
 	}
+	//Tratamentos do Erro throw new IlegalException na aplicacao NB: nomeie com O nome da excecao
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex){
+		ex.printStackTrace();
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+	}
 
 }
-
+ 
 

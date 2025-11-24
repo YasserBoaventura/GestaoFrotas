@@ -30,30 +30,28 @@ public class ControllerVeiculo {
 	public ControllerVeiculo (ServiceVeiculo serviceVeiculo) {
 		this.serviceVeiculo=serviceVeiculo; 
 	}
-     @PostMapping("/salvar")
-	public ResponseEntity<String> salvar(@RequestBody Veiculo veiculo){
-	 
-		try {
-			String frase=this.serviceVeiculo.salvar(veiculo);
-			if(frase.isBlank()) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			}else if(frase.isEmpty()) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			}  
-			return new ResponseEntity<>(frase, HttpStatus.OK);
-			
-			
-		}catch(Exception e) {
-		 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);	
-		}
-	} 
+
+@PostMapping("/salvar")
+public ResponseEntity<Map<String, String>> salvar(@RequestBody Veiculo veiculo) {
+    try {
+        String saved = serviceVeiculo.salvar(veiculo);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Veículo cadastrado com sucesso");
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    } catch (Exception e) {
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("error", e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+}
+
      @GetMapping("/findAll")
-     public ResponseEntity<List<VeiculoDTO>> findAll(){
+     public ResponseEntity<List<Veiculo>> findAll(){
     	  try {
-    		 List<VeiculoDTO> lista=this.serviceVeiculo.findAll();
+    		 List<Veiculo> lista=this.serviceVeiculo.findAll();
          if(lista.isEmpty()) {
     			return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
-    		 }
+    		 } 
     	 	 return new ResponseEntity<>(lista, HttpStatus.OK);
        }catch(Exception e) {
     		 System.out.println("Erro a listar os Veiculos "+ e.getStackTrace());
@@ -62,7 +60,7 @@ public class ControllerVeiculo {
     	 }
      }
 	
-     @PutMapping("/update/{id}")
+     @PutMapping("/update/{id}") 
     public ResponseEntity<String> update(@RequestBody Veiculo veiculo, @PathVariable long id){
     	try {
     		String frase= this.serviceVeiculo.update(veiculo, id);
@@ -78,17 +76,14 @@ public class ControllerVeiculo {
     }
      @DeleteMapping("/delete/{id}")
      public ResponseEntity<String> delete(@PathVariable Long id){
-    	try{
-         String frase=this.serviceVeiculo.deletar(id);
-    		 if(frase.isBlank() || frase.isBlank()) {
-    			 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    		 }else{ 
-    		return new ResponseEntity<>(frase, HttpStatus.OK);
-    		 }
-    		 }catch(Exception e) {
-    			System.out.println("Erro ao deletar veiculo: "+ e.getStackTrace());
-    		 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-    	 }  
+         try {
+	    	serviceVeiculo.deletar(id);
+	        return ResponseEntity.ok("Veículo apagado com sucesso");
+	     } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	               .body("Erro ao apagar veículo: " + e.getMessage());
+	    }
+	    
      }
      
      

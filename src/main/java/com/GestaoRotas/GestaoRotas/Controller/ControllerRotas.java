@@ -21,7 +21,7 @@ public class ControllerRotas {
 
 	private final SericeRotas serviceRotas;
 	
-    @Autowired
+    @Autowired 
 	 public ControllerRotas(SericeRotas serviceRotas) {
 	 	this.serviceRotas=serviceRotas;
 	 }
@@ -75,4 +75,20 @@ public class ControllerRotas {
 		  
 	  }
   }
+ @GetMapping("findById/{id}")
+ public ResponseEntity<Rotas> findById(@PathVariable long id){
+	 try {
+		 Rotas rota=this.serviceRotas.findById(id);
+		 if(rota==null) {
+			 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		 } else {
+			 
+		return new ResponseEntity<>(rota, HttpStatus.OK);
+		 }
+	 }catch(Exception e) {
+		 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		 
+	 }
+		 
+	 }
 }

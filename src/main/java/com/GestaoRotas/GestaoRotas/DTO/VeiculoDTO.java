@@ -15,14 +15,20 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VeiculoDTO {
-
-	private Long id;
-    private String placa;
-    private String modelo;
-    private Integer ano;
-    private String tipo;
-    private Marca marca;
-	private Set<Motorista> motoristas; 
-	  
+	
+	
+	 private Long id;
+	    private String modelo;
+	    private String matricula;
+	    private Integer anoFabricacao;
+	    private Double capacidadeTanque;
+	    private Double kilometragemAtual;
+	    private String marcaNome;
+	    private Long marcaId;
+	    
+	    // Métodos calculados que você pode incluir
+	    private Double mediaConsumo;
+	    private Integer totalViagensConcluidas;
+	
 	} 
 

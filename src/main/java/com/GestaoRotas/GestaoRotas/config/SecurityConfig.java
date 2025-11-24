@@ -33,9 +33,9 @@ public class SecurityConfig  {
 		.csrf(AbstractHttpConfigurer::disable)
 		.cors(AbstractHttpConfigurer::disable)
 		.authorizeHttpRequests((requests) -> requests
-				.requestMatchers("/api/login").permitAll()
-				.requestMatchers("/api/login/findAll").permitAll()
-				//.requestMatchers("/api/").hasAnyRole("ADIM")
+				.requestMatchers("/api/login","/api/register").permitAll()
+				.requestMatchers("api/password/request", "api/password/reset").permitAll()
+							//.requestMatchers("/api/").hasAnyRole("ADIM")
 	//		.requestMatchers("/api/register").permitAll()
 	 //  .requestMatchers("/API/Carro/findAll").hasAnyRole("ADIM") -> e um
 				.anyRequest().authenticated())
