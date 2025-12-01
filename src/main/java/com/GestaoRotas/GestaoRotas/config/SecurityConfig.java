@@ -25,19 +25,21 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @EnableMethodSecurity
 public class SecurityConfig  {
 
-	///////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////
 
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http    
 		.csrf(AbstractHttpConfigurer::disable)
 		.cors(AbstractHttpConfigurer::disable)
 		.authorizeHttpRequests((requests) -> requests
-				.requestMatchers("/api/login","/api/register").permitAll()
-				.requestMatchers("api/password/request", "api/password/reset").permitAll()
-							//.requestMatchers("/api/").hasAnyRole("ADIM")
-	//		.requestMatchers("/api/register").permitAll()
-	 //  .requestMatchers("/API/Carro/findAll").hasAnyRole("ADIM") -> e um
+				.requestMatchers("/api/login","/api/auto-cadastro").permitAll()
+				 .requestMatchers(
+					        "/api/auth/solicitar-recuperacao",
+					        "/api/auth/redefinir-senha-token",
+					        "/api/auth/redefinir-senha-verificacao",
+					        "/manutencoes/save"
+					    ).permitAll() 
 				.anyRequest().authenticated())
 		.authenticationProvider(authenticationProvider)
 		.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
@@ -56,8 +58,8 @@ public class SecurityConfig  {
 	private AuthenticationProvider authenticationProvider;
 
 
-	@Bean
-	public FilterRegistrationBean<CorsFilter> corsFilter() {
+    @Bean
+    FilterRegistrationBean<CorsFilter> corsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(true);

@@ -1,6 +1,5 @@
 package com.GestaoRotas.GestaoRotas.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.GestaoRotas.GestaoRotas.Entity.Marca;
@@ -13,7 +12,6 @@ public class ServiceMarca {
 
 	
 	private final RepositoryMarca repositoryMarca;
-	@Autowired
 	public ServiceMarca(RepositoryMarca repositoryMarca) {
 		this.repositoryMarca=repositoryMarca;
 	}

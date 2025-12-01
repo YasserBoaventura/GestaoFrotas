@@ -77,7 +77,7 @@ public class Veiculo {
 	    @JsonIgnore
 
 	    // ManyToMany com Motorista
-	    @ManyToMany
+	    @ManyToMany 
 	    @JoinTable(
 	        name = "veiculo_motorista",
 	        joinColumns = @JoinColumn(name = "veiculo_id"),

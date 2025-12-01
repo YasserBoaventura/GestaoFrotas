@@ -1,6 +1,5 @@
 package com.GestaoRotas.GestaoRotas.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,39 +25,38 @@ public class ControllerVeiculo {
     
 	 private final ServiceVeiculo serviceVeiculo;
 	
-	@Autowired
 	public ControllerVeiculo (ServiceVeiculo serviceVeiculo) {
 		this.serviceVeiculo=serviceVeiculo; 
 	}
 
 @PostMapping("/salvar")
-public ResponseEntity<Map<String, String>> salvar(@RequestBody Veiculo veiculo) {
+  public ResponseEntity<Map<String, String>> salvar(@RequestBody Veiculo veiculo) {
     try {
         String saved = serviceVeiculo.salvar(veiculo);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Veículo cadastrado com sucesso");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    } catch (Exception e) {
+        }catch (Exception e) {
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("error", e.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-    }
+    } 
 }
-
-     @GetMapping("/findAll")
-     public ResponseEntity<List<Veiculo>> findAll(){
-    	  try {
-    		 List<Veiculo> lista=this.serviceVeiculo.findAll();
-         if(lista.isEmpty()) {
-    			return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
-    		 } 
-    	 	 return new ResponseEntity<>(lista, HttpStatus.OK);
-       }catch(Exception e) {
-    		 System.out.println("Erro a listar os Veiculos "+ e.getStackTrace());
-    		 return new ResponseEntity<>(null, HttpStatus.OK);
-    		 
-    	 }
-     }
+ 
+ @GetMapping("/findAll")
+ public ResponseEntity<List<Veiculo>> findAll(){
+	  try {
+		 List<Veiculo> lista=this.serviceVeiculo.findAll();
+      if(lista.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
+		 } 
+	 	 return new ResponseEntity<>(lista, HttpStatus.OK);
+     }catch(Exception e) {
+		 System.out.println("Erro a listar os Veiculos "+ e.getStackTrace());
+		 return new ResponseEntity<>(null, HttpStatus.OK);
+		 
+	 }
+ }
 	
      @PutMapping("/update/{id}") 
     public ResponseEntity<String> update(@RequestBody Veiculo veiculo, @PathVariable long id){

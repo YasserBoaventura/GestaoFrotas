@@ -29,15 +29,15 @@ public class RelatorioCombustivelDTO {
 
     // ✅ Método para formatar os valores
     public String getTotalLitrosFormatado() {
-        return String.format("%.2f L", totalLitros);
+        return "%.2f L".formatted(totalLitros);
     }
 
     public String getTotalGastoFormatado() {
-        return String.format("R$ %.2f", totalGasto);
+        return "R$ %.2f".formatted(totalGasto);
     }
 
     public String getMediaPorLitroFormatado() {
-        return String.format("R$ %.2f", mediaPorLitro);
+        return "R$ %.2f".formatted(mediaPorLitro);
     }
 
 }

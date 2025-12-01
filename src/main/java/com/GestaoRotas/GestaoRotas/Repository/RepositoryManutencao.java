@@ -23,7 +23,7 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
      @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO(" +
     	       "m.veiculo.matricula, COUNT(m), SUM(m.custo), AVG(m.custo)) " +
     	       "FROM  Manutencao  m WHERE m.veiculo IS NOT NULL GROUP BY m.veiculo.matricula")
-    	List<RelatorioManutencaoDTO> relatorioPorVeiculo();
+     	List<RelatorioManutencaoDTO> relatorioPorVeiculo();
              
     
 
@@ -39,7 +39,7 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
             "(m.proximaManutencaoKm IS NOT NULL AND m.veiculo.kilometragemAtual >= m.proximaManutencaoKm)")
      List<Manutencao> findManutencoesVencidas(); 
        
-     // Próximas manutenções (30 dias ou 1000km) - CORRIGIDA 
+     // Próximas manutenções (30 dias ou 1000km) - CORRIGIDA   
      @Query("SELECT m FROM Manutencao m WHERE " +
             "((m.proximaManutencaoData IS NOT NULL AND m.proximaManutencaoData BETWEEN CURRENT_DATE AND :dataLimite30Dias) OR " +
             "(m.proximaManutencaoKm IS NOT NULL AND m.veiculo.kilometragemAtual IS NOT NULL AND " +
