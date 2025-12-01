@@ -1,6 +1,5 @@
 package com.GestaoRotas.GestaoRotas.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,7 +16,6 @@ public class ServiceAbastecimentos {
 	
 	private final RepositoryAbastecimentos repositoryAbastecimentos;
 	
-	@Autowired
 	public ServiceAbastecimentos(RepositoryAbastecimentos repositoryAbastecimentos) {
 		this.repositoryAbastecimentos=repositoryAbastecimentos;
 	}

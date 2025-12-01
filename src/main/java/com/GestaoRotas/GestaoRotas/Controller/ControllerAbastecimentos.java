@@ -2,7 +2,6 @@ package com.GestaoRotas.GestaoRotas.Controller;
 
 import jakarta.persistence.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -33,7 +32,6 @@ public class ControllerAbastecimentos {
 	
   private final ServiceAbastecimentos abastecimentosService;
   
-   @Autowired
    public ControllerAbastecimentos(ServiceAbastecimentos abastecimentos) {
 	this.abastecimentosService=abastecimentos;   
    }

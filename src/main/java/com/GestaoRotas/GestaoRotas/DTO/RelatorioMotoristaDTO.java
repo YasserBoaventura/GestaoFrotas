@@ -15,7 +15,6 @@ public class RelatorioMotoristaDTO {
     private Long totalViagens;
     private Double totalQuilometragem;
     private Double totalCombustivel;
-
+  
  
-	    }
-	
+}

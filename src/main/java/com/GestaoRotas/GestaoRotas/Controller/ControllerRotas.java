@@ -1,6 +1,5 @@
 package com.GestaoRotas.GestaoRotas.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,8 +20,7 @@ public class ControllerRotas {
 
 	private final SericeRotas serviceRotas;
 	
-    @Autowired 
-	 public ControllerRotas(SericeRotas serviceRotas) {
+    public ControllerRotas(SericeRotas serviceRotas) {
 	 	this.serviceRotas=serviceRotas;
 	 }
 	

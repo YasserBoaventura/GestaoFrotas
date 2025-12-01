@@ -1,6 +1,5 @@
 package com.GestaoRotas.GestaoRotas.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.*;
 
@@ -18,7 +17,6 @@ public class ServiceViagem {
   
 	private final RepositoryViagem repositoriViagem;
 	
-	@Autowired
 	public ServiceViagem(RepositoryViagem repositoryViagem) {
 		this.repositoriViagem=repositoryViagem;
 	}

@@ -1,6 +1,5 @@
 package com.GestaoRotas.GestaoRotas.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +25,6 @@ public class ControllerViagem {
 
 	private final ServiceViagem serviceViagem;
 	
-	@Autowired
 	public ControllerViagem(ServiceViagem serviceViagem) {
        this.serviceViagem=serviceViagem;
 	}

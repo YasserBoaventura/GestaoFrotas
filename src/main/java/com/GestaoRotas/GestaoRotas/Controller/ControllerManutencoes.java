@@ -1,8 +1,6 @@
 package com.GestaoRotas.GestaoRotas.Controller;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -20,7 +18,6 @@ public class ControllerManutencoes {
 
     private final ServiceManutencoes manutencaoService;
  
-	@Autowired
 	public ControllerManutencoes(ServiceManutencoes  manutencaoService) {
 		this.manutencaoService=manutencaoService;
 	}
@@ -117,23 +114,23 @@ try {
     		   
     	}          
     }  
-    //verr relatorio de manutencoes por veiculo
+    //ver relatorio de manutencoes por veiculo
     @GetMapping("/veiculos")
     public ResponseEntity<List<RelatorioManutencaoDTO>> relatorioPorVeiculo() {
         return ResponseEntity.ok(manutencaoService.gerarRelatorioPorVeiculo());
-    }
+    }                 
     
     @GetMapping("/gerarAltertas")
     public ResponseEntity<List<String>> getAlertas() {
         List<String> alertas = manutencaoService.gerarAlertas();
         return ResponseEntity.ok(alertas);
     }
-    
     @GetMapping("/simplificado")  //os dois geram alertas mais esse simplificado
     public ResponseEntity<List<String>> getAlertasSimplificado() {
         List<String> alertas = manutencaoService.gerarAlertasSimplificado();
         return ResponseEntity.ok(alertas);
     }
+    
 }
 
 	    

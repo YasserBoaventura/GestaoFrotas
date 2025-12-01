@@ -1,6 +1,5 @@
 package com.GestaoRotas.GestaoRotas.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,8 +15,7 @@ public class ServiceVeiculo {
 
 	private final RepositoryVeiculo repositoryVeiculo;
 	
-	@Autowired 
-    public ServiceVeiculo(RepositoryVeiculo repositoryVeiculo ){
+	public ServiceVeiculo(RepositoryVeiculo repositoryVeiculo ){
 		this.repositoryVeiculo=repositoryVeiculo;
 	}
 	public String salvar(Veiculo veiculo) {

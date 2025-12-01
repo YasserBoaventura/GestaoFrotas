@@ -2,7 +2,6 @@ package com.GestaoRotas.GestaoRotas.Service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.GestaoRotas.GestaoRotas.Entity.Manutencao;
@@ -16,7 +15,6 @@ public class ServiceMotorista {
    
 	private final RepositoryMotorista repositoryMotorista;
 	 
-	@Autowired 
 	public ServiceMotorista(RepositoryMotorista repositoryMotorista ) {
 		this.repositoryMotorista=repositoryMotorista ;
 		

@@ -15,8 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class abastecimentos {
-
-	     @Id
+        @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
 	    
@@ -44,7 +43,7 @@ public class abastecimentos {
 	    @ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name = "viagem_id", nullable = true)
 	    private Viagem viagem;
-	    
+	                          
 
 	    //  MÉTODO CALCULADO (não armazenado)  //valor total da favor a pagar
 	    public Double getValorTotal() {
@@ -52,8 +51,8 @@ public class abastecimentos {
 	            return quantidadeLitros * precoPorLitro;
 	        }
 	        return 0.0; 
-	    }
-	    
+	    } 
+	      
 	    // Método auxiliar
 	    @PrePersist
 	    public void prePersist() {
@@ -61,6 +60,6 @@ public class abastecimentos {
 	            dataAbastecimento = LocalDateTime.now();
 	        }
 	    }
-	    
+	      
 }
 	

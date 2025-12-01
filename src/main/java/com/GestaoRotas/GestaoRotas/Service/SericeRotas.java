@@ -1,6 +1,5 @@
 package com.GestaoRotas.GestaoRotas.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.*;
 import com.GestaoRotas.GestaoRotas.Entity.Rotas;
@@ -12,7 +11,6 @@ public class SericeRotas {
 	 
 	private final RepositoryRotas repositoryRotas;
 
-	@Autowired
 	public SericeRotas(RepositoryRotas repositoryRotas) {
 		this.repositoryRotas=repositoryRotas;
 	}

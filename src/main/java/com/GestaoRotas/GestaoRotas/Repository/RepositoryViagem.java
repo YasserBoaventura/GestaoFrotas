@@ -42,7 +42,7 @@ public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
            "WHERE v.status = 'CONCLUIDA' " +
            "GROUP BY v.veiculo.id, v.veiculo.matricula")
     List<RelatorioPorVeiculoDTO> relatorioPorVeiculo();
-
+   
     // Consultas adicionais úteis
     List<Viagem> findByStatus(String status);
     List<Viagem> findByVeiculoId(Long veiculoId);
