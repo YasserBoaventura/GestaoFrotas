@@ -83,7 +83,7 @@ public class Usuario implements UserDetails {
     
     @Column(name = "conta_bloqueada")
     private Boolean contaBloqueada = false;
-    
+     
     // Métodos de UserDetails
    
     @JsonIgnore

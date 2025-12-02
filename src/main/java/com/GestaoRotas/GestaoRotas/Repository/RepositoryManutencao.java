@@ -61,7 +61,7 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
      @Query("SELECT m FROM Manutencao m WHERE m.veiculo.id = :veiculoId ORDER BY m.dataManutencao DESC")
      List<Manutencao> findByVeiculoId(Long veiculoId);
 
-     // Método alternativo usando Native Query (opcional)
+     // Método alternativo usando Native Query 
      @Query(value = "SELECT * FROM manutencoes m WHERE " +
              "((m.proxima_manutencao_data IS NOT NULL AND m.proxima_manutencao_data BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)) OR " +
              "(m.proxima_manutencao_km IS NOT NULL AND m.proxima_manutencao_km - (SELECT kilometragem_atual FROM veiculo WHERE id = m.veiculo_id) <= 1000)) AND " +

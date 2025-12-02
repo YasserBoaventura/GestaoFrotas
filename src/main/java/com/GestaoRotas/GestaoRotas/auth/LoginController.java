@@ -5,12 +5,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.GestaoRotas.GestaoRotas.DTO.AutoCadastroDTO;
+import com.GestaoRotas.GestaoRotas.DTO.usuarioUpdateDTO;
+
+import jakarta.validation.Valid;
 
 
 
@@ -49,53 +54,64 @@ private ResponseEntity<?> logar(@RequestBody Login login) {
         }
     }
  
-    //  POST para registro corrigindo typo "resgister"
+//  POST para registro corrigindo typo "resgister"
 
-		   @PostMapping("/auto-cadastro")
-		   public ResponseEntity<?> autoCadastro(@RequestBody AutoCadastroDTO dto) {
-		       // Verificar se username, email ou nuit já existem
-		   if (loginRepository.existsByUsername(dto.getUsername())) {
-		       return ResponseEntity.badRequest().body("Username já está em uso");
-		   }
-		   if (loginRepository.existsByEmail(dto.getEmail())) {
-		       return ResponseEntity.badRequest().body("Email já está em uso");
-		   }
-		   if (loginRepository.existsByNuit(dto.getNuit())) {
-		       return ResponseEntity.badRequest().body("NUIT já está em uso");
-		   }
-		
-		   // Criar novo usuário com os dados do DTO   
-		   Usuario usuario = new Usuario();
-		   usuario.setUsername(dto.getUsername());
-		   usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
-		   usuario.setEmail(dto.getEmail());
-		   usuario.setPerguntaSeguranca(dto.getPerguntaSeguranca());
-		   usuario.setRespostaSeguranca(dto.getRespostaSeguranca());
-		   usuario.setTelefone(dto.getTelefone());
-		   usuario.setNuit(dto.getNuit());
-		   usuario.setDataNascimento(dto.getDataNascimento());
+   @PostMapping("/auto-cadastro")
+   public ResponseEntity<?> autoCadastro(@RequestBody AutoCadastroDTO dto) {
+       // Verificar se username, email ou nuit já existem
+   if (loginRepository.existsByUsername(dto.getUsername())) {
+       return ResponseEntity.badRequest().body("Username já está em uso");
+   }
+   if (loginRepository.existsByEmail(dto.getEmail())) {
+       return ResponseEntity.badRequest().body("Email já está em uso");
+   }
+   if (loginRepository.existsByNuit(dto.getNuit())) {
+       return ResponseEntity.badRequest().body("NUIT já está em uso");
+   }
+
+   // Criar novo usuário com os dados do DTO   
+   Usuario usuario = new Usuario();
+   usuario.setUsername(dto.getUsername());
+   usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
+   usuario.setEmail(dto.getEmail());
+   usuario.setPerguntaSeguranca(dto.getPerguntaSeguranca());
+   usuario.setRespostaSeguranca(dto.getRespostaSeguranca());
+   usuario.setTelefone(dto.getTelefone());
+   usuario.setNuit(dto.getNuit());
+   usuario.setDataNascimento(dto.getDataNascimento());
+   
+   // Definir valores padrão 
+   usuario.setRole("USER"); // Cargo padrão
+   usuario.setAtivo(false); // Conta desativada até ativação pelo admin
+   usuario.setDataCriacao(LocalDateTime.now());
+   usuario.setTentativasLogin(0);
+   usuario.setContaBloqueada(false);
+
+   loginRepository.save(usuario);
+
+   return ResponseEntity.ok("Cadastro realizado com sucesso. Aguarde ativação da conta por um administrador.");
+   } 
 		   
-		   // Definir valores padrão 
-		   usuario.setRole("USER"); // Cargo padrão
-		   usuario.setAtivo(false); // Conta desativada até ativação pelo admin
-		   usuario.setDataCriacao(LocalDateTime.now());
-		   usuario.setTentativasLogin(0);
-		   usuario.setContaBloqueada(false);
-		
-		   loginRepository.save(usuario);
-		
-		   return ResponseEntity.ok("Cadastro realizado com sucesso. Aguarde ativação da conta por um administrador.");
-		   } 
-		    @GetMapping("/findAll")
+   //Devo fazer aqui ate porque o Repositorio e do tipo usuario
+    @GetMapping("/findAll")
     private ResponseEntity<List<Usuario>> findAll(){
-	  try {
+	  try { 
 	 	List<Usuario> lista=this.loginService.findAll();
 		return new ResponseEntity<>(lista, HttpStatus.OK);
 	    }catch(Exception e) {
 		return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
 	   }
-} 
-	
-
+  } 
+    
+    //update pra ativar as contas ou desbloquear 
+    @PutMapping("/{id}")
+    public ResponseEntity<Usuario> atualizarUsuario(
+            @PathVariable Long id,
+            @RequestBody @Valid Usuario usuario) {
+        
+        Usuario usuarioAtualizadoo = this.loginService.atualizarUsuario(id, usuario);
+        return ResponseEntity.ok(usuarioAtualizadoo);
+    }
+ 
    
 }
