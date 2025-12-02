@@ -27,7 +27,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Manutencao {
       //------> namuntecao
-         @Id
+        @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
 	    
@@ -35,7 +35,8 @@ public class Manutencao {
 	    private LocalDateTime dataManutencao;
 	    
 	    @Column(name = "tipo_manutencao", length = 50)
-	    private String tipoManutencao; // "PREVENTIVA", "CORRETIVA", "TROCA_OLEO", "REVISAO"
+	    @Enumerated(EnumType.STRING)
+	    private TipoManutencao tipoManutencao; // "PREVENTIVA", "CORRETIVA", "TROCA_OLEO", "REVISAO"
 	    
 	    @Column(length = 500)
 	    private String descricao;
@@ -63,7 +64,7 @@ public class Manutencao {
 	    
 	    public Manutencao(Veiculo veiculo, String tipoManutencao, String descricao, Double custo) {
 	        this.veiculo = veiculo;
-	        this.tipoManutencao = tipoManutencao;
+	       // this.tipoManutencao = tipoManutencao;
 	        this.descricao = descricao;
 	        this.custo = custo;
 	        this.dataManutencao = LocalDateTime.now();
@@ -91,7 +92,7 @@ public class Manutencao {
 	            veiculo.getKilometragemAtual() >= proximaManutencaoKm) {
 	            return true;
 	        }
-	        return false;
+	        return false; 
 	    }
 	
 }

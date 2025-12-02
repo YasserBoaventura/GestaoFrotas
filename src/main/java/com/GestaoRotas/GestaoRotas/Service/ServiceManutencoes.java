@@ -92,7 +92,7 @@ public List<String> gerarAlertas() {
   LocalDate dataLimite30Dias = LocalDate.now().plusDays(30);
   repositoryManuntencao.findProximasManutencoes(dataLimite30Dias)
       .forEach(m -> {
-          if (isVencida(m)) return; // Não mostrar como próxima se está vencida
+          if (m.isVencida()) return; // Não mostrar como próxima se está vencida
 
           String placa = m.getVeiculo() != null ? m.getVeiculo().getMatricula() : "Veículo não encontrado";
           String detalhes = "";
@@ -104,7 +104,7 @@ public List<String> gerarAlertas() {
           } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null) {
               double kmRestantes = m.getProximaManutencaoKm() - m.getVeiculo().getKilometragemAtual();
               detalhes = "faltam " + kmRestantes + "km";
-          }
+          } 
 
           alertas.add("ℹ️ Próxima revisão do veículo " + placa + " - " + detalhes);
       });
@@ -137,7 +137,8 @@ public List<String> gerarAlertas() {
 }
 
 private boolean isVencida(Manutencao m) {
-  // Sua lógica existente para verificar se está vencida
+
+//Implementar mas estou usado o verificaco vencida da classe manutencao	
   return false; // Implemente conforme sua necessidade
 }
  

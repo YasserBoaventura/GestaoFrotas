@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import com.GestaoRotas.GestaoRotas.config.JwtServiceGenerator;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class LoginService {
    
@@ -46,7 +48,29 @@ public class LoginService {
 		   this.repository.save(usuario);
 				return "Usuario Salvo com sucesso"; 
 	}  
- 
+   //Apenas o adminstrador pode fazer alteracoes nos usuarios
+	
+	public Usuario atualizarUsuario(Long id, Usuario usuarioAtualizado) {
+	    Usuario usuarioExistente = this.repository.findById(id)
+	        .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
+	    
+	    // Atualizar apenas campos permitidos
+	    usuarioExistente.setUsername(usuarioAtualizado.getUsername());
+	    usuarioExistente.setEmail(usuarioAtualizado.getEmail());
+	    usuarioExistente.setRole(usuarioAtualizado.getRole());
+	    usuarioExistente.setTelefone(usuarioAtualizado.getTelefone());
+	    usuarioExistente.setNuit(usuarioAtualizado.getNuit());
+	    usuarioExistente.setAtivo(usuarioAtualizado.isEnabled());
+	    usuarioExistente.setContaBloqueada(usuarioAtualizado.getContaBloqueada());
+	    
+	    // NÃO atualizar campos sensíveis
+	    // usuarioExistente.setPassword(usuarioAtualizado.getPassword()); // REMOVER
+	    // usuarioExistente.setDataCriacao(usuarioAtualizado.getDataCriacao()); // REMOVER
+	    // outros campos como reset_token, etc.
+	    
+	    return repository.save(usuarioExistente);
+	}
+	
 	public List<Usuario> findAll(){
 		List<Usuario> lista= new  ArrayList<>();
 		return  lista=this.repository.findAll();
@@ -70,6 +94,9 @@ public class LoginService {
 	        // 3. Validar se o usuário está ativo
 	        if (!user.isEnabled()) {
 	            throw new DisabledException("Usuário desativado: " + login.getUsername());
+	        }
+	        else if(user.getContaBloqueada()==true) {
+	         throw new DisabledException("Conta bloqueada porfavor entre em Contato com o administrador  ");	
 	        }
 	         
 	        // 4. Gerar token JWT
