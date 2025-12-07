@@ -1,8 +1,10 @@
 //AuthenticationService.java
 package com.GestaoRotas.GestaoRotas.auth;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -13,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.GestaoRotas.GestaoRotas.Entity.Viagem;
 import com.GestaoRotas.GestaoRotas.config.JwtServiceGenerator;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -37,9 +40,11 @@ public class LoginService {
 	}
 
 	public String logar(Login login) {
-
-		String token = this.gerarToken(login);
-	
+		   Usuario user= repository.findByUsername(login.getUsername())
+		            .orElseThrow(() -> new RuntimeException("user não encontrada"));
+      String token = this.gerarToken(login);
+		user.setUltimoAcesso(LocalDateTime.now()); 
+		this.repository.save(user);
 		return token;
 
 	} 
@@ -74,7 +79,7 @@ public class LoginService {
 	//metodo para listar
 	public List<Usuario> findAll(){
 		List<Usuario> lista= new  ArrayList<>();
-		return  lista=this.repository.findAll();
+		return  lista= repository.findAll();
 	}
 	//Metodo pra iliminar usuario
 	public String delete(long id) {

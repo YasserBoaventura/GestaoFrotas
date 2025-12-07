@@ -3,8 +3,11 @@ package com.GestaoRotas.GestaoRotas.Controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,46 +16,50 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.*;
 
+import com.GestaoRotas.GestaoRotas.DTO.ConcluirViagemRequest;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioMotoristaDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioPorVeiculoDTO;
+import com.GestaoRotas.GestaoRotas.DTO.ViagensDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Viagem;
+import com.GestaoRotas.GestaoRotas.Repository.RepositoryViagem;
 import com.GestaoRotas.GestaoRotas.Service.ServiceViagem;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @RestController
-@RequestMapping("/viagens")
+@RequestMapping("/api/viagens")
+@CrossOrigin("*")
+@JsonIgnoreProperties(ignoreUnknown = true) // na classe
 public class ControllerViagem {
 
-
+      
 	private final ServiceViagem serviceViagem;
+	private final RepositoryViagem RepositoryViagem;
 	
-	public ControllerViagem(ServiceViagem serviceViagem) {
+	public ControllerViagem(ServiceViagem serviceViagem, RepositoryViagem RepositoryViagem ) {
        this.serviceViagem=serviceViagem;
+       this.RepositoryViagem=RepositoryViagem;
 	}
- @PostMapping("/save")
-   public ResponseEntity<String> salvar(@RequestBody Viagem viagem){
-	  try {
-	 String frase=this.serviceViagem.salvar(viagem);
-		  return new ResponseEntity<>(frase, HttpStatus.OK);
-	  }catch(Exception e) {
-		  e.printStackTrace();
-		  return new ResponseEntity<>("Erro ao salvar Viagem", HttpStatus.BAD_REQUEST);
-	 }
-  }
-	@GetMapping("/findAll")
-	public ResponseEntity<List<Viagem>> findAll(){
-		try {
-			List<Viagem> lista=this.serviceViagem.findAll();
-			if(lista.isEmpty()) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			}
-			return new ResponseEntity<>(lista, HttpStatus.OK);
-			
-		}catch(Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);  
+	@PostMapping("/save")
+	public ResponseEntity<Viagem> criarViagem(@RequestBody ViagensDTO viagemDTO) {
+	    Viagem viagem = serviceViagem.salvar(viagemDTO);
+	    return ResponseEntity.ok(viagem);
+	}  
+ @GetMapping("/findAll")
+ public ResponseEntity<List<Viagem>> findAll(){
+	try {
+		List<Viagem> lista=this.serviceViagem.findAll();
+		if(lista.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
+		return new ResponseEntity<>(lista, HttpStatus.OK);
+		
+	}catch(Exception e) {
+		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);  
 	}
+}
 	//
-	@DeleteMapping("/deleteById/{id}")
+	@DeleteMapping("/delete/{id}")
+	 @PreAuthorize("hasAuthority('ADMIN')") 
     public ResponseEntity<String> excluir(@PathVariable Long id) {
         try {
             String frase = this.serviceViagem.delete(id);
@@ -77,21 +84,39 @@ public class ControllerViagem {
 			return new ResponseEntity<>(null ,HttpStatus.BAD_REQUEST);
 		}
 	}
-@PutMapping("/update/{id}")
-public ResponseEntity<String> update(@RequestBody Viagem viagem, @PathVariable long id){
-	try {
-		String frase=this.serviceViagem.update(viagem, id);
-		if(frase.equals("nao existem uma viagem com id")) {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
-		}
-		return new ResponseEntity<>(frase, HttpStatus.OK);
-		
-	}catch(Exception e) {
-		return new ResponseEntity<>("Erro: ", HttpStatus.BAD_REQUEST); 
+	@PutMapping("/update/{id}")
+	public ResponseEntity<?> update(@RequestBody ViagensDTO viagemDTO, @PathVariable long id) {
+	    try {
+	    	Viagem viagem = this.serviceViagem.update(viagemDTO, id);
+	        return ResponseEntity.ok(viagem);
+
+	    } catch (Exception e) {
+
+	        return ResponseEntity.badRequest().body("Erro ao actualizar: " + e.getMessage());
+	    }
 	}
-	}
-	 //Mostra o relatorio nome do mortista do carro , totalViagens , totalEmKm e totalConbustivel usado
+
+//No controller Java
+@PutMapping("/concluir/{id}")
+@PreAuthorize("hasAuthority('ADMIN')") 
+public ResponseEntity<Viagem> ConcluirViagem(
+                                           @RequestBody ConcluirViagemRequest request, @PathVariable long id) {
+  Viagem viagem = RepositoryViagem.findById(id)
+      .orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
+             // Atualizar a quilometragem final
+  viagem.setKilometragemFinal(request.getKilometragemFinal());
+  viagem.setObservacoes(request.getObservacoes());
+  viagem.setDataHoraChegada(request.getDataHoraChegada());
+    
+  // Chamar o método de negócio que já atualiza status e data
+  viagem.concluirViagem();
+   
+  Viagem viagemAtualizada = RepositoryViagem.save(viagem);
+  return ResponseEntity.ok(viagemAtualizada);
+}
+//Mostra o relatorio nome do mortista do carro , totalViagens , totalEmKm e totalConbustivel usado
 	
+
     @GetMapping("/motoristas")
     public ResponseEntity<List<RelatorioMotoristaDTO>> relatorioPorMotorista() {
         return ResponseEntity.ok(serviceViagem.relatorioPorMotorista());

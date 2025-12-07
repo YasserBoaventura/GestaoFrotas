@@ -4,6 +4,11 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,25 +45,33 @@ public class Viagem {
 	    
 	    private String observacoes;
 	    
-	    // ManyToOne com Motorista
+	    // ManyToOne com Motorista 
+
 	    @ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name = "motorista_id", nullable = false)
+	    @JsonIgnoreProperties({"viagem", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO
 	    private Motorista motorista;
 	    
 	    // ManyToOne com Veiculo
+	
 	    @ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name = "veiculo_id", nullable = false)
+	    @JsonIgnoreProperties({"viagem", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO
 	    private Veiculo veiculo;
 	    
 	    // ManyToOne com Rota   o lado N que e as viagens que podem ter varias routas
+
 	    @ManyToOne(fetch = FetchType.LAZY)
+	    @JsonIgnoreProperties({"viagem", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO
 	    @JoinColumn(name = "rota_id", nullable = false)
 	    private Rotas rota;
-	    
-	    // OneToMany com Abastecimento
-	    @OneToMany(mappedBy = "viagem", cascade = {CascadeType.PERSIST})
-	    private List<abastecimentos> abastecimentos = new ArrayList<>();
 	     
+	    // OneToMany com Abastecimento
+	
+	    @OneToMany(mappedBy = "viagem", cascade = {CascadeType.PERSIST})
+	    @JsonIgnoreProperties({"viagem", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO
+	    private List<abastecimentos> abastecimentos = new ArrayList<>();
+	    
 
 	    public Viagem(Motorista motorista, Veiculo veiculo, Rotas rota, LocalDateTime dataHoraPartida) {
 	        this.motorista = motorista;
@@ -73,7 +86,7 @@ public class Viagem {
 	    public void iniciarViagem() {
 	        this.status = "EM_ANDAMENTO";
 	        this.dataHoraPartida = LocalDateTime.now();
-	    }
+	    } 
 	    
 	    public void concluirViagem() {
 	        this.status = "CONCLUIDA";

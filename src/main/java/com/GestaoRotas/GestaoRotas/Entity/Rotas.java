@@ -1,6 +1,10 @@
 package com.GestaoRotas.GestaoRotas.Entity;
 import java.time.Duration;
 import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,14 +17,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+ 
 @Entity 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "rota")
-public class Rotas {
+
+public class Rotas {   
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,13 +45,11 @@ public class Rotas {
     private String descricao;
     
     // OneToMany com Viagem
+    @JsonIgnore
     @OneToMany(mappedBy = "rota", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Viagem> viagens = new ArrayList<>();
 
-
-    
-  
-    // Métodos auxiliares
+  // Métodos auxiliares
     public void addViagem(Viagem viagem) {
         viagens.add(viagem);
         viagem.setRota(this);

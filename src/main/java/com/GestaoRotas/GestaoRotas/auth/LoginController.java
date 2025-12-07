@@ -45,6 +45,7 @@ public class LoginController {
     public ResponseEntity<?> logar(@RequestBody Login login) {
         try {
             String token = loginService.logar(login);
+            
             return ResponseEntity.ok(token);
 
         } catch (Exception e) {
@@ -92,30 +93,31 @@ public class LoginController {
 
    return ResponseEntity.ok("Cadastro realizado com sucesso. Aguarde ativação da conta por um administrador.");
    } 
-		   
-   //Devo fazer aqui ate porque o Repositorio e do tipo usuario
+		//Devo fazer aqui ate porque o Repositorio e do tipo usuario
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/findAll")
-    private ResponseEntity<List<Usuario>> findAll(){
+    public ResponseEntity<List<Usuario>> findAll(){
 	  try { 
 	 	List<Usuario> lista=this.loginService.findAll();
 		return new ResponseEntity<>(lista, HttpStatus.OK);
 	    }catch(Exception e) {
 		return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
 	   }
-  } 
+  }     
     
     //update pra ativar as contas ou desbloquear 
-    @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/{id}") 
+    @PreAuthorize("hasAuthority('ADMIN')") 
     public ResponseEntity<Usuario> atualizarUsuario(
             @PathVariable Long id,
             @RequestBody @Valid Usuario usuario) {
-        
+         
         Usuario usuarioAtualizadoo = this.loginService.atualizarUsuario(id, usuario);
         return ResponseEntity.ok(usuarioAtualizadoo);
     }
     
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')") 
     public ResponseEntity<String> delete(@PathVariable long id){
     	try {
     		String frase=this.loginService.delete(id);
