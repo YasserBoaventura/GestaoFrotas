@@ -43,7 +43,10 @@ public class Viagem {
 	    @Column(name = "kilometragem_final")
 	    private Double kilometragemFinal;
 	    
+	   
 	    private String observacoes;
+	    
+	    private LocalDateTime data;
 	    
 	    // ManyToOne com Motorista 
 

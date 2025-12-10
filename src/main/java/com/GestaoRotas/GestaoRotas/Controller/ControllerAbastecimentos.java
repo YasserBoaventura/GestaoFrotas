@@ -20,12 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.*;
 
+import com.GestaoRotas.GestaoRotas.DTO.AbastecimentoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioCombustivelDTO;
 import com.GestaoRotas.GestaoRotas.Entity.abastecimentos;
 import com.GestaoRotas.GestaoRotas.Service.ServiceAbastecimentos;
 
 @RestController
-@RequestMapping("/Abastecimentos")
+@RequestMapping("api/abastecimentos")
 @CrossOrigin("*")
 public class ControllerAbastecimentos {
 
@@ -38,18 +39,15 @@ public class ControllerAbastecimentos {
    
 	   // sava o abastecimento
    @PostMapping("/save")
-public ResponseEntity<String> salvar(@RequestBody abastecimentos abastecimento) {
-   try {
-	  String frase=this.abastecimentosService.save(abastecimento);
-	  if(frase.isEmpty()) {
-		  return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	  }
-	  return new ResponseEntity<>(frase, HttpStatus.OK);  
-	  
-   }catch(Exception e) {
-	  return new ResponseEntity<>("Erro", HttpStatus.BAD_REQUEST);
-       }
-    }                 
+  public ResponseEntity<abastecimentos> salvar(@RequestBody AbastecimentoDTO abastecimentoDTO) {
+   try { 
+	  abastecimentos abastecimentos= this.abastecimentosService.save(abastecimentoDTO);
+	  return  ResponseEntity.ok(abastecimentos); 
+	  }catch(Exception e) {
+	   System.out.print(e.getStackTrace());  
+	  return ResponseEntity.badRequest().build() ;   }
+    }          
+
 
 
    // relatio de abastecimento por veiculo 
@@ -81,7 +79,7 @@ public ResponseEntity<List<abastecimentos>> findAll(){
        
   
    }
-@DeleteMapping("/deleteById/{id}")
+@DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteById(@PathVariable long id){
      try { 
     	  String frase=this.abastecimentosService.deletar(id);

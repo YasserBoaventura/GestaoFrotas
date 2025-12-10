@@ -54,6 +54,8 @@ public class LoginController {
             return ResponseEntity.badRequest().body(error);
         }
     }
+    
+    
 
  
 //  POST para pre registro

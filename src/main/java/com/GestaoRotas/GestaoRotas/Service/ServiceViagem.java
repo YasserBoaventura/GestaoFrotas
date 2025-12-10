@@ -2,6 +2,8 @@ package com.GestaoRotas.GestaoRotas.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.*;
 
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioMotoristaDTO;
@@ -22,7 +24,7 @@ import com.GestaoRotas.GestaoRotas.Repository.RepositoryViagem;
 public class ServiceViagem {
 
   
-	private final RepositoryViagem repositoriViagem;
+	 private final RepositoryViagem repositoriViagem;
 	 @Autowired
 	    private RepositoryViagem viagemRepository;
 	    
@@ -85,6 +87,7 @@ public Viagem update(ViagensDTO viagemDTO, long id) {
 	    viagem.setKilometragemInicial(viagemDTO.getKilometragemInicial());
 	    viagem.setKilometragemFinal(viagemDTO.getKilometragemFinal());
 	    viagem.setObservacoes(viagemDTO.getObservacoes());
+	    viagem.setData(LocalDateTime.now());
 
 	    return viagemRepository.save(viagem);
 	}
@@ -114,7 +117,12 @@ public Viagem update(ViagensDTO viagemDTO, long id) {
         return repositoriViagem.relatorioPorVeiculo();  
     }
     
-    //Busca pelo o id da viagem
+    public  Viagem  findByVeiculoId(long id) {
+    	
+    	Viagem viagem = this.repositoriViagem.findByVeiculoId(id).get(0);
+    	return viagem;   
+    }
+    //Busca pelo o id da viagem  
     public Viagem findById(long id) {
     	return this.repositoriViagem.findById(id).get();
     }

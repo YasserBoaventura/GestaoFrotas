@@ -24,9 +24,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "rota")
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Rotas {   
-    @Id
+    @Id  
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
