@@ -5,3 +5,4 @@ public enum statusViagem {
 	PLANEADA, EM_ANDAMENTO, CONCLUIDA, CANCELADA
 
 }
+ 

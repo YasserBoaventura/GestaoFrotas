@@ -75,7 +75,8 @@ public class SecurityConfig {
                             "/manutencoes/save",
                             "/api/viagens/motoristas",
                             "/api/viagens/veiculos",
-                            "/api/viagens/motoristasss"
+                            "/api/viagens/veiculoss/"
+                           
                     ).permitAll()
                     .anyRequest().authenticated()
             )

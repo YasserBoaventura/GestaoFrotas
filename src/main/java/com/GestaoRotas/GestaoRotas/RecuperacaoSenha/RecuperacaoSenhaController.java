@@ -58,7 +58,7 @@ public ResponseEntity<?> redefinirSenhaComVerificacao(@RequestBody recuperacaoSe
         return ResponseEntity.ok("Senha redefinida com sucesso");
     } else {
         return ResponseEntity.badRequest().body("Dados de verificação inválidos");
-    }
+    } 
 }
  
 }

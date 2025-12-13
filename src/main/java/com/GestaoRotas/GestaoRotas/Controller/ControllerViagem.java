@@ -98,16 +98,16 @@ public class ControllerViagem {
 	}
 	
 	@GetMapping("/veiculoss/{id}")
-	public ResponseEntity<?> findByVeiculoId(Long id){
+	public ResponseEntity<List<Viagem>> findByVeiculoId( @PathVariable Long id){
 		try {
 			System.out.print("eeee");
-			Viagem viagem = this.serviceViagem.findByVeiculoId(id);
+			List<Viagem> viagem = this.serviceViagem.findByVeiculoId(id);
 			return ResponseEntity.ok(viagem);
 			}catch(Exception e) {
 			return ResponseEntity.badRequest().build();
 		}
 	}
-	
+	 
 	@PutMapping("/update/{id}")
 	public ResponseEntity<?> update(@RequestBody ViagensDTO viagemDTO, @PathVariable long id) {
 	    try {

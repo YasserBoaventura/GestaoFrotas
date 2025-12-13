@@ -36,35 +36,32 @@ public class ServiceAbastecimentos {
 
 	    abastecimentos abastecimento = new abastecimentos();
 	    abastecimento.setVeiculo(veiculo);
-
+  
 	    // Se houver viagemId, busca; se não, mantém null
 	    if (abstecimentos.getViagemId() != null) {
 	        Viagem viagem = this.repositorioViagem.findById(abstecimentos.getViagemId())
 	                .orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
-	        abastecimento.setViagem(viagem);
-	    } else {
+	        abastecimento.setViagem(viagem);   
+	    } else {     
 	        abastecimento.setViagem(null);
 	    }
 
 	    abastecimento.setDataAbastecimento(abstecimentos.getDataAbastecimento());
 	    abastecimento.setKilometragemVeiculo(abstecimentos.getKilometragemVeiculo());
 	    abastecimento.setQuantidadeLitros(abstecimentos.getQuantidadeLitros());
+	    abastecimento.setStatusAbastecimento(abstecimentos.getStatusAbastecimento());
+      //  abastecimento.setDataAbastecimento(abstecimentos.getStatusAbastecimento());
 	    abastecimento.setTipoCombustivel(abstecimentos.getTipoCombustivel());
 	    abastecimento.setPrecoPorLitro(abstecimentos.getPrecoPorLitro());
+	    
 
 	    return this.repositoryAbastecimentos.save(abastecimento);
 	}
-
-  
-
-	//Busca tos os  abastecimentos feitos
+ //Busca tos os  abastecimentos feitos
     public List<abastecimentos> findAll(){
     List<abastecimentos> lista=this.repositoryAbastecimentos.findAll();
               return lista;
     }  
-    
-    
-
     //Deletar por id
     public String deletar(long id) {
     	if(this.repositoryAbastecimentos.existsById(id)) {
@@ -81,16 +78,26 @@ public class ServiceAbastecimentos {
       return this.repositoryAbastecimentos.findById(id).get();
     }
     //Atualizacao de abastecimento de foreem mal escritos
-    public String update(abastecimentos abastecimento, long id) {
-    	abastecimento.setId(id);
-     if(this.repositoryAbastecimentos.existsById(id)) {
-    	this.repositoryAbastecimentos.save(abastecimento);
-    	return "abastecimento atuaizado com sucesso";
-       }
-       else {
-    	return "Nao existe um abastecimento com esse id";
-    }
-    }
+    public abastecimentos update(AbastecimentoDTO abstecimentos, long id) {
+  abastecimentos abastecimento = this.repositoryAbastecimentos.findById(abstecimentos.getId()).orElseThrow(()-> new RuntimeException("abstecimento nao encontrado") );
+    	  
+    Veiculo veiculo = this.repositorioveiculos.findById(abstecimentos.getVeiculoId()).orElseThrow(() -> new RuntimeException(" veiculo nao encontrado"));
+        
+       abastecimento.setDataAbastecimento(abstecimentos.getDataAbastecimento());
+    	  abastecimento.setKilometragemVeiculo(abstecimentos.getKilometragemVeiculo());
+    	  abastecimento.setPrecoPorLitro(abstecimentos.getPrecoPorLitro());
+        abastecimento.setStatusAbastecimento(abstecimentos.getStatusAbastecimento());
+    	  // Se houver viagemId, busca; se não, mantém null
+  	    if (abstecimentos.getViagemId() != null) {
+  	        Viagem viagem = this.repositorioViagem.findById(abstecimentos.getViagemId())
+  	                .orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
+  	        abastecimento.setViagem(viagem);
+  	    } else {   
+  	        abastecimento.setViagem(null);   
+  	    }   
+  	  return  repositoryAbastecimentos.save(abastecimento); 
+    } 
+    
 // relario de de abastecimento por veiculo
 public List<RelatorioCombustivelDTO> relatorioPorVeiculo() {   
     return repositoryAbastecimentos.relatorioPorVeiculo().stream()

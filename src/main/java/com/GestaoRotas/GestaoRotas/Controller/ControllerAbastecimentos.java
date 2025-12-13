@@ -45,12 +45,21 @@ public class ControllerAbastecimentos {
 	  return  ResponseEntity.ok(abastecimentos); 
 	  }catch(Exception e) {
 	   System.out.print(e.getStackTrace());  
-	  return ResponseEntity.badRequest().build() ;   }
-    }          
+	  return ResponseEntity.badRequest().build();
+	  }
+    }           
+  @PutMapping("/update/{id}")
+  public ResponseEntity<?> update(@RequestBody AbastecimentoDTO abastecimentoDTO, @PathVariable long id){
+  	try {   
+  		abastecimentos frase=this.abastecimentosService.update(abastecimentoDTO, id);
+        return ResponseEntity.ok(frase);
+   
+  	}catch(Exception e) {
+  		return  ResponseEntity.badRequest().body("");
+  	}
+  	 }
 
-
-
-   // relatio de abastecimento por veiculo 
+  // relatio de abastecimento por veiculo 
 @GetMapping("/relatorio")
 public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorVeiculo() {
     return ResponseEntity.ok(abastecimentosService.relatorioPorVeiculo());
@@ -67,17 +76,15 @@ public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorPeriodo(
 	    //Busca todos os abastecimentos  
 @GetMapping("/findAll")
 public ResponseEntity<List<abastecimentos>> findAll(){
-	 try {
-		  List<abastecimentos> lista=this.abastecimentosService.findAll();
-		   if(lista.isEmpty()) {
-			   return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		   }
-		 return new ResponseEntity<>(lista, HttpStatus.OK);
-		}catch(Exception e) {
-		 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-	 } 
-       
-  
+ try {
+	  List<abastecimentos> lista=this.abastecimentosService.findAll();
+	   if(lista.isEmpty()) {
+		   return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	   }
+	 return new ResponseEntity<>(lista, HttpStatus.OK);
+	}catch(Exception e) {
+	 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+ } 
    }
 @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteById(@PathVariable long id){
@@ -103,18 +110,7 @@ public ResponseEntity<abastecimentos> findById(@PathVariable long id){
 		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 	}
 }
-@PutMapping("/update/{id}")
-public ResponseEntity<String> update(abastecimentos abastecimento, long id){
-	try {
-		String frase=this.abastecimentosService.update(abastecimento, id);
-		if(frase==null) {
-			return new ResponseEntity<>( HttpStatus.NO_CONTENT);
-		}
-		return new ResponseEntity<>(frase, HttpStatus.OK);
-	}catch(Exception e) {
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-	 }
+
 	       	
 	    
 }

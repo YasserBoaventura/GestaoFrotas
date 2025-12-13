@@ -80,7 +80,7 @@ public Viagem update(ViagensDTO viagemDTO, long id) {
 
 	    viagem.setMotorista(motorista);
 	    viagem.setVeiculo(veiculo);  
-	    viagem.setRota(rota);
+	    viagem.setRota(rota); 
 	    viagem.setDataHoraPartida(viagemDTO.getDataHoraPartida());
 	    viagem.setDataHoraChegada(viagemDTO.getDataHoraChegada());
 	    viagem.setStatus(viagemDTO.getStatus());
@@ -117,10 +117,10 @@ public Viagem update(ViagensDTO viagemDTO, long id) {
         return repositoriViagem.relatorioPorVeiculo();  
     }
     
-    public  Viagem  findByVeiculoId(long id) {
+    public  List<Viagem>  findByVeiculoId(long id) {
     	
-    	Viagem viagem = this.repositoriViagem.findByVeiculoId(id).get(0);
-    	return viagem;   
+    	   return this.repositoriViagem.findByVeiculoId(id);
+       
     }
     //Busca pelo o id da viagem  
     public Viagem findById(long id) {

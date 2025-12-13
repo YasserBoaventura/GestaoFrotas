@@ -2,6 +2,7 @@ package com.GestaoRotas.GestaoRotas.Entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.GestaoRotas.GestaoRotas.Model.statusAbastecimentos;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
@@ -22,7 +23,7 @@ public class abastecimentos {
 	    private Long id; 
 	    
 	    @Column(name = "data_abastecimento")
-	    private LocalDateTime dataAbastecimento;
+	    private String  dataAbastecimento;
 	    
 	    @Column(name = "quantidade_litros")
 	    private Double quantidadeLitros;
@@ -32,7 +33,10 @@ public class abastecimentos {
 	    
 	    @Column(name = "tipo_combustivel", length = 50)
 	    private String tipoCombustivel;
-	    
+	     
+
+	    @Column(name = "status")
+	    private String  statusAbastecimento;
 	    @Column(name = "kilometragem_veiculo")
 	    private Double kilometragemVeiculo;
 	    
@@ -61,7 +65,7 @@ public class abastecimentos {
 	    @PrePersist
 	    public void prePersist() {
 	        if (dataAbastecimento == null) {
-	            dataAbastecimento = LocalDateTime.now();
+	            dataAbastecimento = "";
 	        }
 	    }
 	      
