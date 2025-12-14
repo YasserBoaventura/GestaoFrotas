@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.GestaoRotas.GestaoRotas.DTO.VeiculoDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
+import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
 import com.GestaoRotas.GestaoRotas.Service.ServiceVeiculo;
 import java.util.*;
 
@@ -25,8 +27,10 @@ public class ControllerVeiculo {
     
 	 private final ServiceVeiculo serviceVeiculo;
 	
-	public ControllerVeiculo (ServiceVeiculo serviceVeiculo) {
+	 private final RepositoryVeiculo repositoryVeiculo;
+	public ControllerVeiculo (ServiceVeiculo serviceVeiculo, RepositoryVeiculo repositoryVeiculo) {
 		this.serviceVeiculo=serviceVeiculo; 
+		this.repositoryVeiculo=repositoryVeiculo;
 	}
 
 @PostMapping("/salvar")
@@ -58,6 +62,22 @@ public class ControllerVeiculo {
 	 }
  }
 	
+ 
+ @PatchMapping("/{veiculoId}/kilometragem")
+ public ResponseEntity<Veiculo> atualizarKilometragem(
+         @PathVariable Long veiculoId,
+         @RequestBody Map<String, Double> body) {
+
+     Double kilometragemAtual = body.get("kilometragemAtual");
+
+     Veiculo veiculo = repositoryVeiculo.findById(veiculoId)
+         .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
+
+     veiculo.setKilometragemAtual(kilometragemAtual);
+
+     return ResponseEntity.ok(repositoryVeiculo.save(veiculo));
+ }
+
      @PutMapping("/update/{id}") 
     public ResponseEntity<String> update(@RequestBody Veiculo veiculo, @PathVariable long id){
     	try {

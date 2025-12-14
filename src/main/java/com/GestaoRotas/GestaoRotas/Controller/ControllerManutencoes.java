@@ -7,43 +7,43 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO;
+import com.GestaoRotas.GestaoRotas.DTO.manuntecaoDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Manutencao;
+import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Service.ServiceManutencoes;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/manutencoes")
+@RequestMapping("api/manutencoes")
 public class ControllerManutencoes {
 
     private final ServiceManutencoes manutencaoService;
+    
+   
  
 	public ControllerManutencoes(ServiceManutencoes  manutencaoService) {
 		this.manutencaoService=manutencaoService;
 	}
   @PostMapping("/save")
-public ResponseEntity<String> cadastrar(@RequestBody Manutencao manutencao) {
+public ResponseEntity<Manutencao> cadastrar(@RequestBody manuntecaoDTO manutencaoDTO) {
    try {
-	   String frase=this.manutencaoService.salvar(manutencao);
-	  if(frase.isEmpty()|| frase.isBlank()) {
-		  return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	  } 
-	  else {
-	   return new ResponseEntity<>(frase, HttpStatus.OK);
-	  }
-	   }catch(Exception e) {
+	   Manutencao manutencao=this.manutencaoService.salvar(manutencaoDTO);
+      return  ResponseEntity.ok(manutencao);
+	 }catch(Exception e) {
 		   e.printStackTrace();
 		  return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
    }
 	    	
 }
   @PutMapping("/update/{id}")
-  public ResponseEntity<String>update(@RequestBody Manutencao manutecao, @PathVariable long id){
+  public ResponseEntity<Manutencao>update(@RequestBody manuntecaoDTO manutencaoDTO, @PathVariable long id){
 	  try{
-		  String frase=this.manutencaoService.update(manutecao, id);
-		  return new ResponseEntity<>(frase, HttpStatus.OK);
+ Manutencao  manutencao=this.manutencaoService.update(manutencaoDTO, id);
+		  return  ResponseEntity.ok(manutencao);
 	  }catch(Exception e) {
-		  return new ResponseEntity<>("Erro Ao tentar actualizar a manuntecao ", HttpStatus.BAD_REQUEST);
+	  return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
   }
 
@@ -62,7 +62,7 @@ try {
 	    }
 	    } 
 
-@DeleteMapping("/deleteById/{id}")
+@DeleteMapping("/delete/{id}")
    public ResponseEntity<String> excluir(@PathVariable Long id) {
       try {
      String frase = manutencaoService.deleteById(id);
@@ -111,11 +111,11 @@ try {
     	return new ResponseEntity<>(manutencao, HttpStatus.OK);
     	}catch(Exception e) {
     	return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-    		   
-    	}          
+    		}          
     }  
     //ver relatorio de manutencoes por veiculo
-    @GetMapping("/veiculos")
+
+    @GetMapping("/relatorio/veiculos")
     public ResponseEntity<List<RelatorioManutencaoDTO>> relatorioPorVeiculo() {
         return ResponseEntity.ok(manutencaoService.gerarRelatorioPorVeiculo());
     }                 
@@ -125,10 +125,26 @@ try {
         List<String> alertas = manutencaoService.gerarAlertas();
         return ResponseEntity.ok(alertas);
     }
-    @GetMapping("/simplificado")  //os dois geram alertas mais esse simplificado
+    @GetMapping("/alertas/simplificado")  //os dois geram alertas mais esse simplificado
     public ResponseEntity<List<String>> getAlertasSimplificado() {
         List<String> alertas = manutencaoService.gerarAlertasSimplificado();
         return ResponseEntity.ok(alertas);
+    }
+    
+    //novas  consultas
+    @GetMapping("/vencidas")
+    public ResponseEntity<List<Manutencao>> vencidas() {
+        return ResponseEntity.ok(manutencaoService.buscarVencidas());
+    }
+
+    @GetMapping("/proximas")
+    public ResponseEntity<List<Manutencao>> proximas30Dias() {
+        return ResponseEntity.ok(manutencaoService.buscarProximas30Dias());
+    }
+
+    @GetMapping("/proximas/7dias")
+    public ResponseEntity<List<Manutencao>> proximas7Dias() {
+        return ResponseEntity.ok(manutencaoService.buscarProximas7Dias());
     }
     
 }

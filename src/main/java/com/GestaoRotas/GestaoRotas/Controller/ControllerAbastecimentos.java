@@ -47,7 +47,7 @@ public class ControllerAbastecimentos {
 	   System.out.print(e.getStackTrace());  
 	  return ResponseEntity.badRequest().build();
 	  }
-    }           
+    }            
   @PutMapping("/update/{id}")
   public ResponseEntity<?> update(@RequestBody AbastecimentoDTO abastecimentoDTO, @PathVariable long id){
   	try {   
@@ -97,7 +97,6 @@ public ResponseEntity<List<abastecimentos>> findAll(){
     }
 	
 }
-	    
 @GetMapping("/findById/{id}")
 public ResponseEntity<abastecimentos> findById(@PathVariable long id){
 	try {

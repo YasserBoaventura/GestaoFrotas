@@ -69,6 +69,6 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
              "(m.proxima_manutencao_km IS NOT NULL AND (SELECT kilometragem_atual FROM veiculo WHERE id = m.veiculo_id) >= m.proxima_manutencao_km))", 
              nativeQuery = true)
      List<Manutencao> findProximasManutencoesNative();
-
+ 
  }
  

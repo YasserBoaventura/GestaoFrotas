@@ -80,23 +80,24 @@ public class ServiceAbastecimentos {
     //Atualizacao de abastecimento de foreem mal escritos
     public abastecimentos update(AbastecimentoDTO abstecimentos, long id) {
   abastecimentos abastecimento = this.repositoryAbastecimentos.findById(abstecimentos.getId()).orElseThrow(()-> new RuntimeException("abstecimento nao encontrado") );
-    	  
-    Veiculo veiculo = this.repositorioveiculos.findById(abstecimentos.getVeiculoId()).orElseThrow(() -> new RuntimeException(" veiculo nao encontrado"));
-        
-       abastecimento.setDataAbastecimento(abstecimentos.getDataAbastecimento());
-    	  abastecimento.setKilometragemVeiculo(abstecimentos.getKilometragemVeiculo());
-    	  abastecimento.setPrecoPorLitro(abstecimentos.getPrecoPorLitro());
-        abastecimento.setStatusAbastecimento(abstecimentos.getStatusAbastecimento());
-    	  // Se houver viagemId, busca; se não, mantém null
-  	    if (abstecimentos.getViagemId() != null) {
-  	        Viagem viagem = this.repositorioViagem.findById(abstecimentos.getViagemId())
-  	                .orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
-  	        abastecimento.setViagem(viagem);
-  	    } else {   
-  	        abastecimento.setViagem(null);   
-  	    }   
-  	  return  repositoryAbastecimentos.save(abastecimento); 
-    } 
+	  
+Veiculo veiculo = this.repositorioveiculos.findById(abstecimentos.getVeiculoId()).orElseThrow(() -> new RuntimeException(" veiculo nao encontrado"));
+    
+   abastecimento.setDataAbastecimento(abstecimentos.getDataAbastecimento());
+	  abastecimento.setKilometragemVeiculo(abstecimentos.getKilometragemVeiculo());
+	  abastecimento.setTipoCombustivel(abstecimentos.getTipoCombustivel());;
+	  abastecimento.setPrecoPorLitro(abstecimentos.getPrecoPorLitro());
+    abastecimento.setStatusAbastecimento(abstecimentos.getStatusAbastecimento());
+	  // Se houver viagemId, busca; se não, mantém null
+    if (abstecimentos.getViagemId() != null) {
+        Viagem viagem = this.repositorioViagem.findById(abstecimentos.getViagemId())
+                .orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
+        abastecimento.setViagem(viagem);
+    } else {   
+        abastecimento.setViagem(null);   
+    }   
+  return  repositoryAbastecimentos.save(abastecimento); 
+} 
     
 // relario de de abastecimento por veiculo
 public List<RelatorioCombustivelDTO> relatorioPorVeiculo() {   

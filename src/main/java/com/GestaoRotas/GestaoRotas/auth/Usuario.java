@@ -137,7 +137,7 @@ public class Usuario implements UserDetails {
     
     public void invalidarToken() {
         this.tokenUtilizado = true;
-    }  
+    } 
     //Funco para verificar
     
    

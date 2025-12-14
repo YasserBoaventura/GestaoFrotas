@@ -49,7 +49,7 @@ public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
     List<Viagem> findByStatus(String status);
     List<Viagem> findByVeiculoId(Long veiculoId);
     List<Viagem> findByDataHoraPartidaBetween(LocalDateTime start, LocalDateTime end);
-    
+      
     // NOVAS CONSULTAS CORRIGIDAS
     
     // 1. Relatório por motorista com filtro de data - CORRIGIDO
@@ -149,7 +149,7 @@ public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
            "LEFT JOIN abastecimento a ON v.id = a.viagem_id " +
            "WHERE v.status = 'CONCLUIDA' " +
            "AND v.data BETWEEN :dataInicio AND :dataFim " +
-           "GROUP BY WEEK(v.data, 1) " +
+           "GROUP BY WEEK(v.data, 1) " +       
            "ORDER BY WEEK(v.data, 1) DESC", nativeQuery = true)
     List<RelatorioSemanalDTO> relatorioSemanalPorPeriodo( 
             @Param("dataInicio") LocalDateTime dataInicio,
