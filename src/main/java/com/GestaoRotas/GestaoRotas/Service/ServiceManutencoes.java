@@ -32,7 +32,7 @@ public class ServiceManutencoes {
     manutencao.setVeiculo(veiculo);
     manutencao.setDataManutencao(manutencaoDTO.getDataManutencao());
     manutencao.setDescricao(manutencaoDTO.getDescricao());
-    manutencao.setStatus(manutencaoDTO.getStatus());
+    
     manutencao.setKilometragemVeiculo(manutencaoDTO.getKilometragemVeiculo());;
     manutencao.setProximaManutencaoData(manutencaoDTO.getProximaManutencaoData());;
     manutencao.setTipoManutencao(manutencaoDTO.getTipoManutencao());
@@ -40,7 +40,7 @@ public class ServiceManutencoes {
     manutencao.setProximaManutencaoKm(manutencaoDTO.getProximaManutencaoKm());
     return repositoryManuntencao.save(manutencao);
  }
- 
+  
  
  public String deleteById(Long id) { 
 	    if (!repositoryManuntencao.existsById(id)) {
@@ -69,7 +69,7 @@ public class ServiceManutencoes {
 	    manutencao.setDataManutencao(manutencaoDTO.getDataManutencao());
 	    manutencao.setDescricao(manutencaoDTO.getDescricao());
 	    manutencao.setKilometragemVeiculo(manutencaoDTO.getKilometragemVeiculo());;
-	    manutencao.setStatus(manutencaoDTO.getStatus());
+	    
 	    manutencao.setProximaManutencaoData(manutencaoDTO.getProximaManutencaoData());;
 	    manutencao.setTipoManutencao(manutencaoDTO.getTipoManutencao());
 	    manutencao.setCusto(manutencaoDTO.getCusto());
@@ -80,7 +80,7 @@ public class ServiceManutencoes {
 	    return repositoryManuntencao.findById(id)
 	        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Manutenção não encontrada"));
 	}
- 
+   
  public List<Manutencao>  listarPorVeiculo(long veiculoId){
 	    // Buscar todas as manutenções de um veículo
 	 List<Manutencao> lista=  this.repositoryManuntencao.findByVeiculoId(veiculoId);
@@ -142,8 +142,8 @@ public List<String> gerarAlertas() {
           if (isVencida(m)) return; // Não mostrar como próxima se está vencida
           
           String placa = m.getVeiculo() != null ? m.getVeiculo().getMatricula() : "Veículo não encontrado";
-          String detalhes = "";
-          
+          String detalhes = "";  
+                   
           if (m.getProximaManutencaoData() != null) {
               long diasRestantes = java.time.temporal.ChronoUnit.DAYS.between(
                   java.time.LocalDate.now(), m.getProximaManutencaoData());
@@ -159,7 +159,7 @@ public List<String> gerarAlertas() {
 			  alertas.add("Sem Alertas por agora");
 		  }
 
-  return alertas;
+  return alertas; 
 }
 
 private boolean isVencida(Manutencao m) {
@@ -179,7 +179,7 @@ private boolean isVencida(Manutencao m) {
          alertas.add("🚨 MANUTENÇÃO VENCIDA - Veículo: " + placa + 
                     " | Tipo: " + m.getTipoManutencao());
      }
-     
+      
      // Próximas manutenções (7 dias)
      List<Manutencao> proximas = repositoryManuntencao.findManutencoesProximas7Dias(null);
      for (Manutencao m : proximas) {
@@ -194,7 +194,7 @@ private boolean isVencida(Manutencao m) {
  // novas consultas
  public List<Manutencao> buscarVencidas() {
 	    return repositoryManuntencao.findManutencoesVencidas();
-	}
+	}  
 
 	public List<Manutencao> buscarProximas30Dias() {
 	    return repositoryManuntencao.findProximasManutencoes(

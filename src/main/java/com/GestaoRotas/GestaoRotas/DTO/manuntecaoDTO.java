@@ -27,7 +27,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class manuntecaoDTO {
 	private Long id;
-    private LocalDateTime dataManutencao;
+    private LocalDate dataManutencao;
     @Enumerated(EnumType.STRING)
     private TipoManutencao tipoManutencao; // "PREVENTIVA", "CORRETIVA", "TROCA_OLEO", "REVISAO"
  
