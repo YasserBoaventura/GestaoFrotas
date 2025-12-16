@@ -93,7 +93,7 @@ public class Manutencao {
 	    public boolean isVencida() {
 	        if (proximaManutencaoData != null && proximaManutencaoData.isBefore(LocalDate.now())) {
 	            return true;
-	        }
+	        } 
 	        if (proximaManutencaoKm != null && veiculo != null && veiculo.getKilometragemAtual() != null && 
 	            veiculo.getKilometragemAtual() >= proximaManutencaoKm) {
 	            return true;

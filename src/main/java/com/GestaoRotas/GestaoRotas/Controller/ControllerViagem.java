@@ -52,8 +52,8 @@ public class ControllerViagem {
        this.repositoryViagem=RepositoryViagem;
 	}
 	@PostMapping("/save")
-	public ResponseEntity<Viagem> criarViagem(@RequestBody ViagensDTO viagemDTO) {
-	    Viagem viagem = serviceViagem.salvar(viagemDTO);
+	public ResponseEntity<String> criarViagem(@RequestBody ViagensDTO viagemDTO) {
+	    String viagem = serviceViagem.salvar(viagemDTO);
 	    return ResponseEntity.ok(viagem);
 	}  
  @GetMapping("/findAll")
@@ -109,9 +109,9 @@ public class ControllerViagem {
 	}
 	 
 	@PutMapping("/update/{id}")
-	public ResponseEntity<?> update(@RequestBody ViagensDTO viagemDTO, @PathVariable long id) {
+	public ResponseEntity<String> update(@RequestBody ViagensDTO viagemDTO, @PathVariable long id) {
 	    try {
-	    	Viagem viagem = this.serviceViagem.update(viagemDTO, id);
+	    	String viagem = this.serviceViagem.update(viagemDTO, id);
 	        return ResponseEntity.ok(viagem);
 
 	    } catch (Exception e) {
