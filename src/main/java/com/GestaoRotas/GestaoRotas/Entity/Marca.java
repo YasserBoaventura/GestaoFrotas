@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+
 public class Marca {
 
 //------..>
@@ -30,15 +30,19 @@ public class Marca {
 	@OneToMany(mappedBy = "marca", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	    private List<Veiculo> veiculos = new ArrayList<>();
 	    
+      public Marca(Long id, String nome) {
+    	   this.id=id;
+    	   this.nome=nome;
+      }
 	  
   
     // Métodos 
-public void addVeiculo(Veiculo veiculo) {
+  public void addVeiculo(Veiculo veiculo) {
     veiculos.add(veiculo);
     veiculo.setMarca(this);
   }
 
-public void removeVeiculo(Veiculo veiculo) {
+ public void removeVeiculo(Veiculo veiculo) {
     veiculos.remove(veiculo);
     veiculo.setMarca(null);
 

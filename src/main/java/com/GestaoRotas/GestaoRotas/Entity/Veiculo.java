@@ -85,6 +85,15 @@ public class Veiculo {
 	    )
 	    private Set<Motorista> motoristas = new HashSet<>();
 	     // Métodos auxiliares
+	    public Veiculo(String modelo, String matricula, Integer anoFabricacao,
+	               Double capacidadeTanque, Double kilometragemAtual) {
+	    this.modelo = modelo;
+	    this.matricula = matricula;
+	    this.anoFabricacao = anoFabricacao;
+	    this.capacidadeTanque = capacidadeTanque;
+	    this.kilometragemAtual = kilometragemAtual;
+	}
+
 	    public void addMotorista(Motorista motorista) {
 	        motoristas.add(motorista);
 	        motorista.getVeiculos().add(this);

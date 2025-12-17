@@ -45,8 +45,8 @@ public class LoginController {
     public ResponseEntity<?> logar(@RequestBody Login login) {
         try {
             String token = loginService.logar(login);
-            
-            return ResponseEntity.ok(token);
+             
+        return ResponseEntity.ok(token);
 
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
