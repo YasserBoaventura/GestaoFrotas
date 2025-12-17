@@ -51,9 +51,11 @@ public class Motorista {
 	
 	// ManyToMany com Veiculo
 	@ManyToMany(mappedBy = "motoristas")
+	 @JsonIgnore
 	private Set<Veiculo> veiculos = new HashSet<>();
 	
 	// OneToMany com Viagem 
+	 @JsonIgnore
 	@OneToMany(mappedBy = "motorista", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Viagem> viagens = new ArrayList<>();
 	    

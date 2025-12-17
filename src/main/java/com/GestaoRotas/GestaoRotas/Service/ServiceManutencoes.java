@@ -8,24 +8,39 @@ import java.time.LocalDate;
 import java.util.*;
 
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO;
+import com.GestaoRotas.GestaoRotas.DTO.manuntecaoDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Manutencao;
+import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryManutencao;
+import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
 
 import jakarta.transaction.Transactional;
 
 @Service
 public class ServiceManutencoes {
-	
-	 private final RepositoryManutencao repositoryManuntencao;
-			
-	public ServiceManutencoes(RepositoryManutencao repositoryManuntencao) {
+    private final RepositoryManutencao repositoryManuntencao;
+	private final RepositoryVeiculo repositoryVeiculo; // ja que vou precisar presistir com o veiculo	
+
+	public ServiceManutencoes(RepositoryManutencao repositoryManuntencao, RepositoryVeiculo repositoryVeiculo) {
 	     this.repositoryManuntencao=repositoryManuntencao;
+	     this.repositoryVeiculo = repositoryVeiculo;
 	}
 	
- public String salvar(Manutencao manutencao) {
-  this.repositoryManuntencao.save(manutencao);
-	return "Manutencao salva com sucesso";
-	}
+ public Manutencao salvar(manuntecaoDTO manutencaoDTO) {
+	   Manutencao manutencao = new Manutencao();
+    Veiculo veiculo = repositoryVeiculo.findById( manutencaoDTO.getVeiculo_id()).orElseThrow(()-> new RuntimeException("Veiculo nao encontrado"));
+    manutencao.setVeiculo(veiculo);
+    manutencao.setDataManutencao(manutencaoDTO.getDataManutencao());
+    manutencao.setDescricao(manutencaoDTO.getDescricao());
+    manutencao.setStatus(manutencaoDTO.getStatus());
+    manutencao.setKilometragemVeiculo(manutencaoDTO.getKilometragemVeiculo());;
+    manutencao.setProximaManutencaoData(manutencaoDTO.getProximaManutencaoData());;
+    manutencao.setTipoManutencao(manutencaoDTO.getTipoManutencao());
+    manutencao.setCusto(manutencaoDTO.getCusto());
+    manutencao.setProximaManutencaoKm(manutencaoDTO.getProximaManutencaoKm());
+    return repositoryManuntencao.save(manutencao);
+ }
+ 
  
  public String deleteById(Long id) { 
 	    if (!repositoryManuntencao.existsById(id)) {
@@ -45,10 +60,21 @@ public class ServiceManutencoes {
 	  List<Manutencao> lista=this.repositoryManuntencao.findAll();
 	  return lista; 
   }  
-  public String update(Manutencao manutencao, long id)  {
-	  manutencao.setId(id);
-	  this.repositoryManuntencao.save(manutencao);
-	  return "Manutencao actualizada com sucesso" ;
+  //atualizar a manutencao caso haja erros
+  public Manutencao update(manuntecaoDTO manutencaoDTO, long id)  {
+	   
+	    Manutencao manutencao = repositoryManuntencao.findById(id).orElseThrow(() -> new RuntimeException("Manutencao nao encontrada"));
+	    Veiculo veiculo = repositoryVeiculo.findById( manutencaoDTO.getVeiculo_id()).orElseThrow(()-> new RuntimeException("Veiculo nao encontrado"));
+	    manutencao.setVeiculo(veiculo);
+	    manutencao.setDataManutencao(manutencaoDTO.getDataManutencao());
+	    manutencao.setDescricao(manutencaoDTO.getDescricao());
+	    manutencao.setKilometragemVeiculo(manutencaoDTO.getKilometragemVeiculo());;
+	    manutencao.setStatus(manutencaoDTO.getStatus());
+	    manutencao.setProximaManutencaoData(manutencaoDTO.getProximaManutencaoData());;
+	    manutencao.setTipoManutencao(manutencaoDTO.getTipoManutencao());
+	    manutencao.setCusto(manutencaoDTO.getCusto());
+	    manutencao.setProximaManutencaoKm(manutencaoDTO.getProximaManutencaoKm());
+	    return repositoryManuntencao.save(manutencao);
   }
   public Manutencao findById(long id) {
 	    return repositoryManuntencao.findById(id)
@@ -69,7 +95,7 @@ public class ServiceManutencoes {
  } 
  
 //No seu ServiceManutencoes, atualize o método gerarAlertas para usar os parâmetros:
-
+ 
 public List<String> gerarAlertas() {
   List<String> alertas = new ArrayList<>();
 
@@ -165,5 +191,20 @@ private boolean isVencida(Manutencao m) {
      }
     return alertas;
  }
- 
+ // novas consultas
+ public List<Manutencao> buscarVencidas() {
+	    return repositoryManuntencao.findManutencoesVencidas();
+	}
+
+	public List<Manutencao> buscarProximas30Dias() {
+	    return repositoryManuntencao.findProximasManutencoes(
+	        LocalDate.now().plusDays(30)
+	    );
+	}
+
+	public List<Manutencao> buscarProximas7Dias() {
+	    return repositoryManuntencao.findManutencoesProximas7Dias(
+	        LocalDate.now().plusDays(7)
+	    );
+	}
 }

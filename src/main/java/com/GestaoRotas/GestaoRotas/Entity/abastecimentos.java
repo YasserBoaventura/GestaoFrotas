@@ -2,6 +2,9 @@ package com.GestaoRotas.GestaoRotas.Entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.GestaoRotas.GestaoRotas.Model.statusAbastecimentos;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,32 +20,37 @@ import lombok.Setter;
 public class abastecimentos {
         @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    private Long id;
+	    private Long id; 
 	    
 	    @Column(name = "data_abastecimento")
-	    private LocalDateTime dataAbastecimento;
+	    private String  dataAbastecimento;
 	    
 	    @Column(name = "quantidade_litros")
 	    private Double quantidadeLitros;
 	    
-	    @Column(name = "preco_por_litro")
+	    @Column(name = "preco_por_litro") 
 	    private Double precoPorLitro;
 	    
 	    @Column(name = "tipo_combustivel", length = 50)
 	    private String tipoCombustivel;
-	    
+	     
+
+	    @Column(name = "status")
+	    private String  statusAbastecimento;
 	    @Column(name = "kilometragem_veiculo")
 	    private Double kilometragemVeiculo;
 	    
 	    // ManyToOne com Veiculo (OBRIGATÓRIO)
 	    @ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name = "veiculo_id", nullable = false)
+	    @JsonIgnoreProperties({"abastecimentos", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO
 	    private Veiculo veiculo;
 	    
 	    // ManyToOne com Viagem (OPCIONAL)
 	    @ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name = "viagem_id", nullable = true)
-	    private Viagem viagem;
+	    @JsonIgnoreProperties({"abastecimentos", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO
+	    private Viagem viagem; 
 	                          
 
 	    //  MÉTODO CALCULADO (não armazenado)  //valor total da favor a pagar
@@ -57,7 +65,7 @@ public class abastecimentos {
 	    @PrePersist
 	    public void prePersist() {
 	        if (dataAbastecimento == null) {
-	            dataAbastecimento = LocalDateTime.now();
+	            dataAbastecimento = "";
 	        }
 	    }
 	      

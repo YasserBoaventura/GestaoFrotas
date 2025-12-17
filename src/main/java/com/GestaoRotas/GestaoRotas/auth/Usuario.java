@@ -15,6 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -25,7 +26,8 @@ import java.util.Collections;
 @AllArgsConstructor
 @NoArgsConstructor   
 @Getter
-@Setter 
+@Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Usuario implements UserDetails {
     
     @Id     
@@ -135,7 +137,7 @@ public class Usuario implements UserDetails {
     
     public void invalidarToken() {
         this.tokenUtilizado = true;
-    }  
+    } 
     //Funco para verificar
     
    

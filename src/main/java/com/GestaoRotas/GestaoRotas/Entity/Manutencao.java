@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 import com.GestaoRotas.GestaoRotas.Model.TipoManutencao;
+import com.GestaoRotas.GestaoRotas.Model.statusManutencao;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -58,9 +60,13 @@ public class Manutencao {
 	    // ManyToOne com Veiculo
 	    @ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name = "veiculo_id", nullable = false)
+	    @JsonIgnoreProperties({"Manutencao", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO
 	    private Veiculo veiculo;
 	    
-	   
+	    
+	    @Enumerated(EnumType.STRING)
+	    @Column(name = "status")
+	    private statusManutencao status;
 	    
 	    public Manutencao(Veiculo veiculo, String tipoManutencao, String descricao, Double custo) {
 	        this.veiculo = veiculo;

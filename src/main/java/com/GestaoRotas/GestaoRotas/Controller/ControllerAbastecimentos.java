@@ -20,12 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.*;
 
+import com.GestaoRotas.GestaoRotas.DTO.AbastecimentoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioCombustivelDTO;
 import com.GestaoRotas.GestaoRotas.Entity.abastecimentos;
 import com.GestaoRotas.GestaoRotas.Service.ServiceAbastecimentos;
 
 @RestController
-@RequestMapping("/Abastecimentos")
+@RequestMapping("api/abastecimentos")
 @CrossOrigin("*")
 public class ControllerAbastecimentos {
 
@@ -38,21 +39,27 @@ public class ControllerAbastecimentos {
    
 	   // sava o abastecimento
    @PostMapping("/save")
-public ResponseEntity<String> salvar(@RequestBody abastecimentos abastecimento) {
-   try {
-	  String frase=this.abastecimentosService.save(abastecimento);
-	  if(frase.isEmpty()) {
-		  return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  public ResponseEntity<abastecimentos> salvar(@RequestBody AbastecimentoDTO abastecimentoDTO) {
+   try { 
+	  abastecimentos abastecimentos= this.abastecimentosService.save(abastecimentoDTO);
+	  return  ResponseEntity.ok(abastecimentos); 
+	  }catch(Exception e) {
+	   System.out.print(e.getStackTrace());  
+	  return ResponseEntity.badRequest().build();
 	  }
-	  return new ResponseEntity<>(frase, HttpStatus.OK);  
-	  
-   }catch(Exception e) {
-	  return new ResponseEntity<>("Erro", HttpStatus.BAD_REQUEST);
-       }
-    }                 
+    }            
+  @PutMapping("/update/{id}")
+  public ResponseEntity<?> update(@RequestBody AbastecimentoDTO abastecimentoDTO, @PathVariable long id){
+  	try {   
+  		abastecimentos frase=this.abastecimentosService.update(abastecimentoDTO, id);
+        return ResponseEntity.ok(frase);
+   
+  	}catch(Exception e) {
+  		return  ResponseEntity.badRequest().body("");
+  	}
+  	 }
 
-
-   // relatio de abastecimento por veiculo 
+  // relatio de abastecimento por veiculo 
 @GetMapping("/relatorio")
 public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorVeiculo() {
     return ResponseEntity.ok(abastecimentosService.relatorioPorVeiculo());
@@ -69,19 +76,17 @@ public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorPeriodo(
 	    //Busca todos os abastecimentos  
 @GetMapping("/findAll")
 public ResponseEntity<List<abastecimentos>> findAll(){
-	 try {
-		  List<abastecimentos> lista=this.abastecimentosService.findAll();
-		   if(lista.isEmpty()) {
-			   return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		   }
-		 return new ResponseEntity<>(lista, HttpStatus.OK);
-		}catch(Exception e) {
-		 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-	 } 
-       
-  
+ try {
+	  List<abastecimentos> lista=this.abastecimentosService.findAll();
+	   if(lista.isEmpty()) {
+		   return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	   }
+	 return new ResponseEntity<>(lista, HttpStatus.OK);
+	}catch(Exception e) {
+	 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+ } 
    }
-@DeleteMapping("/deleteById/{id}")
+@DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteById(@PathVariable long id){
      try { 
     	  String frase=this.abastecimentosService.deletar(id);
@@ -92,7 +97,6 @@ public ResponseEntity<List<abastecimentos>> findAll(){
     }
 	
 }
-	    
 @GetMapping("/findById/{id}")
 public ResponseEntity<abastecimentos> findById(@PathVariable long id){
 	try {
@@ -105,18 +109,7 @@ public ResponseEntity<abastecimentos> findById(@PathVariable long id){
 		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 	}
 }
-@PutMapping("/update/{id}")
-public ResponseEntity<String> update(abastecimentos abastecimento, long id){
-	try {
-		String frase=this.abastecimentosService.update(abastecimento, id);
-		if(frase==null) {
-			return new ResponseEntity<>( HttpStatus.NO_CONTENT);
-		}
-		return new ResponseEntity<>(frase, HttpStatus.OK);
-	}catch(Exception e) {
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-	 }
+
 	       	
 	    
 }

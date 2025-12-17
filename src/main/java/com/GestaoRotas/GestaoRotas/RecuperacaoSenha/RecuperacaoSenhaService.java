@@ -9,12 +9,13 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.GestaoRotas.GestaoRotas.DTO.recuperacaoSenhaDTO;
 import com.GestaoRotas.GestaoRotas.auth.LoginRepository;
 import com.GestaoRotas.GestaoRotas.auth.Usuario;
 
-import jakarta.transaction.Transactional;
+
 
 @Service
 public class RecuperacaoSenhaService {
@@ -29,14 +30,14 @@ public class RecuperacaoSenhaService {
    // @Autowired 
   //  private  EmailServiceImpl emailServiceImpl;
 	
-public RecuperacaoSenhaService(LoginRepository loginRepository,PasswordEncoder passwordEncoder) {
+ public RecuperacaoSenhaService(LoginRepository loginRepository,PasswordEncoder passwordEncoder) {
 	
  this.loginRepository=loginRepository;
  this.passwordEncoder=passwordEncoder;
 /// this.emailServiceImpl=emailServiceImpl;   
-	 
+	  
 }
-@Transactional
+
 public Map<String, String> solicitarRecuperacaoSenha(String username, String email) {
     Optional<Usuario> usuarioOpt = loginRepository.findByUsernameAndEmail(username, email);
     
@@ -45,36 +46,35 @@ public Map<String, String> solicitarRecuperacaoSenha(String username, String ema
         if(!usuario.isEnabled()) {
         	Map<String , String > naoAtivo = new HashMap<>();
         	naoAtivo.put("status","Usuario nao pode fazer altercoes. sua conta esta inativa");
-        	
-        	return naoAtivo; 
-        }else if(usuario.isEnabled()) {
-        String token = UUID.randomUUID().toString();
-        usuario.setResetToken(token);
-        usuario.setResetTokenExpiry(LocalDateTime.now().plusHours(2));
-        usuario.setTokenUtilizado(false);
-        loginRepository.save(usuario);  
-        
-        // Retorna tanto a pergunta quanto o token
-        Map<String, String> response = new HashMap<>();
-        response.put("perguntaSeguranca", usuario.getPerguntaSeguranca()); // Supondo que tenha este campo
-        response.put("token", token);
-        response.put("status", "sucesso");
-        
+    	
+    	return naoAtivo; 
+        }
+    String token = UUID.randomUUID().toString();
+    usuario.setResetToken(token);
+   usuario.setResetTokenExpiry(LocalDateTime.now().plusHours(2));
+    usuario.setTokenUtilizado(false);
+    loginRepository.save(usuario);  
+     
+    // Retorna tanto a pergunta quanto o token
+    Map<String, String> response = new HashMap<>();
+    response.put("perguntaSeguranca", usuario.getPerguntaSeguranca()); // Supondo que tenha este campo
+    response.put("token", token);
+    response.put("status", "sucesso");
+    
         // Enviar email com token (opcional)
         // emailServiceImpl.enviarEmailRecuperacao(usuario.getEmail(), token);
         
-        return response;
+    return response;
     
     
-        }
+        
     }
     Map<String, String> errorResponse = new HashMap<>();
     errorResponse.put("status", "erro");
     errorResponse.put("mensagem", "Usuário não encontrado");
     return errorResponse;
    
-        
-}
+      }
 
 public boolean verificarRespostaSeguranca(String username, String respostaSeguranca) {
   Optional<Usuario> usuarioOpt = loginRepository.findByUsername(username);
@@ -83,8 +83,9 @@ public boolean verificarRespostaSeguranca(String username, String respostaSegura
         Usuario usuario = usuarioOpt.get();
         return respostaSeguranca.equalsIgnoreCase(usuario.getRespostaSeguranca());
     }
-    return false;
+    return false; 
 }  
+
 
 public boolean redefinirSenhaComToken(String token, String novaSenha) {
     Optional<Usuario> usuarioOpt = loginRepository.findByResetToken(token);
@@ -95,6 +96,7 @@ public boolean redefinirSenhaComToken(String token, String novaSenha) {
         usuario.setPassword(passwordEncoder.encode(novaSenha));
       
          loginRepository.save(usuario);
+        
         return true;
     }
     return false;
@@ -117,8 +119,9 @@ public boolean redefinirSenhaComToken(String token, String novaSenha) {
     
     if (emailValido &&  nuitValido && respostaValida && tokenValido) {
         usuario.setPassword(passwordEncoder.encode(dto.getNovaSenha()));
-        usuario.invalidarToken(); 
+       
         loginRepository.save(usuario);
+        usuario.setTokenUtilizado(true);
         return true; 
     } 
 } 

@@ -15,8 +15,8 @@ import com.GestaoRotas.GestaoRotas.Entity.Rotas;
 import com.GestaoRotas.GestaoRotas.Service.SericeRotas;
 
 @RestController
-@RequestMapping("/rotas")
-public class ControllerRotas {
+@RequestMapping("/api/rotas")
+public class ControllerRotas { 
 
 	private final SericeRotas serviceRotas;
 	
@@ -61,18 +61,18 @@ public class ControllerRotas {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);  
 		 }
 		 
-	}
-
-	 @PutMapping("/update/{id}")
-  public ResponseEntity<String> update(@RequestBody Rotas rotas, @PathVariable long id){
-	  try {
-		  String frase=this.serviceRotas.update(rotas, id);
-		  return new ResponseEntity<>(frase, HttpStatus.OK);
-	  }catch(Exception e) {
-		  return new ResponseEntity<>("Erro: ", HttpStatus.BAD_REQUEST);
-		  
-	  }
-  }
+} 
+   @PutMapping("update/{id}")
+public ResponseEntity<?> update(@RequestBody Rotas rotas, @PathVariable Long id) {
+    try {
+        Rotas rotaAtualizada = serviceRotas.update(rotas, id);
+        String sucesso = "Rota atualizada com sucesoo";
+        return ResponseEntity.ok(sucesso);
+    } catch (Exception e) { 
+        return ResponseEntity.badRequest()
+            .body("Erro ao atualizar rota: " + e.getMessage());
+    }
+}
  @GetMapping("findById/{id}")
  public ResponseEntity<Rotas> findById(@PathVariable long id){
 	 try {

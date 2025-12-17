@@ -22,9 +22,7 @@ public class RecuperacaoSenhaController {
 	public RecuperacaoSenhaController(RecuperacaoSenhaService recuperacaoService) {
 		this.recuperacaoService=recuperacaoService;
 		  
-	} 
-
-	
+	}  
  @PostMapping("/solicitar-recuperacao")
  public ResponseEntity<Map<String, String>> solicitarRecuperacao(@RequestBody SolicitarRecuperacaoRequest dto) {
      Map<String, String> response = recuperacaoService.solicitarRecuperacaoSenha(dto.getUsername(), dto.getEmail());
@@ -60,7 +58,7 @@ public ResponseEntity<?> redefinirSenhaComVerificacao(@RequestBody recuperacaoSe
         return ResponseEntity.ok("Senha redefinida com sucesso");
     } else {
         return ResponseEntity.badRequest().body("Dados de verificação inválidos");
-    }
+    } 
 }
  
 }

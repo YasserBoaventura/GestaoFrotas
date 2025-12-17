@@ -20,14 +20,23 @@ public class SericeRotas {
 	}
 	public String deleteById(long id) {
 		repositoryRotas.deleteById(id);
-		return "deletado com sucesso";
+		return "Excluído!', 'A rota foi excluída.', 'success";
 	}
 	
-	 public String update(Rotas  rotas, long id) {
-	 rotas.setId(id);
-	 repositoryRotas.save(rotas);
-		return "Rota actualizada com sucesso";
-	}
+    public Rotas update(Rotas rotas, Long id) {
+        // Busca a rota existente
+        Rotas rotaExistente =  repositoryRotas.findById(id)
+            .orElseThrow(() -> new RuntimeException("Rota não encontrada com id: " + id));
+            
+        // Atualiza apenas os campos permitidos
+        rotaExistente.setOrigem(rotas.getOrigem());
+        rotaExistente.setDestino(rotas.getDestino());
+        rotaExistente.setDistanciaKm(rotas.getDistanciaKm());
+        rotaExistente.setTempoEstimadoHoras(rotas.getTempoEstimadoHoras());
+        rotaExistente.setDescricao(rotas.getDescricao());
+        
+        return  repositoryRotas.save(rotaExistente);
+    }
 	  public List<Rotas> findAll() {
 	   List<Rotas> lista=this.repositoryRotas.findAll();
 		return lista;  

@@ -38,7 +38,7 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
             "(m.proximaManutencaoData IS NOT NULL AND m.proximaManutencaoData < CURRENT_DATE) OR " +
             "(m.proximaManutencaoKm IS NOT NULL AND m.veiculo.kilometragemAtual >= m.proximaManutencaoKm)")
      List<Manutencao> findManutencoesVencidas(); 
-       
+        
      // Próximas manutenções (30 dias ou 1000km) - CORRIGIDA   
      @Query("SELECT m FROM Manutencao m WHERE " +
             "((m.proximaManutencaoData IS NOT NULL AND m.proximaManutencaoData BETWEEN CURRENT_DATE AND :dataLimite30Dias) OR " +
@@ -69,6 +69,6 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
              "(m.proxima_manutencao_km IS NOT NULL AND (SELECT kilometragem_atual FROM veiculo WHERE id = m.veiculo_id) >= m.proxima_manutencao_km))", 
              nativeQuery = true)
      List<Manutencao> findProximasManutencoesNative();
-
+ 
  }
  
