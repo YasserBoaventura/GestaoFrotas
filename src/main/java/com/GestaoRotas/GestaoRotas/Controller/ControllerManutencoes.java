@@ -21,15 +21,13 @@ public class ControllerManutencoes {
 
     private final ServiceManutencoes manutencaoService;
     
-   
- 
 	public ControllerManutencoes(ServiceManutencoes  manutencaoService) {
 		this.manutencaoService=manutencaoService;
 	}
   @PostMapping("/save")
-public ResponseEntity<Manutencao> cadastrar(@RequestBody manuntecaoDTO manutencaoDTO) {
+public ResponseEntity<String> cadastrar(@RequestBody manuntecaoDTO manutencaoDTO) {
    try {
-	   Manutencao manutencao=this.manutencaoService.salvar(manutencaoDTO);
+	  String manutencao=this.manutencaoService.salvar(manutencaoDTO);
       return  ResponseEntity.ok(manutencao);
 	 }catch(Exception e) {
 		   e.printStackTrace();
@@ -38,14 +36,14 @@ public ResponseEntity<Manutencao> cadastrar(@RequestBody manuntecaoDTO manutenca
 	    	
 }
   @PutMapping("/update/{id}")
-  public ResponseEntity<Manutencao>update(@RequestBody manuntecaoDTO manutencaoDTO, @PathVariable long id){
+  public ResponseEntity<String>update(@PathVariable long id ,@RequestBody manuntecaoDTO manutencaoDTO ){
 	  try{
- Manutencao  manutencao=this.manutencaoService.update(manutencaoDTO, id);
+  String manutencao=this.manutencaoService.update(manutencaoDTO, id);
 		  return  ResponseEntity.ok(manutencao);
 	  }catch(Exception e) {
 	  return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-	}
-  }
+	} 
+  } 
 
 @GetMapping("/findByIdVeiculo/{veiculoId}")
 public ResponseEntity<List<Manutencao>> listarPorVeiculo(@PathVariable long veiculoId) {
@@ -59,7 +57,7 @@ try {
 	    	
 	    }catch(Exception e) {
 	    	return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-	    }
+	   }
 	    } 
 
 @DeleteMapping("/delete/{id}")
@@ -111,7 +109,7 @@ try {
     	return new ResponseEntity<>(manutencao, HttpStatus.OK);
     	}catch(Exception e) {
     	return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-    		}          
+    	}
     }  
     //ver relatorio de manutencoes por veiculo
 

@@ -64,15 +64,15 @@ private VeiculoDTO convertToDTO(Veiculo veiculo) {
 }
 	
 
-		// Método auxiliar para determinar tipo
-		private String determinarTipoVeiculo(String modelo) {
-		    if (modelo == null) return "OUTRO";
-		    modelo = modelo.toUpperCase();
-		    if (modelo.contains("CAMINHAO")) return "CAMINHAO";
-		    if (modelo.contains("VAN")) return "VAN";
-		    if (modelo.contains("CARRO")) return "CARRO";
-		    if (modelo.contains("MOTO")) return "MOTO";
-		    return "OUTRO";
-		}	
+// Método auxiliar para determinar tipo
+private String determinarTipoVeiculo(String modelo) {
+    if (modelo == null) return "OUTRO";
+    modelo = modelo.toUpperCase();
+    if (modelo.contains("CAMINHAO")) return "CAMINHAO";
+    if (modelo.contains("VAN")) return "VAN";
+    if (modelo.contains("CARRO")) return "CARRO";
+    if (modelo.contains("MOTO")) return "MOTO";
+    return "OUTRO";
+}	
 	        
 }

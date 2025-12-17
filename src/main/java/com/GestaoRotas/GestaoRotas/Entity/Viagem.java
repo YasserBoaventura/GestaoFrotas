@@ -112,6 +112,7 @@ public class Viagem {
 	        abastecimentos.add(abastecimento);
 	        abastecimento.setViagem(this);
 	    }
+	 
 	}
 
 

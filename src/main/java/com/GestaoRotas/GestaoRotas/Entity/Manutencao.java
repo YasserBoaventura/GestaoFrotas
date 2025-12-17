@@ -34,8 +34,8 @@ public class Manutencao {
 	    private Long id;
 	    
 	    @Column(name = "data_manutencao")
-	    private LocalDateTime dataManutencao;
-	    
+	    private LocalDate dataManutencao;
+	     
 	    @Column(name = "tipo_manutencao", length = 50)
 	    @Enumerated(EnumType.STRING)
 	    private TipoManutencao tipoManutencao; // "PREVENTIVA", "CORRETIVA", "TROCA_OLEO", "REVISAO"
@@ -64,16 +64,16 @@ public class Manutencao {
 	    private Veiculo veiculo;
 	    
 	    
-	    @Enumerated(EnumType.STRING)
-	    @Column(name = "status")
-	    private statusManutencao status;
+	  //  @Enumerated(EnumType.STRING)
+	//    @Column(name = "status")
+	//    private statusManutencao status;
 	    
 	    public Manutencao(Veiculo veiculo, String tipoManutencao, String descricao, Double custo) {
 	        this.veiculo = veiculo;
 	       // this.tipoManutencao = tipoManutencao;
 	        this.descricao = descricao;
 	        this.custo = custo;
-	        this.dataManutencao = LocalDateTime.now();
+	        this.dataManutencao = LocalDate.now();
 	    }
 	    
 	  
@@ -81,7 +81,7 @@ public class Manutencao {
 	    @PrePersist
 	    public void prePersist() {
 	        if (dataManutencao == null) {
-	            dataManutencao = LocalDateTime.now();
+	            dataManutencao = LocalDate.now();
 	        }
 	    }
 	    //  Método corrigido - use este nome no seu código
@@ -93,7 +93,7 @@ public class Manutencao {
 	    public boolean isVencida() {
 	        if (proximaManutencaoData != null && proximaManutencaoData.isBefore(LocalDate.now())) {
 	            return true;
-	        }
+	        } 
 	        if (proximaManutencaoKm != null && veiculo != null && veiculo.getKilometragemAtual() != null && 
 	            veiculo.getKilometragemAtual() >= proximaManutencaoKm) {
 	            return true;

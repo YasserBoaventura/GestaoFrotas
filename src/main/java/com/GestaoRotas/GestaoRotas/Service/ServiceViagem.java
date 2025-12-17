@@ -24,26 +24,23 @@ import com.GestaoRotas.GestaoRotas.Repository.RepositoryViagem;
 public class ServiceViagem {
 
   
-	 private final RepositoryViagem repositoriViagem;
-	 @Autowired
-	    private RepositoryViagem viagemRepository;
-	    
-	    @Autowired
-	    private RepositoryMotorista motoristaRepository;
-	    
-	    @Autowired
-	    private RepositoryVeiculo veiculoRepository;
-	    
-	    @Autowired
-	    private RepositoryRotas rotaRepository;
-	public ServiceViagem(RepositoryViagem repositoryViagem) {
+	    private final RepositoryViagem repositoriViagem;
+	    private final RepositoryMotorista motoristaRepository;
+	    private final RepositoryVeiculo veiculoRepository;
+	    private final RepositoryRotas rotaRepository;
+	
+     public ServiceViagem(RepositoryViagem repositoryViagem, RepositoryVeiculo veiculoRepository,  RepositoryMotorista motoristaRepository, RepositoryRotas rotaRepository) {
 		this.repositoriViagem=repositoryViagem;
+		this.motoristaRepository=motoristaRepository;
+		this.veiculoRepository=veiculoRepository;
+		this.rotaRepository=rotaRepository;
+		
 		
 	}
 
-public Viagem update(ViagensDTO viagemDTO, long id) {
+public String update(ViagensDTO viagemDTO, long id) {
 
-    Viagem viagem = viagemRepository.findById(id)
+    Viagem viagem = repositoriViagem.findById(id)
             .orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
 
     Motorista motorista = motoristaRepository.findById(viagemDTO.getMotoristaId())
@@ -53,8 +50,10 @@ public Viagem update(ViagensDTO viagemDTO, long id) {
             .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
 
     Rotas rota = rotaRepository.findById(viagemDTO.getRotaId())
-            .orElseThrow(() -> new RuntimeException("Rota não encontrada"));
-
+            .orElseThrow(() ->  new RuntimeException("Rota não encontrada"));
+   
+    validarMotorista(motorista);
+   
     viagem.setMotorista(motorista);
     viagem.setVeiculo(veiculo);  
     viagem.setRota(rota);
@@ -64,11 +63,11 @@ public Viagem update(ViagensDTO viagemDTO, long id) {
     viagem.setKilometragemInicial(viagemDTO.getKilometragemInicial());
     viagem.setKilometragemFinal(viagemDTO.getKilometragemFinal());
     viagem.setObservacoes(viagemDTO.getObservacoes());
-
-    return viagemRepository.save(viagem);
+    repositoriViagem.save(viagem);
+    return  "viagem atualizada com sucesso!";
 }
  
-	public Viagem salvar(ViagensDTO viagemDTO) {
+	public String salvar(ViagensDTO viagemDTO) {
 	    Viagem viagem = new Viagem();
 	    // Buscar motorista, veiculo e rota pelos IDs
 	    Motorista motorista = motoristaRepository.findById(viagemDTO.getMotoristaId())
@@ -77,10 +76,12 @@ public Viagem update(ViagensDTO viagemDTO, long id) {
 	        .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
 	    Rotas rota = rotaRepository.findById(viagemDTO.getRotaId())
 	        .orElseThrow(() -> new RuntimeException("Rota não encontrada"));
-
+	    //validar o motorista
+	    validarMotorista(motorista);
+	    
 	    viagem.setMotorista(motorista);
 	    viagem.setVeiculo(veiculo);  
-	    viagem.setRota(rota); 
+	    viagem.setRota(rota);  
 	    viagem.setDataHoraPartida(viagemDTO.getDataHoraPartida());
 	    viagem.setDataHoraChegada(viagemDTO.getDataHoraChegada());
 	    viagem.setStatus(viagemDTO.getStatus());
@@ -88,10 +89,24 @@ public Viagem update(ViagensDTO viagemDTO, long id) {
 	    viagem.setKilometragemFinal(viagemDTO.getKilometragemFinal());
 	    viagem.setObservacoes(viagemDTO.getObservacoes());
 	    viagem.setData(LocalDateTime.now());
-
-	    return viagemRepository.save(viagem);
+	    repositoriViagem.save(viagem);
+	    return "viagem salva com sucesso";
 	}
-	public List<Viagem> findAll(){
+	// campos para validar o estato do motorista antes de ser
+	//Associando a uma viagem
+	private String validarMotorista(Motorista motorista) {
+	    if (motorista.getStatus() == motorista.getStatus().FERIAS) {
+	    	
+	    	  System.out.println("nao foi possivel"); 	
+	    	return "Motorista está inativo e não pode realizar viagens";
+	      //new RuntimeException("Motorista está inativo e não pode realizar viagens");
+	     
+	    } 
+	    	return "";
+	    
+
+	}
+public List<Viagem> findAll(){
     return this.repositoriViagem.findAll();
     }
 	
@@ -119,7 +134,7 @@ public Viagem update(ViagensDTO viagemDTO, long id) {
     
     public  List<Viagem>  findByVeiculoId(long id) {
     	
-    	   return this.repositoriViagem.findByVeiculoId(id);
+     return this.repositoriViagem.findByVeiculoId(id);
        
     }
     //Busca pelo o id da viagem  
