@@ -28,7 +28,7 @@ public class ServiceVeiculo {
 		this.repositoryVeiculo.save(veiculo);
 		return "veiculo actualizado com sucesso";
 	}
-	public String deletar(long id) {
+	public String deletar(Long id) {
 		this.repositoryVeiculo.deleteById(id);
 		return "Veiculo deletado com sucess";
 	}
@@ -38,6 +38,7 @@ public class ServiceVeiculo {
 	         return veiculos;
 	    }
 	    
+	
 private VeiculoDTO convertToDTO(Veiculo veiculo) {
     VeiculoDTO dto = new VeiculoDTO();
     dto.setId(veiculo.getId());
@@ -47,7 +48,7 @@ private VeiculoDTO convertToDTO(Veiculo veiculo) {
     dto.setCapacidadeTanque(veiculo.getCapacidadeTanque());
     dto.setKilometragemAtual(veiculo.getKilometragemAtual());
     
-    // Informações da marca
+    // Informações da marca   
     if (veiculo.getMarca() != null) {
         dto.setMarcaNome(veiculo.getMarca().getNome());
         dto.setMarcaId(veiculo.getMarca().getId());

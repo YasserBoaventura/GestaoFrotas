@@ -24,7 +24,7 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
     	       "m.veiculo.matricula, COUNT(m), SUM(m.custo), AVG(m.custo)) " +
     	       "FROM  Manutencao  m WHERE m.veiculo IS NOT NULL GROUP BY m.veiculo.matricula")
      	List<RelatorioManutencaoDTO> relatorioPorVeiculo();
-             
+              
     
 
      // Busca pelo tipo da manutencao

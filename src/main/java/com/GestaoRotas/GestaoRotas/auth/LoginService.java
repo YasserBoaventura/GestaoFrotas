@@ -40,14 +40,31 @@ public class LoginService {
 	}
 
 	public String logar(Login login) {
-		   Usuario user= repository.findByUsername(login.getUsername())
-		            .orElseThrow(() -> new RuntimeException("user não encontrada"));
-      String token = this.gerarToken(login);
-		user.setUltimoAcesso(LocalDateTime.now()); 
-		this.repository.save(user);
-		return token;
+	    Usuario user = repository.findByUsername(login.getUsername())
+	            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-	} 
+	    // Verifica se a conta está bloqueada
+	    if (!user.isAccountNonLocked()) { // Supondo que tenha um método getter
+	        throw new RuntimeException("Conta bloqueada devido a múltiplas tentativas de login");
+	    }
+          try {
+	        // Tenta autenticar (gerar token)
+	        String token = this.gerarToken(login);
+	        // Se chegou aqui, login foi bem-sucedido
+	        // Reseta as tentativas de login
+	        user.setTentativasLogin(0); 
+	        user.setUltimoAcesso(LocalDateTime.now());
+	        this.repository.save(user);
+	        
+	        return token;
+	    } catch (Exception e) {
+	        // Login falhou - incrementa tentativas
+	        user.incrementarTentativasLogin();
+	        this.repository.save(user);
+	        
+	        throw new RuntimeException("Credenciais inválidas");
+	    }
+	}
 // Como pegar os dados do usuario a se cadastrar
 	public String registar(Usuario usuario) { 
    String passwordEncoderStrings = passwordEncoder.encode(usuario.getPassword());

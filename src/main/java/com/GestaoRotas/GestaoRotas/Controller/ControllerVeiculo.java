@@ -26,6 +26,7 @@ import java.util.*;
 public class ControllerVeiculo {
     
 	 private final ServiceVeiculo serviceVeiculo;
+
 	
 	 private final RepositoryVeiculo repositoryVeiculo;
 	public ControllerVeiculo (ServiceVeiculo serviceVeiculo, RepositoryVeiculo repositoryVeiculo) {
@@ -55,7 +56,7 @@ public class ControllerVeiculo {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
 		 } 
 	 	 return new ResponseEntity<>(lista, HttpStatus.OK);
-     }catch(Exception e) {
+         }catch(Exception e) {
 		 System.out.println("Erro a listar os Veiculos "+ e.getStackTrace());
 		 return new ResponseEntity<>(null, HttpStatus.OK);
 		 
@@ -92,9 +93,19 @@ public class ControllerVeiculo {
     	  return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST );	
     	}
     }
+     @GetMapping("/findById/{id}")
+     public ResponseEntity<Veiculo> findById(Long id){
+    	 try { 
+    		Veiculo veiculo = repositoryVeiculo.findById(id).get();
+          return new ResponseEntity<>( veiculo, HttpStatus.OK) ;   		 
+    	 } catch(Exception e) {
+    		 e.getMessage();
+    	 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+    	 }	
+     }
      @DeleteMapping("/delete/{id}")
      public ResponseEntity<String> delete(@PathVariable Long id){
-         try {
+         try { 
 	    	serviceVeiculo.deletar(id);
 	        return ResponseEntity.ok("Veículo apagado com sucesso");
 	     } catch (Exception e) {
