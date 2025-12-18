@@ -47,7 +47,7 @@ public Map<String, String> solicitarRecuperacaoSenha(String username, String ema
         	Map<String , String > naoAtivo = new HashMap<>();
         	naoAtivo.put("status","Usuario nao pode fazer altercoes. sua conta esta inativa");
     	
-    	return naoAtivo; 
+    	return naoAtivo;  
         }
     String token = UUID.randomUUID().toString();
     usuario.setResetToken(token);

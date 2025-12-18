@@ -51,11 +51,18 @@ public class ControllerViagem {
        this.serviceViagem=serviceViagem;
        this.repositoryViagem=RepositoryViagem;
 	}
+	
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@PostMapping("/save")
 	public ResponseEntity<String> criarViagem(@RequestBody ViagensDTO viagemDTO) {
-	    String viagem = serviceViagem.salvar(viagemDTO);
+	try {
+		String viagem = serviceViagem.salvar(viagemDTO);
+		
 	    return ResponseEntity.ok(viagem);
-	}  
+	}catch(Exception e) {
+	  	return ResponseEntity.badRequest().build(); 
+	}
+	   }
  @GetMapping("/findAll")
  public ResponseEntity<List<Viagem>> findAll(){
 	try {
@@ -106,8 +113,8 @@ public class ControllerViagem {
 			}catch(Exception e) {
 			return ResponseEntity.badRequest().build();
 		}
-	}
-	 
+	} 
+   @PreAuthorize("hasAuthority('ADMIN')")
 	@PutMapping("/update/{id}")
 	public ResponseEntity<String> update(@RequestBody ViagensDTO viagemDTO, @PathVariable long id) {
 	    try {
@@ -159,7 +166,7 @@ if (request.getMotivo() != null && !request.getMotivo().isEmpty()) {
             (observacoesAtuais.isEmpty() ? "" : "\n\n") +
             "[CANCELADA] Motivo: " + request.getMotivo();
     
-    viagem.setObservacoes(novaObservacao);
+    viagem.setObservacoes(novaObservacao); 
 }
 
         viagem.cancelarViagem();
@@ -209,17 +216,7 @@ if (request.getMotivo() != null && !request.getMotivo().isEmpty()) {
     ///
     ///
     ///
-    
-
-
-
-
-
-    
-
-
-
-    @GetMapping("/geral")
+     @GetMapping("/geral")
     public ResponseEntity<RelatorioGeralDTO> relatorioGeral(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim) {
@@ -230,8 +227,8 @@ if (request.getMotivo() != null && !request.getMotivo().isEmpty()) {
             
             RelatorioGeralDTO dados = repositoryViagem.relatorioGeralPorPeriodo(inicio, fim);
             return ResponseEntity.ok(dados);
-        } catch (Exception e) {
-            // Mock para desenvolvimento
+        } catch (Exception e) { 
+            
             return ResponseEntity.ok(new RelatorioGeralDTO(115L, 8L, 5L, 10100.5, 982.3, 87.8));
         }
     }

@@ -39,15 +39,14 @@ public class LoginController {
         this.loginService = loginService;
         this.loginRepository = loginRepository;
         this.passwordEncoder = passwordEncoder;
-    }
+    } 
 
     @PostMapping("/login")
     public ResponseEntity<?> logar(@RequestBody Login login) {
         try {
             String token = loginService.logar(login);
-            
-            return ResponseEntity.ok(token);
-
+             return ResponseEntity.ok(token); 
+ 
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
             error.put("error", e.getMessage());
@@ -55,8 +54,6 @@ public class LoginController {
         }
     }
     
-    
-
  
 //  POST para pre registro
 
