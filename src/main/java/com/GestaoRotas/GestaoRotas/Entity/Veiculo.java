@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.GestaoRotas.GestaoRotas.Model.StatusVeiculo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -59,6 +60,10 @@ public class Veiculo {
 	    @ManyToOne(fetch = FetchType.EAGER)
 	    @JoinColumn(name = "marca_id")
 	    private Marca marca;
+	    
+	    @Enumerated(EnumType.STRING)
+	    @Column(name = "status")
+	    private StatusVeiculo status;
 	    // OneToMany com Abastecimento
 	    @JsonIgnore
      @OneToMany(mappedBy = "veiculo", cascade = {CascadeType.PERSIST, CascadeType.MERGE})

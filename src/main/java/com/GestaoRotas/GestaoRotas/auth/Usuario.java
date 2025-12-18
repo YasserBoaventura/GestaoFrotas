@@ -114,7 +114,7 @@ public class Usuario implements UserDetails {
     public boolean isEnabled() {
         return ativo;
     }
-      
+       
     // Métodos auxiliares para segurança
     public void incrementarTentativasLogin() {
         this.tentativasLogin++;
@@ -138,11 +138,23 @@ public class Usuario implements UserDetails {
     public void invalidarToken() {
         this.tokenUtilizado = true;
     } 
-    //Funco para verificar
-    
-   
+   //ainda por implementar
+/**
+public boolean isContaBloqueada() {
+    if (contaBloqueada && dataBloqueio != null) {
+        // Desbloqueia automaticamente após 30 minutos
+	            LocalDateTime agora = LocalDateTime.now();
+	            Duration duracao = Duration.between(dataBloqueio, agora);
+	            if (duracao.toMinutes() >= 30) {
+	                desbloquearConta();
+	                return false;
+	            }  
+	        }
+	        return contaBloqueada;
+	    }   
+   */
 }
 
-
+ 
 
 
