@@ -56,6 +56,10 @@ public class Manutencao {
 	    @Column(name = "proxima_manutencao_data")
 	    private LocalDate proximaManutencaoData;
 	    
+	    @Column(name = "dataConclusao")
+	    private LocalDateTime dataConclusao;
+	    @Column(name ="dataInicio")
+	    private LocalDateTime dataInicio;
 	    
 	    // ManyToOne com Veiculo
 	    @ManyToOne(fetch = FetchType.LAZY)
@@ -63,31 +67,29 @@ public class Manutencao {
 	    @JsonIgnoreProperties({"Manutencao", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO
 	    private Veiculo veiculo;
 	    
+	    @Enumerated(EnumType.STRING)  
+	    private statusManutencao status;
 	    
-	  //  @Enumerated(EnumType.STRING)
-	//    @Column(name = "status")
-	//    private statusManutencao status;
-	    
-	    public Manutencao(Veiculo veiculo, String tipoManutencao, String descricao, Double custo) {
-	        this.veiculo = veiculo;
-	       // this.tipoManutencao = tipoManutencao;
-	        this.descricao = descricao;
-	        this.custo = custo;
-	        this.dataManutencao = LocalDate.now();
-	    }
-	    
-	  
-	    // Método auxiliar
-	    @PrePersist
-	    public void prePersist() {
-	        if (dataManutencao == null) {
-	            dataManutencao = LocalDate.now();
-	        }
-	    }
-	    //  Método corrigido - use este nome no seu código
-	    public LocalDate getProximaRevisao() {
-	        return this.proximaManutencaoData;
-	    }
+    public Manutencao(Veiculo veiculo, String tipoManutencao, String descricao, Double custo) {
+        this.veiculo = veiculo;
+       // this.tipoManutencao = tipoManutencao;
+        this.descricao = descricao;
+        this.custo = custo;
+        this.dataManutencao = LocalDate.now();
+    }
+    
+  
+    // Método auxiliar
+    @PrePersist
+    public void prePersist() {
+        if (dataManutencao == null) {
+            dataManutencao = LocalDate.now();
+        }
+    }
+    //  Método corrigido - use este nome no seu código
+    public LocalDate getProximaRevisao() {
+        return this.proximaManutencaoData;
+    }
 	    
 	    // Método auxiliar para verificar se está vencida
 	    public boolean isVencida() {

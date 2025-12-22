@@ -85,7 +85,7 @@ public class Usuario implements UserDetails {
     
     @Column(name = "conta_bloqueada")
     private Boolean contaBloqueada = false;
-     
+      
     // Métodos de UserDetails
    
     @JsonIgnore
@@ -97,12 +97,12 @@ public class Usuario implements UserDetails {
     
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return true;  
     }
     
     @Override
     public boolean isAccountNonLocked() {
-        return !contaBloqueada;
+        return !contaBloqueada;   
     }
     
     @Override
