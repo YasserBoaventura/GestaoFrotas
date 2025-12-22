@@ -32,7 +32,7 @@ public class manuntecaoDTO {
     private TipoManutencao tipoManutencao; // "PREVENTIVA", "CORRETIVA", "TROCA_OLEO", "REVISAO"
  
     @Enumerated(EnumType.STRING)
-    private statusManutencao status;
+    private statusManutencao status; 
     private String descricao;
     private Double custo;
     private Double kilometragemVeiculo;

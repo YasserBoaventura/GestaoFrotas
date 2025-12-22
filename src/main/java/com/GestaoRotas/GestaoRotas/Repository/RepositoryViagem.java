@@ -18,6 +18,9 @@ public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
     // Lista viagens por id do motorista  
     List<Viagem> findByMotoristaId(Long motoristaId);
 
+    //busca por status e Veiculo
+    List<Viagem> findByVeiculoIdAndStatus(Long veiculoId, String status);
+    
     // Relatório por motorista
     @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioMotoristaDTO(" +
            "v.motorista.nome, " +

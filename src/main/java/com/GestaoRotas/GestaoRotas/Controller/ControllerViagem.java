@@ -61,7 +61,7 @@ public class ControllerViagem {
 	    return ResponseEntity.ok(viagem);
 	}catch(Exception e) {
 	  	return ResponseEntity.badRequest().build(); 
-	}
+	} 
 	   }
  @GetMapping("/findAll")
  public ResponseEntity<List<Viagem>> findAll(){

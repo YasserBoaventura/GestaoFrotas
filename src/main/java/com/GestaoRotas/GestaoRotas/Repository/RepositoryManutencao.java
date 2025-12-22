@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Manutencao;
+import com.GestaoRotas.GestaoRotas.Model.statusManutencao;
 
 @Repository
 public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
@@ -24,29 +25,26 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
     	       "m.veiculo.matricula, COUNT(m), SUM(m.custo), AVG(m.custo)) " +
     	       "FROM  Manutencao  m WHERE m.veiculo IS NOT NULL GROUP BY m.veiculo.matricula")
      	List<RelatorioManutencaoDTO> relatorioPorVeiculo();
-              
+               
     
 
      // Busca pelo tipo da manutencao
      List<Manutencao> findByTipoManutencao(String tipoManutencao);
      
-    
-              
-     
-     // Manutenções vencidas - CORRIGIDA
+    // Manutenções vencidas - CORRIGIDA
      @Query("SELECT m FROM Manutencao m WHERE " +
             "(m.proximaManutencaoData IS NOT NULL AND m.proximaManutencaoData < CURRENT_DATE) OR " +
             "(m.proximaManutencaoKm IS NOT NULL AND m.veiculo.kilometragemAtual >= m.proximaManutencaoKm)")
      List<Manutencao> findManutencoesVencidas(); 
         
      // Próximas manutenções (30 dias ou 1000km) - CORRIGIDA   
-     @Query("SELECT m FROM Manutencao m WHERE " +
+     @Query("SELECT m FROM Manutencao m WHERE " + 
             "((m.proximaManutencaoData IS NOT NULL AND m.proximaManutencaoData BETWEEN CURRENT_DATE AND :dataLimite30Dias) OR " +
             "(m.proximaManutencaoKm IS NOT NULL AND m.veiculo.kilometragemAtual IS NOT NULL AND " +
             "(m.proximaManutencaoKm - m.veiculo.kilometragemAtual) <= 1000)) AND " +
             "NOT ((m.proximaManutencaoData IS NOT NULL AND m.proximaManutencaoData < CURRENT_DATE) OR " +
             "(m.proximaManutencaoKm IS NOT NULL AND m.veiculo.kilometragemAtual >= m.proximaManutencaoKm))")
-     List<Manutencao> findProximasManutencoes(@Param("dataLimite30Dias") LocalDate dataLimite30Dias);
+     List<Manutencao> findProximasManutencoes(@Param("dataLimite30Dias") LocalDate dataLimite30Dias); 
       
      // Manutenções muito próximas (7 dias ou 200km) - CORRIGIDA
      @Query("SELECT m FROM Manutencao m WHERE " +
@@ -60,7 +58,8 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
      // Manutenções por veículo
      @Query("SELECT m FROM Manutencao m WHERE m.veiculo.id = :veiculoId ORDER BY m.dataManutencao DESC")
      List<Manutencao> findByVeiculoId(Long veiculoId);
-
+     
+ 
      // Método alternativo usando Native Query 
      @Query(value = "SELECT * FROM manutencoes m WHERE " +
              "((m.proxima_manutencao_data IS NOT NULL AND m.proxima_manutencao_data BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)) OR " +
@@ -69,6 +68,29 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
              "(m.proxima_manutencao_km IS NOT NULL AND (SELECT kilometragem_atual FROM veiculo WHERE id = m.veiculo_id) >= m.proxima_manutencao_km))", 
              nativeQuery = true)
      List<Manutencao> findProximasManutencoesNative();
+     
+     //busca as manuten por estatus
+     List<Manutencao> findByDataManutencaoAndStatusNotIn(
+    	        LocalDate dataManutencao,
+    	        List<statusManutencao> status 
+    	    );
+     //busca as manutencao passadas
+    List<Manutencao> findByDataManutencaoBeforeAndStatusNotIn(
+    		LocalDate dataManutencao,
+    		List<statusManutencao> status
+    		 );
+    
+    //busca as manutencao por veiculo dataManutencao e status
+    List<Manutencao> findByVeiculoIdAndDataManutencaoAndStatusNotIn(
+    		Long id,
+    		LocalDate dataManutencao,
+    		List<statusManutencao> status
+    	
+    		
+    		);
+    //por status e data
+       List<Manutencao> findByDataManutencaoAndStatus(LocalDate amanha, statusManutencao status); 
+    
  
  }
  
