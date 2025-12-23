@@ -57,9 +57,10 @@ public class ControllerViagem {
 	public ResponseEntity<String> criarViagem(@RequestBody ViagensDTO viagemDTO) {
 	try {
 		String viagem = serviceViagem.salvar(viagemDTO);
-		
+	
 	    return ResponseEntity.ok(viagem);
 	}catch(Exception e) {
+		System.out.println("entro aqu");
 	  	return ResponseEntity.badRequest().build(); 
 	} 
 	   }
@@ -114,7 +115,7 @@ public class ControllerViagem {
 			return ResponseEntity.badRequest().build();
 		}
 	} 
-   @PreAuthorize("hasAuthority('ADMIN')")
+
 	@PutMapping("/update/{id}")
 	public ResponseEntity<String> update(@RequestBody ViagensDTO viagemDTO, @PathVariable long id) {
 	    try {

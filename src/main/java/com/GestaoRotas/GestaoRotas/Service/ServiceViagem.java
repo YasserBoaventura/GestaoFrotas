@@ -55,8 +55,8 @@ public String update(ViagensDTO viagemDTO, long id) {
     	
         new RuntimeException("Motorista não está disponível para viagem (Status: " + motorista.getStatus() + ")");
         return "Motorista não está disponível para viagem (Status: \"" + motorista.getStatus() + ")";
-    } 
-    if(validarVeiculo(veiculo)) {
+    }  
+    if(validarVeiculo(veiculo)) { 
     	new RuntimeException("Veiculo nao disponivel");
     	return "veiculo nao disponivel para a viagem Status: \""+ veiculo.getStatus();
     }
@@ -111,37 +111,51 @@ public String update(ViagensDTO viagemDTO, long id) {
 	// campos para validar o estato do motorista antes de ser
 	//Associando a uma viagem
 	 private boolean validarMotorista(Motorista motorista) {
-	        // Verifica se o motorista está ativo e disponível
-	        if (motorista.getStatus() == null) {
-	            return false;  
-	        }
-	        
-	        String status = motorista.getStatus().toString();
-	        
-	        // Lista de status que impedem o motorista de fazer viagens
-	        List<String> statusBloqueados = Arrays.asList(
-	            "FERIAS", 
-	            "AFASTADO",
-	            "INATIVO",
-	            "BLOQUEADO"
-	        );
+    // Verifica se o motorista está ativo e disponível
+    if (motorista.getStatus() == null) {
+        return false;  
+    }
+    
+    String status = motorista.getStatus().toString();
+    
+    // Lista de status que impedem o motorista de fazer viagens
+    List<String> statusBloqueados = Arrays.asList(
+        "FERIAS", 
+        "AFASTADO",
+        "INATIVO",
+        "BLOQUEADO"
+    );
 	        
 	        // Verifica se o status do motorista está na lista de bloqueados
 	        return !statusBloqueados.contains(status);
 	    }
 	    
 	 
-private boolean validarVeiculo(Veiculo veiculo) {
-    if (veiculo == null) {  
-        throw new RuntimeException("Veículo não pode ser nulo");
-} 
-// Verificar se veículo está em manutenção 
-if (veiculo.getStatus().equals("EM_MANUTENCAO") && veiculo.getStatus().equals("EM_VIAGEM")) {
-        return false; 
-    }
-     
-    return true;
-}
+
+	    // Método de validação do veículo CORRIGIDO
+	 private boolean validarVeiculo(Veiculo veiculo) {
+		    if (veiculo == null) {  
+		        throw new RuntimeException("Veículo não pode ser nulo");
+		    }
+		    
+		    if (veiculo.getStatus() == null) {
+		        return true; // não disponível
+		    }
+		    
+		    String status = veiculo.getStatus();
+		    
+		    // Lista de status que impedem o veículo de ser usado
+		    List<String> statusIndisponiveis = Arrays.asList(
+		        "EM_MANUTENCAO", 
+		        "MANUTENCAO_VENCIDA",
+		        "MANUTENCAO_PROXIMA",
+		        "EM_VIAGEM",
+		        "INATIVO",
+		        "BLOQUEADO"
+		    );
+		    
+		    return statusIndisponiveis.contains(status);
+		}
 public List<Viagem> findAll(){
     return this.repositoriViagem.findAll();
     }
