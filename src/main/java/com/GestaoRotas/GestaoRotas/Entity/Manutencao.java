@@ -67,6 +67,7 @@ public class Manutencao {
 	    @JsonIgnoreProperties({"Manutencao", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO
 	    private Veiculo veiculo;
 	    
+
 	    @Enumerated(EnumType.STRING)  
 	    private statusManutencao status;
 	    

@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ConcluirViagemRequest {
-     
+       
 	private LocalDateTime dataHoraChegada;
     private Double kilometragemFinal;
     private String observacoes;

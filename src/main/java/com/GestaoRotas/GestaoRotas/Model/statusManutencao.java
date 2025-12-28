@@ -6,9 +6,10 @@ public enum statusManutencao {
 	   PROXIMA ,
        EM_ANDAMENTO,
        URGENTE ,
-       AGENDADA_HOJE,
+       AGENDADA_HOJE, 
        ATRASADA,
        AGENDADA,
        CONCLUIDA,
-       CANCELADA
-}
+       CANCELADA,
+       PENDENTE
+} 

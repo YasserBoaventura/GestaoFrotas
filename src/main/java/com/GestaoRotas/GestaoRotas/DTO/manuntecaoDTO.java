@@ -34,7 +34,7 @@ public class manuntecaoDTO {
     @Enumerated(EnumType.STRING)
     private statusManutencao status; 
     private String descricao;
-    private Double custo;
+    private Double custo;  
     private Double kilometragemVeiculo;
     private Integer proximaManutencaoKm;
     private LocalDate proximaManutencaoData;

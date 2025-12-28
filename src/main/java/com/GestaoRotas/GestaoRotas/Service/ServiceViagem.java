@@ -74,7 +74,7 @@ public String update(ViagensDTO viagemDTO, long id) {
     repositoriViagem.save(viagem);
     return  "viagem atualizada com sucesso!";
 }
-  
+    
 	public String salvar(ViagensDTO viagemDTO) {
 	    Viagem viagem = new Viagem();
 	    // Buscar motorista, veiculo e rota pelos IDs
