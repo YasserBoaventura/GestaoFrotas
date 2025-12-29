@@ -11,5 +11,5 @@ public enum statusManutencao {
        AGENDADA,
        CONCLUIDA,
        CANCELADA,
-       PENDENTE
+       
 } 

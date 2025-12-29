@@ -87,7 +87,7 @@ Map<String,String> response =  manutencaoService.iniciarManutencao(id);
 	      }catch(Exception e) {
 		Map<String, String> erro = new HashMap<>();
 		 erro.put("message", "Manutencao inicializada com sucesso");
-		 return ResponseEntity.status(HttpStatus.CREATED).body(erro);
+		 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
 		      
 		}
 }
@@ -99,7 +99,7 @@ public ResponseEntity<Map<String , String>> concluirManutencao(@RequestBody Stri
       }catch(Exception e) {
 	Map<String, String> erro = new HashMap<>();
 	 erro.put("message","Manutencao inicializada com sucesso");
-	 return ResponseEntity.status(HttpStatus.CREATED).body(erro);
+	 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
 	      
 	}
 }
@@ -110,11 +110,11 @@ public ResponseEntity<Map<String, String>> cancelarManutencao(@RequestBody Strin
 		response=this.manutencaoService.cancelarManutencao(id, observacoes);
 		return ResponseEntity.status(HttpStatus.OK).body(response); 
 		}catch(IllegalArgumentException e) {
-		Map<String ,String> erro = new HashMap<>();
+		Map<String ,String> erro = new HashMap<>();  
 		e.getMessage();
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
 		
-	}	
+	}	 
 }
  @GetMapping("/findAll")
     public ResponseEntity<List<Manutencao>>  findAll(){
@@ -127,8 +127,8 @@ public ResponseEntity<Map<String, String>> cancelarManutencao(@RequestBody Strin
     	}
     	 }catch(Exception e) {
     		return new ResponseEntity<>(null,  HttpStatus.BAD_REQUEST); 
-    	 }
-    	 
+    	 } 
+    	  
     }  
 	 //  Buscar manutenções por tipo
     @GetMapping("/tipo/{tipoManutencao}")

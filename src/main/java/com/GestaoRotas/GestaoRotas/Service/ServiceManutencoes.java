@@ -153,7 +153,7 @@ public ServiceManutencoes(RepositoryManutencao repositoryManuntencao, Repository
   
   // REMOVA UMA DAS CHAMADAS SAVE - mantenha apenas uma:
   repositoryManuntencao.save(manutencao);
-  // repositoryManuntencao.saveAndFlush(manutencao); // ← REMOVA ESTA LINHA
+  // repositoryManuntencao.saveAndFlush(manutencao); 
   
   System.out.println("Status atualizado para AGENDADA_HOJE na manutenção ID: " + manutencao.getId());
   

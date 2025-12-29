@@ -30,8 +30,10 @@ import com.GestaoRotas.GestaoRotas.DTO.RelatorioMotoristaDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioPorVeiculoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioTopMotoristasDTO;
 import com.GestaoRotas.GestaoRotas.DTO.ViagensDTO;
+import com.GestaoRotas.GestaoRotas.Entity.Motorista;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Entity.Viagem;
+import com.GestaoRotas.GestaoRotas.Model.statusMotorista;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryMotorista;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryViagem;
@@ -65,8 +67,7 @@ public class ControllerViagem {
 	public ResponseEntity<String> criarViagem(@RequestBody ViagensDTO viagemDTO) {
 	try {
 		String viagem = serviceViagem.salvar(viagemDTO);
-	
-	    return ResponseEntity.ok(viagem);
+	  return ResponseEntity.ok(viagem);
 	}catch(Exception e) {
 		System.out.println("entro aqu");
 	  	return ResponseEntity.badRequest().build(); 
@@ -134,7 +135,7 @@ public ResponseEntity<String> update(@RequestBody ViagensDTO viagemDTO, @PathVar
     }
 }
 
-//pra concluir a a viagem
+//pra concluir a a viagem 
 @PutMapping("/concluir/{id}")
 @PreAuthorize("hasAuthority('ADMIN')") 
 public ResponseEntity<Viagem> ConcluirViagem(
@@ -143,13 +144,20 @@ public ResponseEntity<Viagem> ConcluirViagem(
       .orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
            // Atualizar a quilometragem final
   viagem.setKilometragemFinal(request.getKilometragemFinal());
-  viagem.setObservacoes(request.getObservacoes());
+  viagem.setObservacoes(request.getObservacoes()); 
   viagem.setDataHoraChegada(request.getDataHoraChegada());
      
   // Chamar o método de negócio que já atualiza status e data
   viagem.concluirViagem();
    
   Viagem viagemAtualizada = repositoryViagem.save(viagem);
+  //atualizacao do motorista
+  
+  Motorista motorista = viagem.getMotorista();
+  if(motorista!=null) {
+  motorista.setStatus(statusMotorista.DISPONIVEL);
+  repositoryMotorista.save(motorista);
+  }
  //  atualize o estado do veiculo quando a viage estiver concluida
   Veiculo veiculo = viagem.getVeiculo();
   if(veiculo != null) {
@@ -205,7 +213,12 @@ public ResponseEntity<Map<String , String>> iniciarViagem(@PathVariable Long id)
 	try {
 	Viagem viagem = this.repositoryViagem.findById(id).orElseThrow(()-> new RuntimeException("viagem nao existente"));
    viagem.iniciarViagem();
-   //Actualiza o veiculo mara em Viagem
+   //para a atualizacao  do motorista
+     Motorista  motorista = viagem.getMotorista();
+ 
+     motorista.setStatus(statusMotorista.EM_VIAGEM);
+        repositoryMotorista.save(motorista);
+    //Actualiza o veiculo mara em Viagem
    repositoryViagem.save(viagem);
    //para a actualizacao do veiculo 
    Veiculo veiculo = viagem.getVeiculo();
@@ -241,8 +254,8 @@ public ResponseEntity<Map<String , String>> iniciarViagem(@PathVariable Long id)
     		if(viagem!=null) return new ResponseEntity<>(viagem, HttpStatus.OK);
         	}catch(Exception e) {
     		 return new ResponseEntity<>(null , HttpStatus.BAD_REQUEST);
-    	}
-    	return null;
+    	} 
+    	 return null;
     }  
     
     
