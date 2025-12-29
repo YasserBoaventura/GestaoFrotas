@@ -58,13 +58,13 @@ public ServiceVeiculo(RepositoryVeiculo repositoryVeiculo,RepositoryManutencao r
  
     Veiculo veiculo = veiculoOpt.get();
     String novoStatus = calcularStatusVeiculo(veiculo);
-    
+     
     // Atualiza o status somente se mudou
     if (!veiculo.getStatus().equals(novoStatus)) {
         veiculo.setStatus(novoStatus);
         veiculo.setDataAtualizacaoStatus(LocalDateTime.now());
         repositoryVeiculo.save(veiculo);
-    }
+    } 
 }
 	   /**
 	     * Calcula o status do veículo baseado em múltiplos fatores
@@ -74,7 +74,7 @@ public ServiceVeiculo(RepositoryVeiculo repositoryVeiculo,RepositoryManutencao r
 	        if (estaEmViagem(veiculo.getId())) {
 	            return "EM_VIAGEM";
 	        }
- 
+  
 	        // 2. Verifica se está em manutenção
 	        if (estaEmManutencaoAtiva(veiculo.getId())) {
 	            return "EM_MANUTENCAO";
@@ -112,7 +112,7 @@ public ServiceVeiculo(RepositoryVeiculo repositoryVeiculo,RepositoryManutencao r
 	                .anyMatch(m -> m.getStatus() != null && 
 	                              m.getStatus().equals("EM_ANDAMENTO"));
 	    }
-
+ 
 	    /**
 	     * Verifica se o veículo tem manutenções vencidas
 	     */
@@ -120,7 +120,7 @@ private boolean temManutencaoVencida(Long veiculoId) {
     List<Manutencao> manutencoes = repositoryManutencao.findByVeiculoId(veiculoId);
     LocalDate hoje = LocalDate.now(); 
      
-    return manutencoes.stream()
+    return manutencoes.stream() 
             .anyMatch(m -> {
                 // Verifica por data
         if (m.getProximaManutencaoData() != null && 
@@ -155,7 +155,7 @@ private boolean temManutencaoVencida(Long veiculoId) {
                 m.getProximaManutencaoData().isAfter(hoje) &&
                 m.getProximaManutencaoData().isBefore(limite)) {
                 return true;
-            }
+            } 
             
             // Verifica por quilometragem
             Veiculo v = m.getVeiculo();
@@ -173,7 +173,7 @@ private boolean temManutencaoVencida(Long veiculoId) {
 	     * Atualiza status de todos os veículos
 	     * Pode ser chamado via API ou agendado
 	     */
-	    @Transactional
+	    @Transactional 
 	    public void atualizarStatusTodosVeiculos() {
 	        List<Veiculo> todosVeiculos =  repositoryVeiculo.findAll();
 	        
@@ -212,10 +212,10 @@ private boolean temManutencaoVencida(Long veiculoId) {
 	     * Agenda verificação automática de status (executa a cada hora)
 	     */
 	    @Scheduled(cron = "0 0 * * * *") // A cada hora
-	    @Transactional
+	    @Transactional  
 	    public void verificarStatusAgendado() {
 	        System.out.println("Verificando status dos veículos...");
-	        atualizarStatusTodosVeiculos();
+	        atualizarStatusTodosVeiculos(); 
 	    }
 
 	

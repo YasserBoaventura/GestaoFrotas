@@ -33,7 +33,7 @@ public class SecurityManager {
     AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
 		return config.getAuthenticationManager();
 	}
-
+ 
 
     @Bean
     UserDetailsService userDetailsService() {
