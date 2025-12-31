@@ -27,7 +27,7 @@ public class RelatorioCombustivelDTO {
         this.mediaPorLitro = mediaPorLitro != null ? mediaPorLitro : 0.0;
     }
 
-    // ✅ Método para formatar os valores
+
     public String getTotalLitrosFormatado() {
         return "%.2f L".formatted(totalLitros);
     }

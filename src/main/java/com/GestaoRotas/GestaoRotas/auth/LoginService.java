@@ -44,17 +44,24 @@ public class LoginService {
 	            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
 	    // Verifica se a conta está bloqueada
-	    if (!user.isAccountNonLocked()) { // Supondo que tenha um método getter
+	    if (user.getTentativasLogin() == 5) {   // Supondo que tenha um método getter
 	        throw new RuntimeException("Conta bloqueada devido a múltiplas tentativas de login");
+	    }
+	    if(!user.isAccountNonLocked()) {
+	    	  throw new RuntimeException("Conta bloqueada");
+	    }
+	    if(!user.isEnabled()) {
+	    	throw new RuntimeException(" conta desativada solicite um administrador");
 	    }
           try {
 	        // Tenta autenticar (gerar token)
 	        String token = this.gerarToken(login);
 	        // Se chegou aqui, login foi bem-sucedido
 	        // Reseta as tentativas de login
-	        user.setTentativasLogin(0); 
+	        user.setTentativasLogin(0);  
+	         
 	        user.setUltimoAcesso(LocalDateTime.now());
-	        this.repository.save(user);
+	        this.repository.save(user);  
 	        
 	        return token;
 	    } catch (Exception e) {
@@ -93,6 +100,43 @@ public class LoginService {
 	    
 	    return repository.save(usuarioExistente);
 	}
+	//Bloquear/Desbloquar
+public Map<String , String> bloquearConta(long id){
+	Map<String, String> response = new HashMap<>();
+	Usuario usuario = repository.findById(id).orElseThrow(()->new RuntimeException(" usuario nao econtrado"));
+  // desbloquar se estiver bloqueado
+	if(usuario.getContaBloqueada() == true) {
+	   Map<String, String> contaDesbloqueada = new HashMap<>();
+	   usuario.setContaBloqueada(false);
+	   repository.save(usuario); 
+	   contaDesbloqueada.put("sucesso", "conta desbloqueada com sucesso");
+	   return contaDesbloqueada; 
+   } 
+   else {
+	usuario.setContaBloqueada(true);   
+	repository.save(usuario);
+ response.put("sucesso", "conta bloqueada com suceso");
+	return response;  
+   }
+} 
+//desativar/ativar
+public Map<String, String > desativarConta(long id){
+	Map<String , String> contaAtivada = new HashMap<>();
+	Usuario usuario = repository.findById(id).orElseThrow(()-> new RuntimeException("usuario nao encontrado"));
+    // desativar a conta se estiver ativa     
+	if(usuario.getAtivo() == true) {
+		Map<String , String> contaDesativada = new  HashMap<>();
+		contaDesativada.put("sucesso", "conta desativada com sucesso");
+				usuario.setAtivo(false);
+        	 repository.save(usuario);
+        	 return contaDesativada;
+       } else {
+        	 contaAtivada.put("sucesso", "conta ativada com sucesso");
+        	 return  contaAtivada;
+         }
+	 
+}
+	
 	//metodo para listar
 	public List<Usuario> findAll(){
 		List<Usuario> lista= new  ArrayList<>();

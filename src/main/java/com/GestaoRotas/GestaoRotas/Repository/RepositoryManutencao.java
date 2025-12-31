@@ -14,7 +14,7 @@ import com.GestaoRotas.GestaoRotas.Model.statusManutencao;
 
 @Repository
 public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
-
+ 
 
      
     //Busca pelo tipo da manutencao

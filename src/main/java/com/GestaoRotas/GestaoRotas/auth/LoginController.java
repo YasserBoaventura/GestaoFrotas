@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -102,12 +103,38 @@ public class LoginController {
 	    }catch(Exception e) {
 		return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
 	   }
-  }     
+  }   
+    //desbloquear/bloquear contas
+    @PutMapping("/bloqueio/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+public ResponseEntity<Map<String, String>> bloquearConta( @PathVariable long id){
+	try { 
+ 		Map<String, String> response = this.loginService.bloquearConta(id);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+  	}catch(ClassCastException  e) {
+		Map<String, String> erro = new HashMap<>();
+	 return	ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+	 	
+	}
+}
+      //ativar/destivar conta
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/ativo/{id}")
+    public ResponseEntity<Map<String, String>> desativarConta(@PathVariable long id){
+    	try {
+    		Map<String, String> response = this.loginService.desativarConta(id);
+    		return ResponseEntity.status(HttpStatus.OK).body(response);
+    	}catch(ClassCastException e) { 
+    		Map<String , String> erro =  new HashMap<>();
+    		erro.put("erro", "erro ao tentar fazer altercoes");
+    		e.printStackTrace();
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);     		
+    	}
+    }
     
-    //update pra ativar as contas ou desbloquear 
     @PutMapping("/{id}") 
     @PreAuthorize("hasAuthority('ADMIN')") 
-    public ResponseEntity<Usuario> atualizarUsuario(
+    public ResponseEntity<Usuario> atualizarUsuario( 
             @PathVariable Long id,
             @RequestBody @Valid Usuario usuario) {
          
