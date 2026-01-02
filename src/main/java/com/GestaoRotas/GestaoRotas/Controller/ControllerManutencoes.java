@@ -81,8 +81,8 @@ try {
   }
 @PutMapping("/iniciarManutencao/{id}")
 public ResponseEntity<Map<String , String>> iniciarManutencao(@PathVariable Long id){
-	try { 
-Map<String,String> response =  manutencaoService.iniciarManutencao(id);
+	try {  
+   Map<String,String> response =  manutencaoService.iniciarManutencao(id);
 	      return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	      }catch(Exception e) {
 		Map<String, String> erro = new HashMap<>();

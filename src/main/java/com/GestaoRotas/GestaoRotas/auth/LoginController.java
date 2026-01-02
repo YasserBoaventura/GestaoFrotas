@@ -105,7 +105,7 @@ public class LoginController {
 	   }
   }   
     //desbloquear/bloquear contas
-    @PutMapping("/bloqueio/{id}")
+    @PutMapping("/bloqueio/{id}") 
     @PreAuthorize("hasAuthority('ADMIN')")
 public ResponseEntity<Map<String, String>> bloquearConta( @PathVariable long id){
 	try { 
@@ -137,7 +137,7 @@ public ResponseEntity<Map<String, String>> bloquearConta( @PathVariable long id)
     public ResponseEntity<Usuario> atualizarUsuario( 
             @PathVariable Long id,
             @RequestBody @Valid Usuario usuario) {
-         
+          
         Usuario usuarioAtualizadoo = this.loginService.atualizarUsuario(id, usuario);
         return ResponseEntity.ok(usuarioAtualizadoo);
     }

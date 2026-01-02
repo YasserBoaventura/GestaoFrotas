@@ -18,7 +18,7 @@ import com.GestaoRotas.GestaoRotas.Repository.RepositoryViagem;
 
 @Service
 public class ServiceAbastecimentos {
-
+ 
 	
 	private final RepositoryAbastecimentos repositoryAbastecimentos;
 	private final RepositoryViagem  repositorioViagem;
@@ -33,7 +33,7 @@ public class ServiceAbastecimentos {
 public abastecimentos save(AbastecimentoDTO abstecimentos) {
     Veiculo veiculo = this.repositorioveiculos.findById(abstecimentos.getVeiculoId())
             .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
-
+ 
 	    abastecimentos abastecimento = new abastecimentos();
 	    abastecimento.setVeiculo(veiculo);
   

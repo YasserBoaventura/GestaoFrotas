@@ -11,9 +11,6 @@ import lombok.Data;
 @Data
 @NoArgsConstructor
 public class RelatorioCombustivelDTO {
-
-
-	    
 	    private String veiculo;
 	    private Double totalLitros;
 	    private Double totalGasto;

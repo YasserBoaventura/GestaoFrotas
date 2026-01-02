@@ -191,11 +191,11 @@ public ServiceManutencoes(RepositoryManutencao repositoryManuntencao, Repository
       
       // Busca manutenções com data passada e status não finalizados 
       List<Manutencao> manutencoesVencidas = repositoryManuntencao.findByDataManutencaoBeforeAndStatusNotIn(hoje, 
-    		  List.of(
+    		  List.of( 
     		  statusManutencao.CONCLUIDA,
               statusManutencao.CANCELADA,
               statusManutencao.ATRASADA
-          ));
+          ));    
        
       for (Manutencao manutencao : manutencoesVencidas) {
           // Atualiza o status da manutenção
@@ -340,10 +340,8 @@ public ServiceManutencoes(RepositoryManutencao repositoryManuntencao, Repository
                            "Veículo: " + manutencao.getVeiculo().getMatricula() + 
                            ", Tipo: " + manutencao.getTipoManutencao());
       }
-  }
-  
-  
-  public Manutencao findById(long id) {
+  } 
+ public Manutencao findById(long id){
 	    return repositoryManuntencao.findById(id)
 	        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Manutenção não encontrada"));
 	}
@@ -397,7 +395,7 @@ proximas30dias.stream()
             long diasRestantes = ChronoUnit.DAYS.between(hoje, m.getProximaManutencaoData());
             if (diasRestantes <= 30) {
                 detalhes = "em " + diasRestantes + " dias (" + m.getProximaManutencaoData() + ")";
-            }
+            } 
         } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null) {
             double kmRestantes = m.getProximaManutencaoKm() - m.getVeiculo().getKilometragemAtual();
             if (kmRestantes <= 1000 && kmRestantes > 0) {
