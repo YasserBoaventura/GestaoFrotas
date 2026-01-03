@@ -59,7 +59,7 @@ public ServiceManutencoes(RepositoryManutencao repositoryManuntencao, Repository
         veiculo.setStatus("EM_MANUTENCAO");
         veiculo.setDataAtualizacaoStatus(LocalDateTime.now());
         repositoryVeiculo.save(veiculo); 
-    } else if (dataManutencao.isBefore(hoje)) {
+    } else if (dataManutencao.isBefore(hoje)) { 
         manutencao.setStatus(manutencaoDTO.getStatus().ATRASADA);
     } else {
         manutencao.setStatus(manutencaoDTO.getStatus().AGENDADA);
@@ -349,7 +349,7 @@ public ServiceManutencoes(RepositoryManutencao repositoryManuntencao, Repository
  public List<Manutencao>  listarPorVeiculo(long veiculoId){
 	    // Buscar todas as manutenções de um veículo
 	 List<Manutencao> lista=  this.repositoryManuntencao.findByVeiculoId(veiculoId);
-	   return lista; 
+	   return lista;  
  }
  public List<Manutencao> listarPorTipo(String tipo) {
      return repositoryManuntencao.findBytipoManutencao(tipo);
@@ -357,7 +357,9 @@ public ServiceManutencoes(RepositoryManutencao repositoryManuntencao, Repository
  //relatorio de manuntencoes feitas por cada veiculo
  public List<RelatorioManutencaoDTO> gerarRelatorioPorVeiculo() {
      return  repositoryManuntencao.relatorioPorVeiculo();
- } 
+     
+ }  
+
  
 //No seu ServiceManutencoes, atualize o método gerarAlertas para usar os parâmetros:
  public List<String> gerarAlertas() {

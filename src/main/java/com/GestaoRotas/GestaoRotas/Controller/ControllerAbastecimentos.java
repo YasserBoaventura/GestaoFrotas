@@ -68,16 +68,16 @@ public class ControllerAbastecimentos {
 public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorVeiculo() {
     return ResponseEntity.ok(abastecimentosService.relatorioPorVeiculo());
 }  
- 
+  
 //busca relatorios por periodo dataInicio e dataFim
-@GetMapping("/relatorio-por-periodo")
+@GetMapping("/relatorio-por-periodo")  
 public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorPeriodo(
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
     System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
     return ResponseEntity.ok(abastecimentosService.relatorioPorPeriodo(inicio, fim));
 }
-
+ 
 	    //Busca todos os abastecimentos  
 @GetMapping("/findAll")
 public ResponseEntity<List<abastecimentos>> findAll(){

@@ -1,15 +1,18 @@
 package com.GestaoRotas.GestaoRotas.config;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 
@@ -48,7 +51,31 @@ public class GlobalExceptionHandler {
 		ex.printStackTrace();
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
 	}
-
-}
+	//erros pra valores inesperados
+	@ExceptionHandler(ClassCastException.class)
+	public ResponseEntity<String> handleClassCastException(ClassCastException ex){
+		ex.printStackTrace();
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage()); 
+	}
+	//erros pra entidades nao encontradas
+	@ExceptionHandler(EntityNotFoundException.class) 
+   public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException ex){
+	   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage()); 
+   }
+	//erros de sql
+	@ExceptionHandler(SQLException.class)
+	public ResponseEntity<Map<String , String>> handleSqlException(SQLException sql){
+		Map<String, String> erro  = new HashMap<>();
+		erro.put("erro", sql.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);  
+	}
+	//erros de nullPointer
+	@ExceptionHandler(NullPointerException.class)
+	public ResponseEntity<Map<String, String>> handleNullPointerException(NullPointerException ex){
+		Map<String , String> erro = new HashMap<>();
+		erro.put("erro", ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro); 
+	}
+} 
  
 

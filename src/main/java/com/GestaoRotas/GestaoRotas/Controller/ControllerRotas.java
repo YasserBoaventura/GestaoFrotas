@@ -53,7 +53,7 @@ public class ControllerRotas {
 	 }
 	 @GetMapping("/findAll")
 	public ResponseEntity<List<Rotas>> findAll(){
-		try {
+		try { 
 			 List<Rotas> lista=this.serviceRotas.findAll();
 			 return new ResponseEntity<>(lista, HttpStatus.OK);
 			 
@@ -66,14 +66,16 @@ public class ControllerRotas {
 public ResponseEntity<?> update(@RequestBody Rotas rotas, @PathVariable Long id) {
     try {
         Rotas rotaAtualizada = serviceRotas.update(rotas, id);
+        System.out.print("wwww " +rotaAtualizada.getTotalViagens());
         String sucesso = "Rota atualizada com sucesoo";
         return ResponseEntity.ok(sucesso);
-    } catch (Exception e) { 
+    } catch (Exception e) {  
         return ResponseEntity.badRequest()
             .body("Erro ao atualizar rota: " + e.getMessage());
     }
 }
  @GetMapping("findById/{id}")
+  
  public ResponseEntity<Rotas> findById(@PathVariable long id){
 	 try {
 		 Rotas rota=this.serviceRotas.findById(id);
