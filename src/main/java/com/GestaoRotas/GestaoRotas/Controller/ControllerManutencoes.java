@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/manutencoes")
+@RequestMapping("/api/manutencoes")
 public class ControllerManutencoes {
 
     private final ServiceManutencoes manutencaoService;
@@ -81,12 +81,12 @@ try {
   }
 @PutMapping("/iniciarManutencao/{id}")
 public ResponseEntity<Map<String , String>> iniciarManutencao(@PathVariable Long id){
-	try { 
-Map<String,String> response =  manutencaoService.iniciarManutencao(id);
+	try {  
+   Map<String,String> response =  manutencaoService.iniciarManutencao(id);
 	      return ResponseEntity.status(HttpStatus.CREATED).body(response);
-	      }catch(Exception e) {
+	      }catch(Exception e) { 
 		Map<String, String> erro = new HashMap<>();
-		 erro.put("message", "Manutencao inicializada com sucesso");
+		 erro.put("message", "erro ao inicializar a manutencao");
 		 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
 		      
 		}
@@ -149,7 +149,7 @@ public ResponseEntity<Map<String, String>> cancelarManutencao(@RequestBody Strin
     @GetMapping("/findById/{id}") 
     public ResponseEntity<Manutencao> findById(@PathVariable long id){
     	 try {  
-    	Manutencao  manutencao=this.manutencaoService.findById(id);
+    	Manutencao  manutencao = this.manutencaoService.findById(id);
     	return new ResponseEntity<>(manutencao, HttpStatus.OK);
     	}catch(Exception e) {
     	return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -160,7 +160,7 @@ public ResponseEntity<Map<String, String>> cancelarManutencao(@RequestBody Strin
     @GetMapping("/relatorio/veiculos")
     public ResponseEntity<List<RelatorioManutencaoDTO>> relatorioPorVeiculo() {
         return ResponseEntity.ok(manutencaoService.gerarRelatorioPorVeiculo());
-    }                 
+    }                  
     
     @GetMapping("/gerarAltertas")
     public ResponseEntity<List<String>> getAlertas() {

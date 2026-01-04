@@ -64,7 +64,7 @@ public ServiceVeiculo(RepositoryVeiculo repositoryVeiculo,RepositoryManutencao r
         veiculo.setStatus(novoStatus);
         veiculo.setDataAtualizacaoStatus(LocalDateTime.now());
         repositoryVeiculo.save(veiculo);
-    } 
+    }  
 }
 	   /**
 	     * Calcula o status do veículo baseado em múltiplos fatores
@@ -74,7 +74,7 @@ public ServiceVeiculo(RepositoryVeiculo repositoryVeiculo,RepositoryManutencao r
 	        if (estaEmViagem(veiculo.getId())) {
 	            return "EM_VIAGEM";
 	        }
-  
+	    
 	        // 2. Verifica se está em manutenção
 	        if (estaEmManutencaoAtiva(veiculo.getId())) {
 	            return "EM_MANUTENCAO";
@@ -102,6 +102,7 @@ public ServiceVeiculo(RepositoryVeiculo repositoryVeiculo,RepositoryManutencao r
 	        return viagensAtivas != null && !viagensAtivas.isEmpty();
 	    } 
   
+	    
 	    /**
 	     * Verifica se o veículo está em manutenção ativa
 	     */ 

@@ -38,7 +38,7 @@ public class SericeRotas {
         return  repositoryRotas.save(rotaExistente);
     }
 	  public List<Rotas> findAll() {
-	   List<Rotas> lista=this.repositoryRotas.findAll();
+	   List<Rotas> lista=this.repositoryRotas.findAll(); 
 		return lista;  
 	  }
 	public Rotas findById(long id) {

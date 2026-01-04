@@ -59,7 +59,7 @@ public ServiceManutencoes(RepositoryManutencao repositoryManuntencao, Repository
         veiculo.setStatus("EM_MANUTENCAO");
         veiculo.setDataAtualizacaoStatus(LocalDateTime.now());
         repositoryVeiculo.save(veiculo); 
-    } else if (dataManutencao.isBefore(hoje)) {
+    } else if (dataManutencao.isBefore(hoje)) { 
         manutencao.setStatus(manutencaoDTO.getStatus().ATRASADA);
     } else {
         manutencao.setStatus(manutencaoDTO.getStatus().AGENDADA);
@@ -191,11 +191,11 @@ public ServiceManutencoes(RepositoryManutencao repositoryManuntencao, Repository
       
       // Busca manutenções com data passada e status não finalizados 
       List<Manutencao> manutencoesVencidas = repositoryManuntencao.findByDataManutencaoBeforeAndStatusNotIn(hoje, 
-    		  List.of(
+    		  List.of( 
     		  statusManutencao.CONCLUIDA,
               statusManutencao.CANCELADA,
               statusManutencao.ATRASADA
-          ));
+          ));    
        
       for (Manutencao manutencao : manutencoesVencidas) {
           // Atualiza o status da manutenção
@@ -340,10 +340,8 @@ public ServiceManutencoes(RepositoryManutencao repositoryManuntencao, Repository
                            "Veículo: " + manutencao.getVeiculo().getMatricula() + 
                            ", Tipo: " + manutencao.getTipoManutencao());
       }
-  }
-  
-  
-  public Manutencao findById(long id) {
+  } 
+ public Manutencao findById(long id){
 	    return repositoryManuntencao.findById(id)
 	        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Manutenção não encontrada"));
 	}
@@ -351,7 +349,7 @@ public ServiceManutencoes(RepositoryManutencao repositoryManuntencao, Repository
  public List<Manutencao>  listarPorVeiculo(long veiculoId){
 	    // Buscar todas as manutenções de um veículo
 	 List<Manutencao> lista=  this.repositoryManuntencao.findByVeiculoId(veiculoId);
-	   return lista; 
+	   return lista;  
  }
  public List<Manutencao> listarPorTipo(String tipo) {
      return repositoryManuntencao.findBytipoManutencao(tipo);
@@ -359,7 +357,9 @@ public ServiceManutencoes(RepositoryManutencao repositoryManuntencao, Repository
  //relatorio de manuntencoes feitas por cada veiculo
  public List<RelatorioManutencaoDTO> gerarRelatorioPorVeiculo() {
      return  repositoryManuntencao.relatorioPorVeiculo();
- } 
+     
+ }  
+
  
 //No seu ServiceManutencoes, atualize o método gerarAlertas para usar os parâmetros:
  public List<String> gerarAlertas() {
@@ -397,7 +397,7 @@ proximas30dias.stream()
             long diasRestantes = ChronoUnit.DAYS.between(hoje, m.getProximaManutencaoData());
             if (diasRestantes <= 30) {
                 detalhes = "em " + diasRestantes + " dias (" + m.getProximaManutencaoData() + ")";
-            }
+            } 
         } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null) {
             double kmRestantes = m.getProximaManutencaoKm() - m.getVeiculo().getKilometragemAtual();
             if (kmRestantes <= 1000 && kmRestantes > 0) {

@@ -54,9 +54,16 @@ public class Rotas {
         viagens.add(viagem);
         viagem.setRota(this);
     }
+    @Column(name = "totalViagens")
+    private Long TotalViagens = getTotalViagens();
     
     // Método calculado
     public Long getTotalViagens() {
         return (long) viagens.size();
+        
+    } 
+    public void imprimirTotaisViagens() {
+    	long total = getTotalViagens();
+    	System.out.println(total);
     }
 }

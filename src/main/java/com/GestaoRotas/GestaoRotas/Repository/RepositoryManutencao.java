@@ -25,6 +25,10 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
     	       "m.veiculo.matricula, COUNT(m), SUM(m.custo), AVG(m.custo)) " +
     	       "FROM  Manutencao  m WHERE m.veiculo IS NOT NULL GROUP BY m.veiculo.matricula")
      	List<RelatorioManutencaoDTO> relatorioPorVeiculo();
+     
+     
+     
+     
                
     
 
@@ -57,7 +61,7 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
      List<Manutencao> findByVeiculoId(Long veiculoId);
      
  
-     // Método alternativo usando Native Query 
+     // Método alternativo usando Native Query  
      @Query(value = "SELECT * FROM manutencoes m WHERE " +
              "((m.proxima_manutencao_data IS NOT NULL AND m.proxima_manutencao_data BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)) OR " +
              "(m.proxima_manutencao_km IS NOT NULL AND m.proxima_manutencao_km - (SELECT kilometragem_atual FROM veiculo WHERE id = m.veiculo_id) <= 1000)) AND " +

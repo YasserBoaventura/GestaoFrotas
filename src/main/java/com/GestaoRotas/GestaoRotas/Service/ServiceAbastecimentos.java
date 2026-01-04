@@ -18,11 +18,11 @@ import com.GestaoRotas.GestaoRotas.Repository.RepositoryViagem;
 
 @Service
 public class ServiceAbastecimentos {
-
+ 
 	
 	private final RepositoryAbastecimentos repositoryAbastecimentos;
 	private final RepositoryViagem  repositorioViagem;
-	private final RepositoryVeiculo repositorioveiculos ;
+	private final RepositoryVeiculo repositorioveiculos;
 	public ServiceAbastecimentos(RepositoryAbastecimentos repositoryAbastecimentos ,RepositoryVeiculo repositorioveiculos, RepositoryViagem  repositorioViagem) {
 		this.repositoryAbastecimentos=repositoryAbastecimentos;
 		 this.repositorioveiculos =repositorioveiculos;
@@ -33,7 +33,7 @@ public class ServiceAbastecimentos {
 public abastecimentos save(AbastecimentoDTO abstecimentos) {
     Veiculo veiculo = this.repositorioveiculos.findById(abstecimentos.getVeiculoId())
             .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
-
+ 
 	    abastecimentos abastecimento = new abastecimentos();
 	    abastecimento.setVeiculo(veiculo);
   
@@ -48,8 +48,8 @@ public abastecimentos save(AbastecimentoDTO abstecimentos) {
 
     abastecimento.setDataAbastecimento(abstecimentos.getDataAbastecimento());
     abastecimento.setKilometragemVeiculo(abstecimentos.getKilometragemVeiculo());
-    abastecimento.setQuantidadeLitros(abstecimentos.getQuantidadeLitros());
-    abastecimento.setStatusAbastecimento(abstecimentos.getStatusAbastecimento());
+     abastecimento.setQuantidadeLitros(abstecimentos.getQuantidadeLitros());
+      abastecimento.setStatusAbastecimento(abstecimentos.getStatusAbastecimento());
   //  abastecimento.setDataAbastecimento(abstecimentos.getStatusAbastecimento());
 	    abastecimento.setTipoCombustivel(abstecimentos.getTipoCombustivel());
 	    abastecimento.setPrecoPorLitro(abstecimentos.getPrecoPorLitro());
@@ -113,7 +113,7 @@ public String update(AbastecimentoDTO abstecimentos, long id) {
     repositoryAbastecimentos.save(abastecimento);
     return "sucesso ao actualizar abastecimento";
 }   
-// relario de de abastecimento por veiculo
+// relario de de abastecimento por veiculo 
 public List<RelatorioCombustivelDTO> relatorioPorVeiculo() {   
     return repositoryAbastecimentos.relatorioPorVeiculo().stream()
             .map(obj -> new RelatorioCombustivelDTO(

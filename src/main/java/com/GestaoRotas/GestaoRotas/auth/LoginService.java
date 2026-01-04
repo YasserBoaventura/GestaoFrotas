@@ -51,14 +51,14 @@ public class LoginService {
 	    	  throw new RuntimeException("Conta bloqueada");
 	    }
 	    if(!user.isEnabled()) {
-	    	throw new RuntimeException(" conta desativada solicite um administrador");
+	    	throw new RuntimeException("conta desativada solicite um administrador");
 	    }
           try {
 	        // Tenta autenticar (gerar token)
 	        String token = this.gerarToken(login);
 	        // Se chegou aqui, login foi bem-sucedido
 	        // Reseta as tentativas de login
-	        user.setTentativasLogin(0);  
+	        user.setTentativasLogin(0);   
 	         
 	        user.setUltimoAcesso(LocalDateTime.now());
 	        this.repository.save(user);  
@@ -71,7 +71,7 @@ public class LoginService {
 	        
 	        throw new RuntimeException("Credenciais inválidas");
 	    }
-	}
+	} 
 // Como pegar os dados do usuario a se cadastrar
 	public String registar(Usuario usuario) { 
    String passwordEncoderStrings = passwordEncoder.encode(usuario.getPassword());
@@ -131,6 +131,8 @@ public Map<String, String > desativarConta(long id){
         	 repository.save(usuario);
         	 return contaDesativada;
        } else {
+    	   usuario.setAtivo(true); 
+    	   repository.save(usuario);
         	 contaAtivada.put("sucesso", "conta ativada com sucesso");
         	 return  contaAtivada;
          }
