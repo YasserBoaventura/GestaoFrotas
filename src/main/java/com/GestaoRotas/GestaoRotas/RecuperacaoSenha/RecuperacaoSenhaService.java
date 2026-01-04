@@ -82,8 +82,6 @@ public boolean verificarRespostaSeguranca(String username, String respostaSegura
     }
     return false; 
 }  
-
-
 public boolean redefinirSenhaComToken(String token, String novaSenha) {
     Optional<Usuario> usuarioOpt = loginRepository.findByResetToken(token);
     
@@ -99,15 +97,14 @@ public boolean redefinirSenhaComToken(String token, String novaSenha) {
     return false;
 }
 
-  public boolean redefinirSenhaComVerificacao(recuperacaoSenhaDTO dto) {
+ public boolean redefinirSenhaComVerificacao(recuperacaoSenhaDTO dto) {
     Optional<Usuario> usuarioOpt = loginRepository.findByUsernameAndResetToken(dto.getUsername(), dto.getToken());
 
     if (usuarioOpt.isPresent() && usuarioOpt.get().isTokenValido()) {
     Usuario usuario = usuarioOpt.get();
     //criacao de objecto pra o token
   
-             
-     // Verificar múltiplos fatores
+    // Verificar múltiplos fatores
     boolean tokenValido  = usuario.getResetToken().equalsIgnoreCase(dto.getToken());
     boolean emailValido = usuario.getEmail().equalsIgnoreCase(dto.getEmail());
     boolean nuitValido = usuario.getNuit().equals(dto.getNuit());
@@ -118,7 +115,7 @@ public boolean redefinirSenhaComToken(String token, String novaSenha) {
         usuario.setPassword(passwordEncoder.encode(dto.getNovaSenha()));
        
         loginRepository.save(usuario);
-        usuario.setTokenUtilizado(true);
+        usuario.setTokenUtilizado(true); 
         return true; 
     } 
 } 

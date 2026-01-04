@@ -30,4 +30,4 @@ public class AbastecimentoDTO {
 	    private String statusAbastecimento; 
 	    private Long veiculoId;        // Apenas o ID
 	    private Long viagemId; 
-}
+} 

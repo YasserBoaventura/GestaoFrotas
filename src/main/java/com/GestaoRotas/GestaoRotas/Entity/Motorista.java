@@ -45,7 +45,7 @@ public class Motorista {
 	 
 	@Enumerated(EnumType.STRING)
     @JsonProperty("statusMotorista") // This maps JSON "statusMotorista" to Java "status"
-    @Column(name="status" , nullable = false)
+    @Column(name="statusMotorista" , nullable = false)
 	private statusMotorista status;
 	
 	

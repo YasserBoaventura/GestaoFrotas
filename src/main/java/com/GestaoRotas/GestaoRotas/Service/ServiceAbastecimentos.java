@@ -30,27 +30,27 @@ public class ServiceAbastecimentos {
 	}
 	  
 
-	public abastecimentos save(AbastecimentoDTO abstecimentos) {
-	    Veiculo veiculo = this.repositorioveiculos.findById(abstecimentos.getVeiculoId())
-	            .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
+public abastecimentos save(AbastecimentoDTO abstecimentos) {
+    Veiculo veiculo = this.repositorioveiculos.findById(abstecimentos.getVeiculoId())
+            .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
 
 	    abastecimentos abastecimento = new abastecimentos();
 	    abastecimento.setVeiculo(veiculo);
   
 	    // Se houver viagemId, busca; se não, mantém null
-	    if (abstecimentos.getViagemId() != null) {
-	        Viagem viagem = this.repositorioViagem.findById(abstecimentos.getViagemId())
-	                .orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
-	        abastecimento.setViagem(viagem);   
-	    } else {     
-	        abastecimento.setViagem(null);
-	    }
+    if (abstecimentos.getViagemId() != null) {
+        Viagem viagem = this.repositorioViagem.findById(abstecimentos.getViagemId())
+                .orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
+        abastecimento.setViagem(viagem);   
+    } else {     
+        abastecimento.setViagem(null);
+    }
 
-	    abastecimento.setDataAbastecimento(abstecimentos.getDataAbastecimento());
-	    abastecimento.setKilometragemVeiculo(abstecimentos.getKilometragemVeiculo());
-	    abastecimento.setQuantidadeLitros(abstecimentos.getQuantidadeLitros());
-	    abastecimento.setStatusAbastecimento(abstecimentos.getStatusAbastecimento());
-      //  abastecimento.setDataAbastecimento(abstecimentos.getStatusAbastecimento());
+    abastecimento.setDataAbastecimento(abstecimentos.getDataAbastecimento());
+    abastecimento.setKilometragemVeiculo(abstecimentos.getKilometragemVeiculo());
+    abastecimento.setQuantidadeLitros(abstecimentos.getQuantidadeLitros());
+    abastecimento.setStatusAbastecimento(abstecimentos.getStatusAbastecimento());
+  //  abastecimento.setDataAbastecimento(abstecimentos.getStatusAbastecimento());
 	    abastecimento.setTipoCombustivel(abstecimentos.getTipoCombustivel());
 	    abastecimento.setPrecoPorLitro(abstecimentos.getPrecoPorLitro());
 	    
@@ -63,42 +63,56 @@ public class ServiceAbastecimentos {
               return lista;
     }  
     //Deletar por id
-    public String deletar(long id) {
-    	if(this.repositoryAbastecimentos.existsById(id)) {
-    	this.repositoryAbastecimentos.deleteById(id);
-    	return "abastecimento deletado com sucesso";
-    	}
-    	else if(!this.repositoryAbastecimentos.existsById(id)) {
-    		return  "Nao existe um abastecimento com esse id";
-    	}
-    	return "...";
-    	
-	} 
-    public abastecimentos findById(long id) {
-      return this.repositoryAbastecimentos.findById(id).get();
-    }
+public String deletar(long id) {
+	if(this.repositoryAbastecimentos.existsById(id)) {
+	this.repositoryAbastecimentos.deleteById(id);
+	return "abastecimento deletado com sucesso";
+	}
+	else if(!this.repositoryAbastecimentos.existsById(id)) {
+		return  "Nao existe um abastecimento com esse id";
+	}
+	return "...";
+	
+} 
+public abastecimentos findById(long id) {
+  return this.repositoryAbastecimentos.findById(id).get();
+}
     //Atualizacao de abastecimento de foreem mal escritos
-    public abastecimentos update(AbastecimentoDTO abstecimentos, long id) {
-  abastecimentos abastecimento = this.repositoryAbastecimentos.findById(abstecimentos.getId()).orElseThrow(()-> new RuntimeException("abstecimento nao encontrado") );
-	  
-Veiculo veiculo = this.repositorioveiculos.findById(abstecimentos.getVeiculoId()).orElseThrow(() -> new RuntimeException(" veiculo nao encontrado"));
+public String update(AbastecimentoDTO abstecimentos, long id) {
+    // CORREÇÃO: Buscar pelo ID do endpoint, não do DTO
+    abastecimentos abastecimento = this.repositoryAbastecimentos.findById(id)
+        .orElseThrow(() -> new RuntimeException("Abastecimento não encontrado com ID: " + id));
     
-   abastecimento.setDataAbastecimento(abstecimentos.getDataAbastecimento());
-	  abastecimento.setKilometragemVeiculo(abstecimentos.getKilometragemVeiculo());
-	  abastecimento.setTipoCombustivel(abstecimentos.getTipoCombustivel());;
-	  abastecimento.setPrecoPorLitro(abstecimentos.getPrecoPorLitro());
+    Veiculo veiculo = this.repositorioveiculos.findById(abstecimentos.getVeiculoId())
+        .orElseThrow(() -> new RuntimeException("Veiculo não encontrado com ID: " + abstecimentos.getVeiculoId()));
+     
+    // Atualizar campos
+    abastecimento.setVeiculo(veiculo);
+    abastecimento.setDataAbastecimento(abstecimentos.getDataAbastecimento());
+    abastecimento.setKilometragemVeiculo(abstecimentos.getKilometragemVeiculo());
+    abastecimento.setTipoCombustivel(abstecimentos.getTipoCombustivel());
+    abastecimento.setPrecoPorLitro(abstecimentos.getPrecoPorLitro());
+    abastecimento.setQuantidadeLitros(abstecimentos.getQuantidadeLitros()); // Falta esta linha!
     abastecimento.setStatusAbastecimento(abstecimentos.getStatusAbastecimento());
-	  // Se houver viagemId, busca; se não, mantém null
-    if (abstecimentos.getViagemId() != null) {
+    
+ 
+    // abastecimento.setStatusAbastecimento(abstecimentos.getStatusAbastecimento()); // REMOVER ESTA
+    
+    // Se houver viagemId, busca; se não, mantém null
+    if (abstecimentos.getViagemId() ==0) { 
         Viagem viagem = this.repositorioViagem.findById(abstecimentos.getViagemId())
-                .orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
+            .orElseThrow(() -> new RuntimeException("Viagem não encontrada com ID: " + abstecimentos.getViagemId()));
         abastecimento.setViagem(viagem);
     } else {   
         abastecimento.setViagem(null);   
-    }   
-  return  repositoryAbastecimentos.save(abastecimento); 
-} 
+    }
     
+    // Adicionar log para debug
+    System.out.println("Abastecimento atualizado: " + abastecimento);
+    
+    repositoryAbastecimentos.save(abastecimento);
+    return "sucesso ao actualizar abastecimento";
+}   
 // relario de de abastecimento por veiculo
 public List<RelatorioCombustivelDTO> relatorioPorVeiculo() {   
     return repositoryAbastecimentos.relatorioPorVeiculo().stream()

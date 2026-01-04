@@ -13,7 +13,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 @Configuration
 public class timeConfigure {
 
-    @Bean
+    @Bean  
     ObjectMapper objectMapper() {
 		   ObjectMapper mapper = new ObjectMapper();
 	        mapper.registerModule(new JavaTimeModule());

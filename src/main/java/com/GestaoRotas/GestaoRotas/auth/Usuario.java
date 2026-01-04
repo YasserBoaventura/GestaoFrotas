@@ -79,13 +79,13 @@ public class Usuario implements UserDetails {
     
     @Column(name = "ultimo_acesso")
     private LocalDateTime ultimoAcesso; 
-    
+        
     @Column(name = "tentativas_login")
     private Integer tentativasLogin = 0;
     
     @Column(name = "conta_bloqueada")
     private Boolean contaBloqueada = false;
-      
+       
     // Métodos de UserDetails
    
     @JsonIgnore
@@ -97,7 +97,7 @@ public class Usuario implements UserDetails {
     
     @Override
     public boolean isAccountNonExpired() {
-        return true;  
+        return true;   
     }
     
     @Override

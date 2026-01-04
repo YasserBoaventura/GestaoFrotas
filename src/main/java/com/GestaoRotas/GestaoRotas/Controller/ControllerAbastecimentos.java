@@ -49,15 +49,19 @@ public class ControllerAbastecimentos {
 	  }
     }            
   @PutMapping("/update/{id}")
-  public ResponseEntity<?> update(@RequestBody AbastecimentoDTO abastecimentoDTO, @PathVariable long id){
-  	try {   
-  		abastecimentos frase=this.abastecimentosService.update(abastecimentoDTO, id);
-        return ResponseEntity.ok(frase);
-   
-  	}catch(Exception e) {
-  		return  ResponseEntity.badRequest().body("");
-  	}
-  	 }
+  public ResponseEntity<String> update(@PathVariable long id, @RequestBody AbastecimentoDTO abastecimentoDTO) {
+      try {
+     
+      
+      String response = this.abastecimentosService.update(abastecimentoDTO, id);
+      return ResponseEntity.status(HttpStatus.OK).body(response);
+  } catch(Exception e) {
+      System.err.println("Erro ao atualizar abastecimento: " + e.getMessage());
+      e.printStackTrace();
+      String erro = "erro ao actualizar abastecimento: " + e.getMessage();
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+      }
+  } 
 
   // relatio de abastecimento por veiculo 
 @GetMapping("/relatorio")
