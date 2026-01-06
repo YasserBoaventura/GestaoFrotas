@@ -16,21 +16,21 @@ import com.GestaoRotas.GestaoRotas.Model.statusManutencao;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryManutencao;
 import com.GestaoRotas.GestaoRotas.Service.ServiceManutencoes;
 
+import lombok.RequiredArgsConstructor;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/manutencoes")
+@RequiredArgsConstructor 
 public class ControllerManutencoes {
 
     private final ServiceManutencoes manutencaoService;
     private final RepositoryManutencao repositoryManutencao;
     
-	public ControllerManutencoes(ServiceManutencoes manutencaoService, RepositoryManutencao repositoryManutencao) {
-		this.manutencaoService=manutencaoService;
-		this.repositoryManutencao = repositoryManutencao;
-	} 
+
   @PostMapping("/save")
 public ResponseEntity<String> cadastrar(@RequestBody manuntecaoDTO manutencaoDTO) {
    try {
@@ -58,11 +58,10 @@ try {
 	List<Manutencao>  lista=this.manutencaoService.listarPorVeiculo(veiculoId);
 	if(lista.isEmpty()) {
 		 return new ResponseEntity<>(HttpStatus.NO_CONTENT);	    	
-		} else {
+		} else { 
 	 	return new ResponseEntity<>(lista, HttpStatus.OK);
 		}
-	    	
-	    }catch(Exception e) {
+	     }catch(Exception e) {
 	    	return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 	   }
 	    } 
@@ -100,7 +99,7 @@ public ResponseEntity<Map<String , String>> concluirManutencao(@RequestBody Stri
 	Map<String, String> erro = new HashMap<>();
 	 erro.put("message","Manutencao inicializada com sucesso");
 	 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
-	      
+	         
 	}
 }
 @PutMapping("/cancelarManutencao/{id}") 
@@ -135,8 +134,7 @@ public ResponseEntity<Map<String, String>> cancelarManutencao(@RequestBody Strin
     public ResponseEntity<List<Manutencao>> listarPorTipo(@PathVariable String tipoManutencao) {
     try {
         List<Manutencao> lista = manutencaoService.listarPorTipo(tipoManutencao);
-        
-        if (lista.isEmpty()) {
+         if (lista.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>(lista, HttpStatus.OK);

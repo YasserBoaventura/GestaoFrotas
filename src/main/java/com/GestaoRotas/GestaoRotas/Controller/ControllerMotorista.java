@@ -18,85 +18,59 @@ import com.GestaoRotas.GestaoRotas.Entity.Motorista;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Service.ServiceMotorista;
 import jakarta.persistence.*;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("api/motorista")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 public class ControllerMotorista {
 	
 	private final ServiceMotorista serviceMotorista;
 	 
-	public ControllerMotorista(ServiceMotorista serviceMotorista) {
-		this.serviceMotorista=serviceMotorista;  
-	}
 	 
-         
-@PostMapping("/save")
+ @PostMapping("/save")
   public ResponseEntity<Map<String, String>> salvar(@RequestBody Motorista motorista) {
-    try {
-        String saved = serviceMotorista.salvar(motorista);
-   
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Motorista cadastrado com sucesso");
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    try { 
+        return ResponseEntity.ok(serviceMotorista.salvar(motorista)); 
        }catch (Exception e) {
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("error", e.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     } 
 }
-	    
-  @DeleteMapping("/delete/{id}")
+ @DeleteMapping("/delete/{id}")
  public ResponseEntity<String> delete(@PathVariable Long id){
-     try {
-    	 serviceMotorista.deleteById(id);
-        return ResponseEntity.ok("Motorista apagado com sucesso");
+     try { 
+        return ResponseEntity.ok(serviceMotorista.deleteById(id));
      } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
          .body("Erro ao apagar Motorista: " + e.getMessage());
-    }
-    
+    } 
  }
-@PutMapping("/update/{id}")
-public ResponseEntity<String>  update(@RequestBody Motorista motorista ,@PathVariable long id){
-	 
-	try {
-	String frase=this.serviceMotorista.update(motorista, id);
-	if(frase.isEmpty()) {
-		return new ResponseEntity<>("Nao existe um motorista com esse nome",HttpStatus.NO_CONTENT);
-	}else {
-		return new ResponseEntity<>(frase, HttpStatus.OK);
-	}
+@PutMapping("/update/{id}")  
+public ResponseEntity<String> update(@RequestBody Motorista motorista ,@PathVariable long id){
+	 try {
+		 return ResponseEntity.ok(serviceMotorista.update(motorista, id)); 
  }catch(Exception e) {
 	return new ResponseEntity<>("nao foi possivel actualizar", HttpStatus.BAD_REQUEST);
 }
   }
 	@GetMapping("/findAll")
 	 public ResponseEntity<List<Motorista>>  findAll(){
-   	 try {
-   	List<Motorista> lista=this.serviceMotorista.findAll();
-   	if(lista.isEmpty()) {
-        return ResponseEntity.noContent().build();
-   	}else {
-   		return new ResponseEntity<>(lista, HttpStatus.OK);
-   	}
+      try {
+    	  return ResponseEntity.ok(serviceMotorista.findAll()); 
    	 }catch(Exception e) {
-   		return new ResponseEntity<>(null,  HttpStatus.BAD_REQUEST); 
+   		 return ResponseEntity.badRequest().build();  
    	 }
    	} 
 	@GetMapping("/findByNome/{nomeMotorista}")
 	public ResponseEntity <List<Motorista>>  findByNome(@PathVariable String nomeMotorista){
 	try {
-		List<Motorista> lista=this.serviceMotorista.findByNome(nomeMotorista);
-		if(lista.isEmpty()) {
-            return ResponseEntity.noContent().build();
-		}
-		else {
-	   		return new ResponseEntity<>(lista, HttpStatus.OK);
-		}
+		return ResponseEntity.ok(serviceMotorista.findByNome(nomeMotorista)); 
 		} catch(Exception e) {
-			   e.printStackTrace();
-			return new ResponseEntity<>(null,  HttpStatus.BAD_REQUEST);
+			e.getMessage(); 
+			 return ResponseEntity.badRequest().build();   
 		}
 	}
 	

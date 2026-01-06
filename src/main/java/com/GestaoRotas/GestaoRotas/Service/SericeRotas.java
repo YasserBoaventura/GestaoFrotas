@@ -5,15 +5,16 @@ import java.util.*;
 import com.GestaoRotas.GestaoRotas.Entity.Rotas;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryRotas;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class SericeRotas {
 
-	 
+	  
 	private final RepositoryRotas repositoryRotas;
 
-	public SericeRotas(RepositoryRotas repositoryRotas) {
-		this.repositoryRotas=repositoryRotas;
-	}
+	
 	public String save(Rotas rotas ) {
 	 repositoryRotas.save(rotas);
 	  return "salvo com sucesso";
@@ -22,8 +23,7 @@ public class SericeRotas {
 		repositoryRotas.deleteById(id);
 		return "Excluído!', 'A rota foi excluída.', 'success";
 	}
-	
-    public Rotas update(Rotas rotas, Long id) {
+	public String update(Rotas rotas, Long id) {
         // Busca a rota existente
         Rotas rotaExistente =  repositoryRotas.findById(id)
             .orElseThrow(() -> new RuntimeException("Rota não encontrada com id: " + id));
@@ -34,12 +34,11 @@ public class SericeRotas {
         rotaExistente.setDistanciaKm(rotas.getDistanciaKm());
         rotaExistente.setTempoEstimadoHoras(rotas.getTempoEstimadoHoras());
         rotaExistente.setDescricao(rotas.getDescricao());
-        
-        return  repositoryRotas.save(rotaExistente);
+    repositoryRotas.save(rotaExistente);
+   return "Motorista salvo com sucesso";
     }
 	  public List<Rotas> findAll() {
-	   List<Rotas> lista=this.repositoryRotas.findAll(); 
-		return lista;  
+	return repositoryRotas.findAll();   
 	  }
 	public Rotas findById(long id) {
 	  return this.repositoryRotas.findById(id).get();

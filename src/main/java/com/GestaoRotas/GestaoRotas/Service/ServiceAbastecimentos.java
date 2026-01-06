@@ -16,21 +16,18 @@ import com.GestaoRotas.GestaoRotas.Repository.RepositoryAbastecimentos;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryViagem;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor  
 public class ServiceAbastecimentos {
  
 	
 	private final RepositoryAbastecimentos repositoryAbastecimentos;
 	private final RepositoryViagem  repositorioViagem;
 	private final RepositoryVeiculo repositorioveiculos;
-	public ServiceAbastecimentos(RepositoryAbastecimentos repositoryAbastecimentos ,RepositoryVeiculo repositorioveiculos, RepositoryViagem  repositorioViagem) {
-		this.repositoryAbastecimentos=repositoryAbastecimentos;
-		 this.repositorioveiculos =repositorioveiculos;
-		 this.repositorioViagem = repositorioViagem;
-	}
-	  
-
-public abastecimentos save(AbastecimentoDTO abstecimentos) {
+	
+   public abastecimentos save(AbastecimentoDTO abstecimentos) {
     Veiculo veiculo = this.repositorioveiculos.findById(abstecimentos.getVeiculoId())
             .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
  
@@ -43,35 +40,26 @@ public abastecimentos save(AbastecimentoDTO abstecimentos) {
                 .orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
         abastecimento.setViagem(viagem);   
     } else {     
-        abastecimento.setViagem(null);
+        abastecimento.setViagem(null);    
     }
-
     abastecimento.setDataAbastecimento(abstecimentos.getDataAbastecimento());
     abastecimento.setKilometragemVeiculo(abstecimentos.getKilometragemVeiculo());
-     abastecimento.setQuantidadeLitros(abstecimentos.getQuantidadeLitros());
-      abastecimento.setStatusAbastecimento(abstecimentos.getStatusAbastecimento());
-  //  abastecimento.setDataAbastecimento(abstecimentos.getStatusAbastecimento());
-	    abastecimento.setTipoCombustivel(abstecimentos.getTipoCombustivel());
-	    abastecimento.setPrecoPorLitro(abstecimentos.getPrecoPorLitro());
-	    
-
-	    return this.repositoryAbastecimentos.save(abastecimento);
+    abastecimento.setQuantidadeLitros(abstecimentos.getQuantidadeLitros());
+    abastecimento.setStatusAbastecimento(abstecimentos.getStatusAbastecimento());
+	abastecimento.setTipoCombustivel(abstecimentos.getTipoCombustivel());
+	abastecimento.setPrecoPorLitro(abstecimentos.getPrecoPorLitro());
+	//saving    
+  return this.repositoryAbastecimentos.save(abastecimento);
 	}
  //Busca tos os  abastecimentos feitos
     public List<abastecimentos> findAll(){
-    List<abastecimentos> lista=this.repositoryAbastecimentos.findAll();
-              return lista;
+   return this.repositoryAbastecimentos.findAll();
+            
     }  
     //Deletar por id
 public String deletar(long id) {
-	if(this.repositoryAbastecimentos.existsById(id)) {
 	this.repositoryAbastecimentos.deleteById(id);
-	return "abastecimento deletado com sucesso";
-	}
-	else if(!this.repositoryAbastecimentos.existsById(id)) {
-		return  "Nao existe um abastecimento com esse id";
-	}
-	return "...";
+    return "abastecimento  deletado com sucesso";
 	
 } 
 public abastecimentos findById(long id) {

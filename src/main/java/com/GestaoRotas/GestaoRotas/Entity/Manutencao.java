@@ -57,9 +57,9 @@ public class Manutencao {
 	    private LocalDate proximaManutencaoData;
 	    
 	    @Column(name = "dataConclusao")
-	    private LocalDateTime dataConclusao;
+	    private String dataConclusao; 
 	    @Column(name ="dataInicio")
-	    private LocalDateTime dataInicio;
+	    private String dataInicio;
 	    
 	    // ManyToOne com Veiculo
 	    @ManyToOne(fetch = FetchType.LAZY)
@@ -67,7 +67,7 @@ public class Manutencao {
 	    @JsonIgnoreProperties({"Manutencao", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO
 	    private Veiculo veiculo;
 	    
-
+ 
 	    @Enumerated(EnumType.STRING)  
 	    private statusManutencao status;
 	    

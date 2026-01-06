@@ -15,28 +15,20 @@ import com.GestaoRotas.GestaoRotas.DTO.recuperacaoSenhaDTO;
 import com.GestaoRotas.GestaoRotas.auth.LoginRepository;
 import com.GestaoRotas.GestaoRotas.auth.Usuario;
 
+import lombok.RequiredArgsConstructor;
+
 
 
 @Service
-public class RecuperacaoSenhaService {
+@RequiredArgsConstructor 
+public final class RecuperacaoSenhaService  {
 	
 	  
 	//Ja que nao possuo o usuarioRepository uso o loginRepository
     private final LoginRepository loginRepository;
-    
- 
     private final PasswordEncoder passwordEncoder;
      
-   // @Autowired 
-  //  private  EmailServiceImpl emailServiceImpl;
-	
- public RecuperacaoSenhaService(LoginRepository loginRepository,PasswordEncoder passwordEncoder) {
-	
- this.loginRepository=loginRepository;
- this.passwordEncoder=passwordEncoder;
-/// this.emailServiceImpl=emailServiceImpl;   
-	  
-}
+  
 
 public Map<String, String> solicitarRecuperacaoSenha(String username, String email) {
     Optional<Usuario> usuarioOpt = loginRepository.findByUsernameAndEmail(username, email);
@@ -47,7 +39,7 @@ public Map<String, String> solicitarRecuperacaoSenha(String username, String ema
         	Map<String , String > naoAtivo = new HashMap<>();
         	naoAtivo.put("status","Usuario nao pode fazer altercoes. sua conta esta inativa");
     	
-    	return naoAtivo; 
+    	return naoAtivo;  
         }
     String token = UUID.randomUUID().toString();
     usuario.setResetToken(token);
@@ -102,7 +94,7 @@ public boolean redefinirSenhaComToken(String token, String novaSenha) {
 
     if (usuarioOpt.isPresent() && usuarioOpt.get().isTokenValido()) {
     Usuario usuario = usuarioOpt.get();
-    //criacao de objecto pra o token
+    //criacao de objecto pra o token 
   
     // Verificar múltiplos fatores
     boolean tokenValido  = usuario.getResetToken().equalsIgnoreCase(dto.getToken());

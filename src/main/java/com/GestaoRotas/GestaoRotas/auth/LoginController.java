@@ -21,26 +21,20 @@ import com.GestaoRotas.GestaoRotas.DTO.AutoCadastroDTO;
 
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 
 
 @RestController 
 @RequestMapping("/api")
 @CrossOrigin("*")
+@RequiredArgsConstructor  
 public class LoginController {
  
     private final LoginService loginService;
     private final PasswordEncoder passwordEncoder;
     private final LoginRepository loginRepository;
-
-    @Autowired
-    public LoginController(LoginService loginService,
-                           LoginRepository loginRepository,
-                           PasswordEncoder passwordEncoder) {
-        this.loginService = loginService;
-        this.loginRepository = loginRepository;
-        this.passwordEncoder = passwordEncoder;
-    } 
+ 
 
     @PostMapping("/login")
     public ResponseEntity<?> logar(@RequestBody Login login) {
@@ -104,7 +98,7 @@ public class LoginController {
 		return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
 	   }
   }   
-    //desbloquear/bloquear contas
+    //desbloquear/bloquear contas 
     @PutMapping("/bloqueio/{id}") 
     @PreAuthorize("hasAuthority('ADMIN')")
 public ResponseEntity<Map<String, String>> bloquearConta( @PathVariable long id){
@@ -135,7 +129,7 @@ public ResponseEntity<Map<String, String>> bloquearConta( @PathVariable long id)
     @PutMapping("/{id}") 
     @PreAuthorize("hasAuthority('ADMIN')") 
     public ResponseEntity<Usuario> atualizarUsuario( 
-            @PathVariable Long id,
+            @PathVariable Long id, 
             @RequestBody @Valid Usuario usuario) {
           
         Usuario usuarioAtualizadoo = this.loginService.atualizarUsuario(id, usuario);

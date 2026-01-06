@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.GestaoRotas.GestaoRotas.DTO.recuperacaoSenhaDTO;
 
 import jakarta.persistence.*;
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.ResponseEntity;
@@ -15,14 +16,12 @@ import java.util.*;
 
 @RestController
 @RequestMapping("api/auth")
+@RequiredArgsConstructor  
 public class RecuperacaoSenhaController {
 	
 	private  final RecuperacaoSenhaService recuperacaoService;
 	 
-	public RecuperacaoSenhaController(RecuperacaoSenhaService recuperacaoService) {
-		this.recuperacaoService=recuperacaoService;
-		  
-	}  
+ 
  @PostMapping("/solicitar-recuperacao")
  public ResponseEntity<Map<String, String>> solicitarRecuperacao(@RequestBody SolicitarRecuperacaoRequest dto) {
      Map<String, String> response = recuperacaoService.solicitarRecuperacaoSenha(dto.getUsername(), dto.getEmail());
@@ -43,13 +42,12 @@ public ResponseEntity<?> redefinirSenhaComToken(@RequestBody RedefinirSenhaToken
         request.getToken(), 
         request.getNovaSenha()
     ); 
-    
-    if (sucesso) {
+     if (sucesso) {
         return ResponseEntity.ok("Senha redefinida com sucesso");
     } else {
         return ResponseEntity.badRequest().body("Token inválido ou expirado");
     } 
-}   
+}    
 
 @PostMapping("/redefinir-senha-verificacao")
 public ResponseEntity<?> redefinirSenhaComVerificacao(@RequestBody recuperacaoSenhaDTO dto) {

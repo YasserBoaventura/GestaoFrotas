@@ -72,14 +72,8 @@ public class SecurityConfig {
                             "/api/auth/solicitar-recuperacao",
                             "/api/auth/redefinir-senha-token",
                             "/api/auth/redefinir-senha-verificacao",
-                            "/manutencoes/save",
-                            "/api/viagens/motoristas",
-                            "/api/viagens/veiculos",
-                            "/api/viagens/veiculoss/",
-                            "/api/manutencoes/findAll",
-                            "/api/manutencoes/relatorio/veiculos"
-                           
-                    ).permitAll()
+                            "/api/viagens/countByStatus/**"
+                       ).permitAll()
                     .anyRequest().authenticated()
             )
             .sessionManagement(session ->

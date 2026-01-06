@@ -17,22 +17,20 @@ import com.GestaoRotas.GestaoRotas.DTO.VeiculoDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
 import com.GestaoRotas.GestaoRotas.Service.ServiceVeiculo;
+
+import lombok.RequiredArgsConstructor;
+
 import java.util.*;
 
 
 @RestController
 @RequestMapping("/api/veiculos")
 @CrossOrigin("*")
+@RequiredArgsConstructor 
 public class ControllerVeiculo {
     
 	 private final ServiceVeiculo serviceVeiculo;
-
-	
-	 private final RepositoryVeiculo repositoryVeiculo;
-	public ControllerVeiculo (ServiceVeiculo serviceVeiculo, RepositoryVeiculo repositoryVeiculo) {
-		this.serviceVeiculo=serviceVeiculo; 
-		this.repositoryVeiculo=repositoryVeiculo;
-	}
+     private final RepositoryVeiculo repositoryVeiculo;
 
 @PostMapping("/salvar")
   public ResponseEntity<Map<String, String>> salvar(@RequestBody Veiculo veiculo) {
@@ -63,7 +61,6 @@ public class ControllerVeiculo {
 	 }
  }
 	
- 
  @PatchMapping("/{veiculoId}/kilometragem")
  public ResponseEntity<Veiculo> atualizarKilometragem(
          @PathVariable Long veiculoId,
@@ -82,21 +79,15 @@ public class ControllerVeiculo {
      @PutMapping("/update/{id}") 
     public ResponseEntity<String> update(@RequestBody Veiculo veiculo, @PathVariable long id){
     	try {
-    		String frase= this.serviceVeiculo.update(veiculo, id);
-    		if(frase.isEmpty() || frase.isBlank()) {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		  }else{
-			return new ResponseEntity<>(frase, HttpStatus.OK);
-		 }
+    		 return ResponseEntity.ok(serviceVeiculo.update(veiculo, id)); 
 		 }catch(Exception e) {
-    		System.out.println("");
-    	  return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST );	
+        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST );	
     	}
     }
      @GetMapping("/findById/{id}")
      public ResponseEntity<Veiculo> findById(Long id){
     	 try { 
-    		Veiculo veiculo = repositoryVeiculo.findById(id).get();
+    		Veiculo veiculo = repositoryVeiculo.findById(id).get(); 
           return new ResponseEntity<>( veiculo, HttpStatus.OK) ;   		 
     	 } catch(Exception e) {
     		 e.getMessage();

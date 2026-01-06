@@ -25,7 +25,7 @@ public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
     @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioMotoristaDTO(" +
            "v.motorista.nome, " +
             "v.motorista.telefone," +
-            "v.status ,"+
+            "v.status ,"+  
            "COUNT(v), " +   
            "COALESCE(SUM(v.kilometragemFinal - v.kilometragemInicial), 0), " +
            "COALESCE(SUM(a.quantidadeLitros), 0)) " +
@@ -145,27 +145,27 @@ public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
     // 6. Relatório por semana - CORRIGIDO (usando função do MySQL WEEK)
     @Query(value = "SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioSemanalDTO(" +
            "CONCAT('Semana ', WEEK(v.data_hora_partida, 1)), " +
-           "COUNT(v), " +
+           "COUNT(v), " +     
            "COALESCE(SUM(v.kilometragem_final - v.kilometragem_inicial), 0), " +
            "COALESCE(SUM(a.quantidade_litros), 0)) " +
            "FROM viagem v " +
            "LEFT JOIN abastecimento a ON v.id = a.viagem_id " +
            "WHERE v.status = 'CONCLUIDA' " +
            "AND v.data BETWEEN :dataInicio AND :dataFim " +
-           "GROUP BY WEEK(v.data, 1) " +       
+           "GROUP BY WEEK(v.data, 1) " +                
            "ORDER BY WEEK(v.data, 1) DESC", nativeQuery = true)
     List<RelatorioSemanalDTO> relatorioSemanalPorPeriodo( 
             @Param("dataInicio") LocalDateTime dataInicio,
             @Param("dataFim") LocalDateTime dataFim);
     
-    // 7. Viagens por período e status - NOVO método
+    // 7. Viagens por período e status 
     @Query("SELECT v FROM Viagem v WHERE v.data BETWEEN :dataInicio AND :dataFim AND v.status = :status")
     List<Viagem> findByDataHoraPartidaBetweenAndStatus(
             @Param("dataInicio") LocalDateTime dataInicio,
             @Param("dataFim") LocalDateTime dataFim,
             @Param("status") String status);
     
-    // 8. Top 5 motoristas com mais viagens no período - CORRIGIDO
+    // 8. Top 5 motoristas com mais viagens no período 
     @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioTopMotoristasDTO(" +
            "v.motorista.nome, " +
            "COUNT(v), " +

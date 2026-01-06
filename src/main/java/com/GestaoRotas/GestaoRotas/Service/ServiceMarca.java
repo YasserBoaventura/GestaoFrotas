@@ -5,25 +5,22 @@ import org.springframework.stereotype.Service;
 import com.GestaoRotas.GestaoRotas.Entity.Marca;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryMarca;
 import java.util.*;
+
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Service
+@RequiredArgsConstructor
 public class ServiceMarca {
 
-	
+	 
 	private final RepositoryMarca repositoryMarca;
-	public ServiceMarca(RepositoryMarca repositoryMarca) {
-		this.repositoryMarca=repositoryMarca;
-	}
+	
 	public String save(Marca marca) {
 		this.repositoryMarca.save(marca);
 		return "marca salva com sucesso";
 	}
-	public String delete(long id) {
-		
-		if(!this.repositoryMarca.existsById(id)) {
-			return "nao existe essa marca no banco";
-		} 
+	public String delete(long id) { 
 		this.repositoryMarca.deleteById(id);
 		return "marca deletada com sucesso";
 	}
@@ -33,8 +30,7 @@ public class ServiceMarca {
 		this.repositoryMarca.save(marca);
 		return "marca atualizadaa com sucesso";
 	}
-	public List<Marca> findAll(){
-		List<Marca> lista=this.repositoryMarca.findAll();
-		return lista;
+	 public List<Marca> findAll(){
+	return this.repositoryMarca.findAll();
 	}
 }

@@ -1,6 +1,7 @@
 package com.GestaoRotas.GestaoRotas.Controller;
 
 import jakarta.persistence.*;
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -27,15 +28,14 @@ import com.GestaoRotas.GestaoRotas.Service.ServiceAbastecimentos;
 
 @RestController
 @RequestMapping("api/abastecimentos")
+@RequiredArgsConstructor 
 @CrossOrigin("*")
 public class ControllerAbastecimentos {
 
 	
   private final ServiceAbastecimentos abastecimentosService;
   
-   public ControllerAbastecimentos(ServiceAbastecimentos abastecimentos) {
-	this.abastecimentosService=abastecimentos;   
-   }
+  
    
 	   // sava o abastecimento
    @PostMapping("/save")
@@ -51,14 +51,12 @@ public class ControllerAbastecimentos {
   @PutMapping("/update/{id}")
   public ResponseEntity<String> update(@PathVariable long id, @RequestBody AbastecimentoDTO abastecimentoDTO) {
       try {
-     
-      
       String response = this.abastecimentosService.update(abastecimentoDTO, id);
       return ResponseEntity.status(HttpStatus.OK).body(response);
   } catch(Exception e) {
       System.err.println("Erro ao atualizar abastecimento: " + e.getMessage());
       e.printStackTrace();
-      String erro = "erro ao actualizar abastecimento: " + e.getMessage();
+       String erro = "erro ao actualizar abastecimento: " + e.getMessage();
           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
       }
   } 
@@ -76,12 +74,12 @@ public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorPeriodo(
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
     System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
     return ResponseEntity.ok(abastecimentosService.relatorioPorPeriodo(inicio, fim));
-}
- 
+}  
+  
 	    //Busca todos os abastecimentos  
 @GetMapping("/findAll")
 public ResponseEntity<List<abastecimentos>> findAll(){
- try {
+ try { 
 	  List<abastecimentos> lista=this.abastecimentosService.findAll();
 	   if(lista.isEmpty()) {
 		   return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -108,8 +106,7 @@ public ResponseEntity<abastecimentos> findById(@PathVariable long id){
 		abastecimentos abastecimento=new abastecimentos();
 		if(abastecimento==null) 
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	
-   return new ResponseEntity<>(abastecimento,HttpStatus.OK);
+	  return new ResponseEntity<>(abastecimento,HttpStatus.OK);
 	  }catch(Exception e) {
 		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 	}
