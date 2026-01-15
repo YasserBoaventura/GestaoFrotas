@@ -24,11 +24,11 @@ public class abastecimentos {
 	    
 	    @Column(name = "data_abastecimento")
 	    private String  dataAbastecimento;
-	    
+	     
 	    @Column(name = "quantidade_litros")
 	    private Double quantidadeLitros;
 	    
-	    @Column(name = "preco_por_litro") 
+	    @Column(name = "preco_por_litro")  
 	    private Double precoPorLitro;
 	    
 	    @Column(name = "tipo_combustivel", length = 50)
@@ -44,9 +44,9 @@ public class abastecimentos {
 	    @ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name = "veiculo_id", nullable = false)
 	    @JsonIgnoreProperties({"abastecimentos", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO
-	    private Veiculo veiculo;
+	    private Veiculo veiculo; 
 	    
-	    // ManyToOne com Viagem (OPCIONAL)
+	    // ManyToOne com Viagem  
 	    @ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name = "viagem_id", nullable = true)
 	    @JsonIgnoreProperties({"abastecimentos", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO

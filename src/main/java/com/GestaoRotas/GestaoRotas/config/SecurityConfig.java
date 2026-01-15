@@ -66,13 +66,13 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(
+                    .requestMatchers( 
                             "/api/login",
                             "/api/auto-cadastro",
                             "/api/auth/solicitar-recuperacao",
                             "/api/auth/redefinir-senha-token",
                             "/api/auth/redefinir-senha-verificacao",
-                            "/api/viagens/countByStatus/**"
+                            "/api/manutencoes/relatorio-por-periodo" 
                        ).permitAll()
                     .anyRequest().authenticated()
             )

@@ -32,7 +32,7 @@ public class Viagem {
 	    private LocalDateTime dataHoraPartida;
 	    
 	    @Column(name = "data_hora_chegada")
-	    private LocalDateTime dataHoraChegada;
+	    private LocalDateTime dataHoraChegada; 
 	    
 	    @Column(length = 20)
 	    private String status; // "PLANEADA", "EM_ANDAMENTO", "CONCLUIDA", "CANCELADA"

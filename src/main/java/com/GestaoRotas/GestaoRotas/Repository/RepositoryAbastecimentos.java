@@ -6,16 +6,17 @@ import java.util.*;
 import jakarta.persistence.*;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioCombustivelDTO;
 import com.GestaoRotas.GestaoRotas.Entity.abastecimentos;
-
+@Repository 
 public interface RepositoryAbastecimentos extends JpaRepository<abastecimentos, Long>{
 
  
     @Query("SELECT a FROM abastecimentos a WHERE a.veiculo.id = :veiculoId")
-    List<abastecimentos> findByVeiculoId(@Param("veiculoId") Long veiculoId);
+    List<abastecimentos> findByVeiculoId(@Param("veiculoId") Long veiculoId);  
 
     @Query("SELECT a FROM abastecimentos a WHERE a.tipoCombustivel = :tipoCombustivel")
     List<abastecimentos> findByTipoCombustivel(@Param("tipoCombustivel") String tipoCombustivel);
@@ -26,7 +27,7 @@ public interface RepositoryAbastecimentos extends JpaRepository<abastecimentos, 
             "GROUP BY a.veiculo.matricula")
       List<Object[]> relatorioPorVeiculo(); 
        
-    
+     
     @Query("SELECT a.veiculo.matricula, SUM(a.quantidadeLitros), SUM(a.quantidadeLitros * a.precoPorLitro), AVG(a.precoPorLitro) " +
             "FROM  abastecimentos a " + 
             "WHERE  DATE(a.dataAbastecimento) BETWEEN :inicio AND :fim " +

@@ -26,8 +26,8 @@ import com.GestaoRotas.GestaoRotas.Service.ServiceVeiculo;
 public class ControllerVeiculoTest {
 
 	      @Autowired
-	      ControllerVeiculo controllerVeiculo; 
-	      @Mock
+	      ControllerVeiculo controllerVeiculo;  
+	      @Mock 
 	      ServiceVeiculo serviceVeiculo;
 	  
 	      @MockitoBean
@@ -35,7 +35,7 @@ public class ControllerVeiculoTest {
 	   
 	   @BeforeEach
 	    void setup() {  
-		   List<Veiculo> lista = new ArrayList<>();
+		   List<Veiculo> lista = new ArrayList<>(); 
             Marca marca = new Marca(1L,"BMW");
             
             

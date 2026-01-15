@@ -54,7 +54,7 @@ public class ControllerViagem {
 	private final ServiceViagem serviceViagem;
 	private final RepositoryViagem repositoryViagem;
 	private final RepositoryVeiculo repositoryVeiculo;
-	private final RepositoryMotorista repositoryMotorista;
+	private final RepositoryMotorista repositoryMotorista; 
 	
 	
 	@PreAuthorize("hasAuthority('ADMIN')")
@@ -112,8 +112,8 @@ public class ControllerViagem {
 		}
 	}  
  
-	@PutMapping("/update/{id}")
-	@PreAuthorize("hasAuthority('ADMIN')") 
+@PutMapping("/update/{id}")
+@PreAuthorize("hasAuthority('ADMIN')") 
 public ResponseEntity<String> update(@RequestBody ViagensDTO viagemDTO, @PathVariable long id) {
     try{
      return ResponseEntity.ok(serviceViagem.update(viagemDTO, id));
@@ -121,8 +121,7 @@ public ResponseEntity<String> update(@RequestBody ViagensDTO viagemDTO, @PathVar
  return ResponseEntity.badRequest().body("Erro ao atualizar: " + e.getMessage());
     }  
 }
-
-	//pra concluir a a viagem 
+//pra concluir a a viagem 
 	@PutMapping("/concluir/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")  
 	public ResponseEntity<Map<String, String>> ConcluirViagem(
@@ -134,27 +133,27 @@ public ResponseEntity<String> update(@RequestBody ViagensDTO viagemDTO, @PathVar
 @PreAuthorize("hasAuthority('ADMIN')") 
 public ResponseEntity<Map<String, String>> cancelarViagem(
         @RequestBody CancelarViagemRequest request, 
-        @PathVariable long id) {
+        @PathVariable long id) { 
 return ResponseEntity.ok(serviceViagem.cancelarViagem(request, id));
   } 
 @PutMapping("/inicializarViagem/{id}") 
-@PreAuthorize("hasAuthority('ADMIN')")  
+@PreAuthorize("hasAuthority('ADMIN')")    
 public ResponseEntity<Map<String , String>> iniciarViagem(@PathVariable Long id){
   return ResponseEntity.ok(serviceViagem.iniciarViagem(id)); 
 } 
-@GetMapping("/countByStatus/{status}") 
+@GetMapping("/countByStatus/{status}")  
 public ResponseEntity<Long> countByStatus(@PathVariable String status){
 	Long size = serviceViagem.getContByStatus(status);
 	return ResponseEntity.ok(size);  
-}  
+}   
 //Mostra o relatorio nome do mortista do carro , totalViagens , totalEmKm e totalConbustivel usado
-
- @GetMapping("/motoristas")
-    public ResponseEntity<List<RelatorioMotoristaDTO>> relatorioPorMotorista() {
+@GetMapping("/motoristas") 
+@PreAuthorize("hasAuthority('ADMIN')")   
+public ResponseEntity<List<RelatorioMotoristaDTO>> relatorioPorMotorista() {
         return ResponseEntity.ok(serviceViagem.relatorioPorMotorista());
     } 
     //Mostra o relatorio placa do carro , totalViagens , totalEmKm e totalConbustivel usado
-    @GetMapping("/veiculos")
+    @GetMapping("/veiculos") 
      public ResponseEntity<List<RelatorioPorVeiculoDTO>> relatorioPorVeiculo() {
         return ResponseEntity.ok(serviceViagem.gerarRelatorioPorVeiculo());
     }   

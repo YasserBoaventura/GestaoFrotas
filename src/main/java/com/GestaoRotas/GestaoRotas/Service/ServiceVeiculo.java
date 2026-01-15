@@ -136,35 +136,41 @@ private boolean temManutencaoVencida(Long veiculoId) {
         return false;
     });
 }
+// Verifica se o veículo tem manutenções próximas
+	     
+private static final int LIMITE_KM_MANUTENCAO = 1000;
 
-	    /**
-	     * Verifica se o veículo tem manutenções próximas
-	     */
-	    private boolean temManutencaoProxima(Long veiculoId, int diasAntecedencia) {
-	        List<Manutencao> manutencoes = repositoryManutencao.findByVeiculoId(veiculoId);
-	        LocalDate hoje = LocalDate.now();
-	        LocalDate limite = hoje.plusDays(diasAntecedencia);
-    
-    return manutencoes.stream()   
-        .anyMatch(m -> {
-            // Verifica por data  
-            if (m.getProximaManutencaoData() != null && 
-                m.getProximaManutencaoData().isAfter(hoje) &&
-                m.getProximaManutencaoData().isBefore(limite)) {
-                return true;
-            } 
-            
-            // Verifica por quilometragem
-            Veiculo v = m.getVeiculo();
-            if (v != null && m.getProximaManutencaoKm() != null && 
-                v.getKilometragemAtual() != null) {
-                double kmRestantes = m.getProximaManutencaoKm() - v.getKilometragemAtual();
-                return kmRestantes > 0 && kmRestantes <= 1000; // Próximo se faltar 1000km ou menos
-            }
-            
-            return false;
-        });
-	    }
+private boolean temManutencaoProxima(Long veiculoId, int diasAntecedencia) {
+
+    List<Manutencao> manutencoes =
+            repositoryManutencao.findByVeiculoId(veiculoId);
+
+    LocalDate hoje = LocalDate.now();
+    LocalDate limite = hoje.plusDays(diasAntecedencia);
+
+    return manutencoes.stream().anyMatch(m -> {
+      
+        //  Verificação por data
+        LocalDate data = m.getProximaManutencaoData();
+        if (data != null && !data.isBefore(hoje) && !data.isAfter(limite)) {
+            return true;
+        }
+
+        // 🔹 Verificação por quilometragem
+        Veiculo v = m.getVeiculo();
+        if (v != null && m.getProximaManutencaoKm() != null &&
+            v.getKilometragemAtual() != null) {
+
+            double kmRestantes =
+                    m.getProximaManutencaoKm() - v.getKilometragemAtual();
+
+            return kmRestantes > 0 && kmRestantes <= LIMITE_KM_MANUTENCAO;
+        }
+
+        return false;
+    });
+}
+
 
 	    /**
 	     * Atualiza status de todos os veículos

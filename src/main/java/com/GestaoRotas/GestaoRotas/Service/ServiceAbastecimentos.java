@@ -27,7 +27,8 @@ public class ServiceAbastecimentos {
 	private final RepositoryViagem  repositorioViagem;
 	private final RepositoryVeiculo repositorioveiculos;
 	
-   public abastecimentos save(AbastecimentoDTO abstecimentos) {
+   public Map<String, String>  save(AbastecimentoDTO abstecimentos) {
+	   Map<String, String> sucess= new HashMap<>();
     Veiculo veiculo = this.repositorioveiculos.findById(abstecimentos.getVeiculoId())
             .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
  
@@ -49,7 +50,9 @@ public class ServiceAbastecimentos {
 	abastecimento.setTipoCombustivel(abstecimentos.getTipoCombustivel());
 	abastecimento.setPrecoPorLitro(abstecimentos.getPrecoPorLitro());
 	//saving    
-  return this.repositoryAbastecimentos.save(abastecimento);
+this.repositoryAbastecimentos.save(abastecimento);
+     sucess.put("sucesso", " abstecimento salvo com sucesso");
+ return  sucess; 
 	}
  //Busca tos os  abastecimentos feitos
     public List<abastecimentos> findAll(){
@@ -67,14 +70,14 @@ public abastecimentos findById(long id) {
 }
     //Atualizacao de abastecimento de foreem mal escritos
 public String update(AbastecimentoDTO abstecimentos, long id) {
-    // CORREÇÃO: Buscar pelo ID do endpoint, não do DTO
+   
     abastecimentos abastecimento = this.repositoryAbastecimentos.findById(id)
         .orElseThrow(() -> new RuntimeException("Abastecimento não encontrado com ID: " + id));
     
     Veiculo veiculo = this.repositorioveiculos.findById(abstecimentos.getVeiculoId())
         .orElseThrow(() -> new RuntimeException("Veiculo não encontrado com ID: " + abstecimentos.getVeiculoId()));
      
-    // Atualizar campos
+    // Atualizar campos 
     abastecimento.setVeiculo(veiculo);
     abastecimento.setDataAbastecimento(abstecimentos.getDataAbastecimento());
     abastecimento.setKilometragemVeiculo(abstecimentos.getKilometragemVeiculo());
@@ -123,6 +126,7 @@ public List<RelatorioCombustivelDTO> relatorioPorPeriodo(LocalDate inicio, Local
             ))
             .collect(Collectors.toList()); 
 }
+
     
 
 }

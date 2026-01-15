@@ -105,9 +105,9 @@ public boolean redefinirSenhaComToken(String token, String novaSenha) {
     
     if (emailValido &&  nuitValido && respostaValida && tokenValido) {
         usuario.setPassword(passwordEncoder.encode(dto.getNovaSenha()));
-       
-        loginRepository.save(usuario);
+  
         usuario.setTokenUtilizado(true); 
+          loginRepository.save(usuario);
         return true; 
     } 
 } 

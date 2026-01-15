@@ -33,10 +33,10 @@ public class Manutencao {
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
 	    
-	    @Column(name = "data_manutencao")
-	    private LocalDate dataManutencao;
+	    @Column(name = "data_manutencao") //
+	    private LocalDate dataManutencao; 
 	     
-	    @Column(name = "tipo_manutencao", length = 50)
+	    @Column(name = "tipo_manutencao", length = 50) 
 	    @Enumerated(EnumType.STRING)
 	    private TipoManutencao tipoManutencao; // "PREVENTIVA", "CORRETIVA", "TROCA_OLEO", "REVISAO"
 	    
@@ -51,7 +51,7 @@ public class Manutencao {
 	    
 	    //  CAMPOS NOVOS NECESSÁRIOS
 	    @Column(name = "proxima_manutencao_km")
-	    private Integer proximaManutencaoKm;
+	    private Integer proximaManutencaoKm; 
 	    
 	    @Column(name = "proxima_manutencao_data")
 	    private LocalDate proximaManutencaoData;

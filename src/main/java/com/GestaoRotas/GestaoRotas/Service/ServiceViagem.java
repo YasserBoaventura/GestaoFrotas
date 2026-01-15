@@ -25,6 +25,7 @@ import com.GestaoRotas.GestaoRotas.Repository.RepositoryRotas;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryViagem;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 
@@ -64,7 +65,7 @@ public String update(ViagensDTO viagemDTO, long id) {
     }
    
     viagem.setMotorista(motorista);
-    viagem.setVeiculo(veiculo);  
+    viagem.setVeiculo(veiculo);   
     viagem.setRota(rota);
     viagem.setDataHoraPartida(viagemDTO.getDataHoraPartida());
     viagem.setDataHoraChegada(viagemDTO.getDataHoraChegada());
@@ -148,6 +149,7 @@ public String update(ViagensDTO viagemDTO, long id) {
 		}
 	
 	//cancelar viagem
+     @Transactional
 	public  Map<String, String>  cancelarViagem(
 	         CancelarViagemRequest request, 
 	       long id) {
@@ -186,6 +188,7 @@ public String update(ViagensDTO viagemDTO, long id) {
 	   
 	  }
 	} 
+	@Transactional    
 	public String salvar(ViagensDTO viagemDTO) {
 	    Viagem viagem = new Viagem();
 	    // Buscar motorista, veiculo e rota pelos IDs  
@@ -203,10 +206,9 @@ public String update(ViagensDTO viagemDTO, long id) {
         if(validarVeiculo(veiculo)) {
         	new RuntimeException("Veiculo nao disponivel");
         	return "veiculo nao disponivel para a viagem Status: \""+ veiculo.getStatus();
-        }
-	       
+        }  
 	    viagem.setMotorista(motorista);
-	    viagem.setVeiculo(veiculo);  
+	    viagem.setVeiculo(veiculo);   
 	    viagem.setRota(rota);  
 	    viagem.setDataHoraPartida(viagemDTO.getDataHoraPartida());
 	    viagem.setDataHoraChegada(viagemDTO.getDataHoraChegada());

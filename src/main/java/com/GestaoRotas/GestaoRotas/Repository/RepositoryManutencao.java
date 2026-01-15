@@ -16,7 +16,7 @@ import com.GestaoRotas.GestaoRotas.Model.statusManutencao;
 public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
  
 
-     
+      
     //Busca pelo tipo da manutencao
     List<Manutencao>  findBytipoManutencao (String tipoManutencao);
    
@@ -24,14 +24,24 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
      @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO(" +
     	       "m.veiculo.matricula, COUNT(m), SUM(m.custo), AVG(m.custo)) " +
     	       "FROM  Manutencao  m WHERE m.veiculo IS NOT NULL GROUP BY m.veiculo.matricula")
-     	List<RelatorioManutencaoDTO> relatorioPorVeiculo();
-     
-     
-     
-     
-               
-    
-
+     	List<RelatorioManutencaoDTO> relatorioPorVeiculo(); 
+        
+        
+     @Query("""
+    		    SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO(
+    		        m.veiculo.matricula,
+    		        COUNT(m.id),
+    		        SUM(m.custo),
+    		        AVG(m.custo)
+    		    )
+    		    FROM Manutencao m
+    		    WHERE m.dataManutencao BETWEEN :inicio AND :fim
+    		    GROUP BY m.veiculo.matricula
+    		""")
+    		List<RelatorioManutencaoDTO> relatorioPorPeriodo(
+    		    @Param("inicio") LocalDate inicio,
+    		    @Param("fim") LocalDate fim
+    		); 
      // Busca pelo tipo da manutencao
      List<Manutencao> findByTipoManutencao(String tipoManutencao);
      
@@ -92,6 +102,7 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
     //por status e data
        List<Manutencao> findByDataManutencaoAndStatus(LocalDate amanha, statusManutencao status); 
     
- 
+     // conta por status
+          Long countByStatus(String status); 
  }
  

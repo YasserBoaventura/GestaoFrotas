@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import com.GestaoRotas.GestaoRotas.DTO.RelatorioCombustivelDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.concluirManutencaoRequest;
 import com.GestaoRotas.GestaoRotas.DTO.manuntecaoDTO;
@@ -29,7 +31,7 @@ public class ServiceManutencoes {
     private final RepositoryManutencao repositoryManuntencao;
 	private final RepositoryVeiculo repositoryVeiculo; 
 	private final ServiceVeiculo veiculoService;// ja que vou precisar presistir com o veiculo	
-	//pra a  utilizacao 
+	//pra a  utilizacao  
    
 	public String salvar(manuntecaoDTO manutencaoDTO) {
 	   Manutencao manutencao = new Manutencao();
@@ -45,7 +47,7 @@ public class ServiceManutencoes {
     // Define o status inicial
     LocalDate hoje = LocalDate.now();
     LocalDate dataManutencao = manutencaoDTO.getDataManutencao();
-     
+          
     if (dataManutencao.isEqual(hoje)) {
         manutencao.setStatus(manutencaoDTO.getStatus().AGENDADA_HOJE);
         // Atualiza o veículo para EM_MANUTENCAO
@@ -68,13 +70,13 @@ public class ServiceManutencoes {
    
   public List<Manutencao> findAll(){  
 	  return this.repositoryManuntencao.findAll();
-  }  
+  }   
   //atualizar a manutencao caso haja erros
-  public String update(manuntecaoDTO manutencaoDTO, long id)  {
+  public String update(manuntecaoDTO manutencaoDTO, long id)  { 
 	   
 	    Manutencao manutencao = repositoryManuntencao.findById(id).orElseThrow(() -> new RuntimeException("Manutencao nao encontrada"));
 	    Veiculo veiculo = repositoryVeiculo.findById(manutencaoDTO.getVeiculo_id()).orElseThrow(()-> new RuntimeException("Veiculo nao encontrado"));
-	    manutencao.setVeiculo(veiculo);
+	    manutencao.setVeiculo(veiculo);  
 	    manutencao.setDataManutencao(manutencaoDTO.getDataManutencao());
 	    manutencao.setDescricao(manutencaoDTO.getDescricao());
 	    manutencao.setKilometragemVeiculo(manutencaoDTO.getKilometragemVeiculo());;
@@ -121,7 +123,7 @@ public class ServiceManutencoes {
                   statusManutencao.AGENDADA_HOJE // isso para não buscar as que já têm este status
               ) 
           );
-  
+   
   System.out.println("Manutenções encontradas para hoje: " + manutencoesHoje.size());
   
   for (Manutencao manutencao : manutencoesHoje) {
@@ -206,18 +208,17 @@ public class ServiceManutencoes {
           .orElseThrow(() -> new RuntimeException("Manutenção não encontrada"));
       manutencao.setDescricao(observacoes);
       // Atualiza o status da manutenção
-      
+       
       manutencao.setStatus(statusManutencao.CONCLUIDA);
       LocalDateTime agora = LocalDateTime.now();
-
       DateTimeFormatter formatter =
               DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
   
       String dataHoraFormatada = agora.format(formatter);
-      
+       
       manutencao.setDataConclusao(dataHoraFormatada);
       //a data da manutencao so vai ser cadastrada se for inicializada
-      manutencao.setDataManutencao(LocalDate.now());
+ 
       repositoryManuntencao.save(manutencao);
        
       // Atualiza o status do veículo
@@ -233,7 +234,7 @@ public class ServiceManutencoes {
  
   /**
    * Marca uma manutenção como em andamento
-   */
+   */ 
   @Transactional
   public  Map<String , String> iniciarManutencao(Long id) {
       Manutencao manutencao =  repositoryManuntencao.findById(id)
@@ -333,7 +334,8 @@ public class ServiceManutencoes {
           .findByDataManutencaoAndStatus(amanha, statusManutencao.AGENDADA);
       
       for (Manutencao manutencao : manutencoesAmanha) {
-          // Aqui você pode implementar notificações (email, push, etc.)
+    	  
+          //  por emplemntar notificacoes de manha por email com o JavaMailSender
           System.out.println("Notificação: Manutenção agendada para amanhã - " + 
                            "Veículo: " + manutencao.getVeiculo().getMatricula() + 
                            ", Tipo: " + manutencao.getTipoManutencao());
@@ -349,12 +351,17 @@ public class ServiceManutencoes {
  } 
  public List<Manutencao> listarPorTipo(String tipo) {
      return repositoryManuntencao.findBytipoManutencao(tipo);
- } 
+ }  
  //relatorio de manuntencoes feitas por cada veiculo
  public List<RelatorioManutencaoDTO> gerarRelatorioPorVeiculo() {
      return  repositoryManuntencao.relatorioPorVeiculo();
     }  
-//No seu ServiceManutencoes, atualize o método gerarAlertas para usar os parâmetros:
+ 
+//relatorios por periodo data fim e data inicio 
+public List<RelatorioManutencaoDTO> relatorioPorPeriodo(LocalDate inicio, LocalDate fim) {
+  return repositoryManuntencao.relatorioPorPeriodo(inicio, fim);  
+      
+}
  public List<String> gerarAlertas() {
 	    List<String> alertas = new ArrayList<>();
 	    LocalDate hoje = LocalDate.now();
@@ -382,7 +389,7 @@ List<Manutencao> proximas30dias = repositoryManuntencao.findProximasManutencoes(
 
 proximas30dias.stream()
     .filter(m -> !m.isVencida()) // Filtra apenas não vencidas
-    .forEach(m -> {
+    .forEach(m -> { 
         String placa = m.getVeiculo() != null ? m.getVeiculo().getMatricula() : "Veículo não encontrado";
         String detalhes = "";
 
@@ -431,7 +438,7 @@ proximas7dias.stream()
 
 if (alertas.isEmpty()) {
     alertas.add("Sem Alertas por agora");
-    }
+    } 
     
     return alertas; 
 }
@@ -447,7 +454,7 @@ if (alertas.isEmpty()) {
          String placa = m.getVeiculo().getMatricula();
          alertas.add("🚨 MANUTENÇÃO VENCIDA - Veículo: " + placa + 
                     " | Tipo: " + m.getTipoManutencao());
-     }
+     } 
       
      // Próximas manutenções (7 dias)
      List<Manutencao> proximas = repositoryManuntencao.findManutencoesProximas7Dias(null);
