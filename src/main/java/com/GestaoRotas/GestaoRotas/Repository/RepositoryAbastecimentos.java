@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioCombustivelDTO;
+import com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO;
 import com.GestaoRotas.GestaoRotas.Entity.abastecimentos;
 @Repository 
 public interface RepositoryAbastecimentos extends JpaRepository<abastecimentos, Long>{
@@ -20,22 +21,48 @@ public interface RepositoryAbastecimentos extends JpaRepository<abastecimentos, 
 
     @Query("SELECT a FROM abastecimentos a WHERE a.tipoCombustivel = :tipoCombustivel")
     List<abastecimentos> findByTipoCombustivel(@Param("tipoCombustivel") String tipoCombustivel);
-   
-    //  RELATÓRIO SIMPLES - retorna lista de objetos 
-      @Query("SELECT a.veiculo.matricula, SUM(a.quantidadeLitros), SUM(a.quantidadeLitros * a.precoPorLitro), AVG(a.precoPorLitro) " +
-           "FROM abastecimentos a " +  
-            "GROUP BY a.veiculo.matricula")
-      List<Object[]> relatorioPorVeiculo(); 
+    
+    @Query("SELECT COUNT(a) FROM abastecimentos a WHERE a.statusAbastecimento = 'REALIZADA'")
+    Long  contarAbastecimentosRealizados();
        
+    @Query("""    
+            SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioCombustivelDTO(
+                v.matricula,  
+                SUM(a.quantidadeLitros), 
+                SUM(a.quantidadeLitros * a.precoPorLitro), 
+                AVG(a.precoPorLitro),   
+                a.statusAbastecimento   
+            )
+            FROM abastecimentos a 
+            JOIN a.veiculo v
+            WHERE a.dataAbastecimento BETWEEN :inicio AND :fim
+                AND a.statusAbastecimento = 'REALIZADA'
+            GROUP BY v.matricula, a.statusAbastecimento
+        """)
+        List<RelatorioCombustivelDTO> relatorioPorPeriodo(@Param("inicio") LocalDate inicio, 
+                                                          @Param("fim") LocalDate fim);
+        
+        @Query("""      
+            SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioCombustivelDTO(
+                v.matricula,
+                SUM(a.quantidadeLitros),
+                SUM(a.quantidadeLitros * a.precoPorLitro),
+                AVG(a.precoPorLitro),
+                a.statusAbastecimento  
+            )
+            FROM abastecimentos a   
+            JOIN a.veiculo v 
+            WHERE a.statusAbastecimento = 'REALIZADA'
+            GROUP BY v.matricula, a.statusAbastecimento 
+        """)
+        List<RelatorioCombustivelDTO> relatorioPorVeiculo(); 
      
-    @Query("SELECT a.veiculo.matricula, SUM(a.quantidadeLitros), SUM(a.quantidadeLitros * a.precoPorLitro), AVG(a.precoPorLitro) " +
-            "FROM  abastecimentos a " + 
-            "WHERE  DATE(a.dataAbastecimento) BETWEEN :inicio AND :fim " +
-           "GROUP BY a.veiculo.matricula")  
-    List<Object[]> relatorioPorPeriodo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
+    //----
+  
+      
      
 } 
-
+ 
 
 
 

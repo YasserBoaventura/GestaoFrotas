@@ -70,8 +70,7 @@ public class Viagem {
 	    private Rotas rota;
 	     
 	    // OneToMany com Abastecimento
-	
-	    @OneToMany(mappedBy = "viagem", cascade = {CascadeType.PERSIST})
+	  @OneToMany(mappedBy = "viagem", cascade = {CascadeType.PERSIST})
 	    @JsonIgnoreProperties({"viagem", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO
 	    private List<abastecimentos> abastecimentos = new ArrayList<>();
 	    

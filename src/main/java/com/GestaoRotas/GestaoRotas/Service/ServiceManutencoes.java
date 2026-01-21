@@ -84,7 +84,7 @@ public class ServiceManutencoes {
 	    manutencao.setTipoManutencao(manutencaoDTO.getTipoManutencao());
 	    manutencao.setCusto(manutencaoDTO.getCusto());
 	    manutencao.setProximaManutencaoKm(manutencaoDTO.getProximaManutencaoKm());
-	  ///// repositoryManuntencao.save(manutencao);
+	  ///// repositoryManuntencao.save(manutencao);  
     
        // Define o status inicial
        LocalDate hoje = LocalDate.now();
@@ -164,7 +164,7 @@ public class ServiceManutencoes {
 
   /**
    * Verifica e atualiza manutenções vencidas
-   * Executa a cada 6 horas
+   * Executa a cada 6 horas 
    */
   @Scheduled(cron = "0 0 */6 * * *") // A cada 6 horas
   @Transactional

@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Manutencao;
@@ -20,29 +21,39 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
     //Busca pelo tipo da manutencao
     List<Manutencao>  findBytipoManutencao (String tipoManutencao);
    
-    //relatorio Media soma e o numero de manuntencoes feitas por cada veiculo
-     @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO(" +
-    	       "m.veiculo.matricula, COUNT(m), SUM(m.custo), AVG(m.custo)) " +
-    	       "FROM  Manutencao  m WHERE m.veiculo IS NOT NULL GROUP BY m.veiculo.matricula")
-     	List<RelatorioManutencaoDTO> relatorioPorVeiculo(); 
-        
-        
-     @Query("""
-    		    SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO(
-    		        m.veiculo.matricula,
-    		        COUNT(m.id),
-    		        SUM(m.custo),
-    		        AVG(m.custo)
-    		    )
-    		    FROM Manutencao m
-    		    WHERE m.dataManutencao BETWEEN :inicio AND :fim
-    		    GROUP BY m.veiculo.matricula
-    		""")
-    		List<RelatorioManutencaoDTO> relatorioPorPeriodo(
-    		    @Param("inicio") LocalDate inicio,
-    		    @Param("fim") LocalDate fim
-    		); 
-     // Busca pelo tipo da manutencao
+ // RepositoryManutencao.java
+    @Query("""
+        SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO(
+            m.veiculo.matricula,
+            COUNT(m.id),
+            SUM(m.custo),
+            AVG(m.custo), 
+             m.status
+        )
+        FROM Manutencao m
+        WHERE m.status = 'CONCLUIDA' AND m.dataManutencao BETWEEN :inicio AND :fim
+        GROUP BY m.veiculo.matricula, m.status
+        """)
+    List<RelatorioManutencaoDTO> relatorioPorPeriodo(
+        @Param("inicio") LocalDate inicio,
+        @Param("fim") LocalDate fim
+    );
+
+    @Query(""" 
+        SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO(
+            m.veiculo.matricula,
+            COUNT(m.id),
+            SUM(m.custo),
+            AVG(m.custo),
+              m.status
+              ) 
+        FROM Manutencao m
+        WHERE m.status = 'CONCLUIDA'
+        GROUP BY m.veiculo.matricula , m.status 
+        """)
+    List<RelatorioManutencaoDTO> relatorioPorVeiculo();
+
+    	//lo tipo da manutencao
      List<Manutencao> findByTipoManutencao(String tipoManutencao);
      
   // Manutenções vencidas  
@@ -51,15 +62,15 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
             "(m.proximaManutencaoKm IS NOT NULL AND m.veiculo.kilometragemAtual >= m.proximaManutencaoKm)")
      List<Manutencao> findManutencoesVencidas();
 
-     // Próximas manutenções (30 dias) - CORRIGIDA
+     // Próximas manutenções (30 dias) 
      @Query("SELECT m FROM Manutencao m WHERE " + 
             "(m.proximaManutencaoData IS NOT NULL AND m.proximaManutencaoData >= CURRENT_DATE AND m.proximaManutencaoData <= :dataLimite30Dias) OR " +
             "(m.proximaManutencaoKm IS NOT NULL AND m.veiculo.kilometragemAtual IS NOT NULL AND " +
             "m.veiculo.kilometragemAtual < m.proximaManutencaoKm AND " +
             "(m.proximaManutencaoKm - m.veiculo.kilometragemAtual) <= 1000)")
      List<Manutencao> findProximasManutencoes(@Param("dataLimite30Dias") LocalDate dataLimite30Dias);
-
-     // Manutenções muito próximas (7 dias) - CORRIGIDA
+ 
+     // Manutenções muito próximas (7 dias) 
      @Query("SELECT m FROM Manutencao m WHERE " +
             "(m.proximaManutencaoData IS NOT NULL AND m.proximaManutencaoData >= CURRENT_DATE AND m.proximaManutencaoData <= :dataLimite7Dias) OR " +
             "(m.proximaManutencaoKm IS NOT NULL AND m.veiculo.kilometragemAtual IS NOT NULL AND " +
@@ -101,8 +112,8 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
     		);
     //por status e data
        List<Manutencao> findByDataManutencaoAndStatus(LocalDate amanha, statusManutencao status); 
-    
+     
      // conta por status
-          Long countByStatus(String status); 
+      Long countByStatus(String status); 
  }
  

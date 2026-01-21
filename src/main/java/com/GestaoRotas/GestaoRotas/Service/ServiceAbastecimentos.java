@@ -12,6 +12,7 @@ import com.GestaoRotas.GestaoRotas.DTO.RelatorioCombustivelDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Entity.Viagem;
 import com.GestaoRotas.GestaoRotas.Entity.abastecimentos;
+import com.GestaoRotas.GestaoRotas.Model.statusAbastecimentos;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryAbastecimentos;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryViagem;
@@ -106,25 +107,16 @@ public String update(AbastecimentoDTO abstecimentos, long id) {
 }   
 // relario de de abastecimento por veiculo 
 public List<RelatorioCombustivelDTO> relatorioPorVeiculo() {   
-    return repositoryAbastecimentos.relatorioPorVeiculo().stream()
-            .map(obj -> new RelatorioCombustivelDTO(
-                    (String) obj[0],
-                    (Double) obj[1],
-                    (Double) obj[2],
-                    (Double) obj[3]  
-            )) 
-            .collect(Collectors.toList());
+    return repositoryAbastecimentos.relatorioPorVeiculo();  
+         
     }
 // relatorios por periodo data fim e data inicio 
 public List<RelatorioCombustivelDTO> relatorioPorPeriodo(LocalDate inicio, LocalDate fim) {
-    return repositoryAbastecimentos.relatorioPorPeriodo(inicio, fim).stream()
-            .map(obj -> new RelatorioCombustivelDTO(
-                    (String) obj[0],
-                    (Double) obj[1],
-                    (Double) obj[2],
-                    (Double) obj[3]
-            ))
-            .collect(Collectors.toList()); 
+    return repositoryAbastecimentos.relatorioPorPeriodo(inicio, fim); 
+          
+}
+public Long numeroAbastecimento(){
+	return repositoryAbastecimentos.contarAbastecimentosRealizados();  
 }
 
     

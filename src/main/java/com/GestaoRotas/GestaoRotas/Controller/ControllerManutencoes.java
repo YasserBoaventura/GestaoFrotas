@@ -148,27 +148,24 @@ public ResponseEntity<Map<String, String>> cancelarManutencao(@RequestBody Strin
     	return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     	}
     }  
-    //ver relatorio de manutencoes por veiculo
-
-    @GetMapping("/relatorio/veiculos") 
+    //ver relatorio de  manutencoes por veiculo
+    @PreAuthorize("hasAuthority('ADMIN')")  
+    @GetMapping("/por-veiculo") 
     public ResponseEntity<List<RelatorioManutencaoDTO>> relatorioPorVeiculo() {
         return ResponseEntity.ok(manutencaoService.gerarRelatorioPorVeiculo());
-    }                  
-     
-    @GetMapping("/relatorio-por-periodo") 
-  // @PreAuthorize("hasAuthority('ADMIN')")  
-    public ResponseEntity<List<RelatorioManutencaoDTO>> relatorioPorPeriodo(
+    }                      
+    @GetMapping("/relatorio-por-periodo")      
+   public ResponseEntity<List<RelatorioManutencaoDTO>> relatorioPorPeriodo(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
         System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
         return ResponseEntity.ok(manutencaoService.relatorioPorPeriodo(inicio, fim)); 
-    }   
-      
-     
+    }           
+    @PreAuthorize("hasAuthority('ADMIN')")     
     @GetMapping("/gerarAltertas")
     public ResponseEntity<List<String>> getAlertas() { 
         return ResponseEntity.ok(manutencaoService.gerarAlertas());
-    }
+    }  
     @GetMapping("/alertas/simplificado")  //os dois geram alertas mais esse simplificado
     public ResponseEntity<List<String>> getAlertasSimplificado() {
         List<String> alertas = manutencaoService.gerarAlertasSimplificado();

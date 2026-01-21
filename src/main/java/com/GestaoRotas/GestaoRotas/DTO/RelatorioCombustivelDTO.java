@@ -1,5 +1,8 @@
 package com.GestaoRotas.GestaoRotas.DTO;
 
+import com.GestaoRotas.GestaoRotas.Model.statusAbastecimentos;
+import com.GestaoRotas.GestaoRotas.Model.statusManutencao;
+
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,30 +14,20 @@ import lombok.Data;
 @Data
 @NoArgsConstructor
 public class RelatorioCombustivelDTO {
-	    private String veiculo;
+
+	    private String matricula;
 	    private Double totalLitros;
-	    private Double totalGasto;
-	    private Double mediaPorLitro;
-
-    //  Construtor para a query JPA (ORDEM DOS PARÂMETROS É IMPORTANTE!)
-    public RelatorioCombustivelDTO(String veiculo, Double totalLitros, Double totalGasto, Double mediaPorLitro) {
-        this.veiculo = veiculo;
-        this.totalLitros = totalLitros != null ? totalLitros : 0.0;
-        this.totalGasto = totalGasto != null ? totalGasto : 0.0;
-        this.mediaPorLitro = mediaPorLitro != null ? mediaPorLitro : 0.0;
-    }
-
-
-    public String getTotalLitrosFormatado() {
-        return "%.2f L".formatted(totalLitros);
-    }
-
-    public String getTotalGastoFormatado() {
-        return "R$ %.2f".formatted(totalGasto);
-    }
-
-    public String getMediaPorLitroFormatado() {
-        return "R$ %.2f".formatted(mediaPorLitro);
-    }
-
+	    private Double valorTotal;   
+	    private Double precoMedio;
+	    private  statusAbastecimentos status;     
+	    public RelatorioCombustivelDTO(String matricula, Double totalLitros, 
+	                                   Double valorTotal, Double precoMedio, 
+	                                   statusAbastecimentos status) {
+	        this.matricula = matricula;
+	        this.totalLitros = totalLitros;
+	        this.valorTotal = valorTotal;
+	        this.precoMedio = precoMedio; 
+	        this.status = status;
+	    }
 }
+	     

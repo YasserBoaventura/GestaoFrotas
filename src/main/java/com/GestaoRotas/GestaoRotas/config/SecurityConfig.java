@@ -67,15 +67,17 @@ public class SecurityConfig {
             .cors(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers( 
-                            "/api/login",
+                            "/api/login", 
                             "/api/auto-cadastro",
                             "/api/auth/solicitar-recuperacao",
                             "/api/auth/redefinir-senha-token",
                             "/api/auth/redefinir-senha-verificacao",
-                            "/api/manutencoes/relatorio-por-periodo" 
+                            "/api/manutencoes/relatorio-por-periodo",
+                            "/api/abastecimentos/abastecimentoRealizado",
+                            "/api/abastecimentos/relatorio-por-periodo"
                        ).permitAll()
                     .anyRequest().authenticated()
-            )
+            )  
             .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )

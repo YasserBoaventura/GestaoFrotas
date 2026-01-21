@@ -34,7 +34,7 @@ public class Manutencao {
 	    private Long id;
 	    
 	    @Column(name = "data_manutencao") //
-	    private LocalDate dataManutencao; 
+	    private LocalDate dataManutencao;  
 	     
 	    @Column(name = "tipo_manutencao", length = 50) 
 	    @Enumerated(EnumType.STRING)
@@ -58,13 +58,13 @@ public class Manutencao {
 	    
 	    @Column(name = "dataConclusao")
 	    private String dataConclusao; 
-	    @Column(name ="dataInicio")
+	    @Column(name ="dataInicio") 
 	    private String dataInicio;
-	    
+	     
 	    // ManyToOne com Veiculo
-	    @ManyToOne(fetch = FetchType.LAZY)
-	    @JoinColumn(name = "veiculo_id", nullable = false)
-	    @JsonIgnoreProperties({"Manutencao", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO
+	    @ManyToOne(fetch = FetchType.LAZY) 
+	    @JsonIgnoreProperties({"abastecimentos", "hibernateLazyInitializer", "handler"})
+	    @JoinColumn(name = "veiculo_id", nullable = false) 
 	    private Veiculo veiculo;
 	    
  
@@ -80,7 +80,7 @@ public class Manutencao {
     }
     
   
-    // Método auxiliar
+    // Método auxiliar 
     @PrePersist
     public void prePersist() {
         if (dataManutencao == null) {

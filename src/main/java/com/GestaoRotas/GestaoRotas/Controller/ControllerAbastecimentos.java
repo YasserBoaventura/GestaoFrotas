@@ -66,20 +66,25 @@ public class ControllerAbastecimentos {
 @GetMapping("/por-veiculo")
 @PreAuthorize("hasAuthority('ADMIN')") 
 public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorVeiculo() {
-    return ResponseEntity.ok(abastecimentosService.relatorioPorVeiculo());
+	 List<RelatorioCombustivelDTO> lista = abastecimentosService.relatorioPorVeiculo(); 
+	 return ResponseEntity.ok(abastecimentosService.relatorioPorVeiculo());
 }  
-  
+   
 //busca relatorios por periodo dataInicio e dataFim
 @GetMapping("/relatorio-por-periodo") 
-@PreAuthorize("hasAuthority('ADMIN')") 
+//@PreAuthorize("hasAuthority('ADMIN')") 
 public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorPeriodo(
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
     System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
     return ResponseEntity.ok(abastecimentosService.relatorioPorPeriodo(inicio, fim));
 }  
-  
-	    //Busca todos os abastecimentos  
+@GetMapping("/abastecimentoRealizado")
+  public ResponseEntity<Long> abastecimentosRealizados(){
+		return ResponseEntity.status(HttpStatus.OK).body(abastecimentosService.numeroAbastecimento()); 
+  }
+	    
+//Busca todos os abastecimentos  
 @GetMapping("/findAll")
 @PreAuthorize("hasAuthority('ADMIN')") 
 public ResponseEntity<List<abastecimentos>> findAll(){

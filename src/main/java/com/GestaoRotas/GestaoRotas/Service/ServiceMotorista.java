@@ -14,7 +14,7 @@ import lombok.Setter;
 @Service
 @RequiredArgsConstructor
 public class ServiceMotorista {
-   
+    
 	private final RepositoryMotorista repositoryMotorista;
 	  
 	
