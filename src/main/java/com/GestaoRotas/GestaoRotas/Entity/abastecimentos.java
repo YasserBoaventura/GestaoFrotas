@@ -45,14 +45,12 @@ public class abastecimentos {
 	    // ManyToOne com Veiculo (OBRIGATÓRIO)
 	    @ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name = "veiculo_id", nullable = false)
-	    @JsonBackReference("veiculo-abastecimentos") 
 	    @JsonIgnoreProperties({"abastecimentos", "hibernateLazyInitializer", "handler"}) 
 	    private Veiculo veiculo;  
-	    
-	    // ManyToOne com Viagem  
+	     
+	    // ManyToOne com Viagem   
 	    @ManyToOne(fetch = FetchType.LAZY)
-	    @JoinColumn(name = "viagem_id", nullable = true)
-	    @JsonBackReference("viagem-abastecimentos")  
+	    @JoinColumn(name = "viagem_id", nullable = true) 
 	    @JsonIgnoreProperties({"abastecimentos", "hibernateLazyInitializer", "handler"}) 
 	    private Viagem viagem; 
 	                          

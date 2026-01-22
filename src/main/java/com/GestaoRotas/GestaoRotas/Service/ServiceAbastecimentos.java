@@ -65,7 +65,7 @@ public String deletar(long id) {
 	this.repositoryAbastecimentos.deleteById(id);
     return "abastecimento  deletado com sucesso";
 	
-} 
+}  
 public abastecimentos findById(long id) {
   return this.repositoryAbastecimentos.findById(id).get();
 }

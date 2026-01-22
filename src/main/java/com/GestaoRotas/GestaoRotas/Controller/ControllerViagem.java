@@ -128,29 +128,29 @@ public ResponseEntity<String> update(@RequestBody ViagensDTO viagemDTO, @PathVar
   @RequestBody ConcluirViagemRequest request, @PathVariable long id) {
 	 return ResponseEntity.ok(serviceViagem.ConcluirViagem(request, id)); 
 	} 
-	  
+	   
 @PutMapping("/cancelarViagem/{id}")
 @PreAuthorize("hasAuthority('ADMIN')") 
 public ResponseEntity<Map<String, String>> cancelarViagem(
         @RequestBody CancelarViagemRequest request, 
         @PathVariable long id) { 
 return ResponseEntity.ok(serviceViagem.cancelarViagem(request, id));
-  } 
+  }  
 @PutMapping("/inicializarViagem/{id}") 
-@PreAuthorize("hasAuthority('ADMIN')")    
+@PreAuthorize("hasAuthority('ADMIN')")     
 public ResponseEntity<Map<String , String>> iniciarViagem(@PathVariable Long id){
   return ResponseEntity.ok(serviceViagem.iniciarViagem(id)); 
-} 
-@GetMapping("/countByStatus/{status}")  
+}  
+@GetMapping("/countByStatus/{status}")     
 public ResponseEntity<Long> countByStatus(@PathVariable String status){
-	Long size = serviceViagem.getContByStatus(status);
+	Long size = serviceViagem.getContByStatus(status); 
 	return ResponseEntity.ok(size);  
-}   
+}     
 //Mostra o relatorio nome do mortista do carro , totalViagens , totalEmKm e totalConbustivel usado
 @GetMapping("/motoristas") 
 @PreAuthorize("hasAuthority('ADMIN')")   
 public ResponseEntity<List<RelatorioMotoristaDTO>> relatorioPorMotorista() {
-        return ResponseEntity.ok(serviceViagem.relatorioPorMotorista());
+        return ResponseEntity.ok(serviceViagem.relatorioPorMotorista());   
     } 
     //Mostra o relatorio placa do carro , totalViagens , totalEmKm e totalConbustivel usado
     @GetMapping("/veiculos") 

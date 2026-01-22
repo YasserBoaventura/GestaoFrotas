@@ -15,7 +15,7 @@ import com.GestaoRotas.GestaoRotas.Entity.abastecimentos;
 @Repository 
 public interface RepositoryAbastecimentos extends JpaRepository<abastecimentos, Long>{
 
- 
+    
     @Query("SELECT a FROM abastecimentos a WHERE a.veiculo.id = :veiculoId")
     List<abastecimentos> findByVeiculoId(@Param("veiculoId") Long veiculoId);  
 
@@ -49,9 +49,9 @@ public interface RepositoryAbastecimentos extends JpaRepository<abastecimentos, 
                 SUM(a.quantidadeLitros),
                 SUM(a.quantidadeLitros * a.precoPorLitro),
                 AVG(a.precoPorLitro),
-                AVG(a.quantidadeLitros),  
+                AVG(a.quantidadeLitros),   
                 a.statusAbastecimento  
-            )
+            ) 
             FROM abastecimentos a   
             JOIN a.veiculo v 
             WHERE a.statusAbastecimento = 'REALIZADA'

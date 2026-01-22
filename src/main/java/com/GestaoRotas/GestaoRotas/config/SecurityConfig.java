@@ -73,9 +73,8 @@ public class SecurityConfig {
                             "/api/auth/redefinir-senha-token",
                             "/api/auth/redefinir-senha-verificacao",
                             "/api/manutencoes/relatorio-por-periodo",
-                            "/api/abastecimentos/abastecimentoRealizado",
-                            "/api/abastecimentos/relatorio-por-periodo"
-                       ).permitAll()
+                            "/api/abastecimentos/abastecimentoRealizado"
+                          ).permitAll()
                     .anyRequest().authenticated()
             )  
             .sessionManagement(session ->

@@ -370,20 +370,21 @@ public List<RelatorioManutencaoDTO> relatorioPorPeriodo(LocalDate inicio, LocalD
 repositoryManuntencao.findManutencoesVencidas()
     .forEach(m -> {
         String placa = m.getVeiculo() != null ? m.getVeiculo().getMatricula() : "Veículo não encontrado";
-        String detalhes = "";
+        String detalhes = ""; 
          
-        if (m.getProximaManutencaoData() != null && m.getProximaManutencaoData().isBefore(hoje)) {
+        if (m.getProximaManutencaoData() != null && m.getProximaManutencaoData().isBefore(hoje) && !m.getStatus().equals(statusManutencao.CONCLUIDA) && !m.getStatus().equals(statusManutencao.EM_ANDAMENTO)) {
             long diasAtraso = ChronoUnit.DAYS.between(m.getProximaManutencaoData(), hoje);
-            detalhes = "atrasada há " + diasAtraso + " dias (desde " + m.getProximaManutencaoData() + ")";
+            detalhes = "atrasada há " + diasAtraso + " dias (desde " + m.getProximaManutencaoData() + ")"; 
         } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null && 
                    m.getVeiculo().getKilometragemAtual() >= m.getProximaManutencaoKm()) {
             double kmExcedido = m.getVeiculo().getKilometragemAtual() - m.getProximaManutencaoKm();
             detalhes = "atingiu " + m.getVeiculo().getKilometragemAtual() + "km (excedeu " + kmExcedido + "km do limite)";
-        }
-        
-        alertas.add("⚠️ Revisão vencida do veículo " + placa + " - " + detalhes);
-    });
-
+        }  
+          if(!m.getStatus().equals(statusManutencao.EM_ANDAMENTO) && !m.getStatus().equals(statusManutencao.CONCLUIDA) && !m.getStatus().equals(statusManutencao.ATRASADA) ) {
+        alertas.add("⚠️ Revisão vencida do veículo " + placa + "  " + detalhes);
+    }
+          });
+ 
 // Próximas manutenções (até 30 dias)
 List<Manutencao> proximas30dias = repositoryManuntencao.findProximasManutencoes(hoje.plusDays(30));
 
@@ -395,7 +396,7 @@ proximas30dias.stream()
 
         if (m.getProximaManutencaoData() != null) { 
             long diasRestantes = ChronoUnit.DAYS.between(hoje, m.getProximaManutencaoData());
-            if (diasRestantes <= 30) {
+            if (diasRestantes <= 30 && diasRestantes != 0) { 
                 detalhes = "em " + diasRestantes + " dias (" + m.getProximaManutencaoData() + ")";
             }  
         } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null) {
@@ -403,7 +404,7 @@ proximas30dias.stream()
             if (kmRestantes <= 1000 && kmRestantes > 0) {
                 detalhes = "faltam " + kmRestantes + "km";
             }
-        }
+        } 
         
         if (!detalhes.isEmpty()) {
             alertas.add("ℹ️ Próxima revisão do veículo " + placa + " - " + detalhes);
@@ -421,8 +422,8 @@ proximas7dias.stream()
         
         if (m.getProximaManutencaoData() != null) {
             long diasRestantes = ChronoUnit.DAYS.between(hoje, m.getProximaManutencaoData());
-            if (diasRestantes <= 7) {
-                detalhes = "em " + diasRestantes + " dias";
+            if (diasRestantes <= 7 && diasRestantes !=0) {
+                detalhes = "em " + diasRestantes + " dias"; 
             }
         } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null) {
             double kmRestantes = m.getProximaManutencaoKm() - m.getVeiculo().getKilometragemAtual();
@@ -431,9 +432,7 @@ proximas7dias.stream()
             }
         }
         
-        if (!detalhes.isEmpty()) {
-            alertas.add("⏰ Atenção! Veículo " + placa + " precisa de manutenção " + detalhes);
-        }
+      
     });
 
 if (alertas.isEmpty()) {
