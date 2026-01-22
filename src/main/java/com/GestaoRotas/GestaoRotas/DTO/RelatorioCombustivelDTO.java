@@ -19,14 +19,16 @@ public class RelatorioCombustivelDTO {
 	    private Double totalLitros;
 	    private Double valorTotal;   
 	    private Double precoMedio;
+	    private Double MediaPorLitro;
 	    private  statusAbastecimentos status;     
 	    public RelatorioCombustivelDTO(String matricula, Double totalLitros, 
-	                                   Double valorTotal, Double precoMedio, 
+	                                   Double valorTotal, Double precoMedio,Double MediaPorLitro, 
 	                                   statusAbastecimentos status) {
 	        this.matricula = matricula;
 	        this.totalLitros = totalLitros;
 	        this.valorTotal = valorTotal;
 	        this.precoMedio = precoMedio; 
+	        this.MediaPorLitro =  MediaPorLitro; 
 	        this.status = status;
 	    }
 }

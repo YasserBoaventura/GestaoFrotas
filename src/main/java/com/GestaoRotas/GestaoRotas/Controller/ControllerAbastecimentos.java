@@ -64,9 +64,8 @@ public class ControllerAbastecimentos {
 
   // relatio de abastecimento por veiculo 
 @GetMapping("/por-veiculo")
-@PreAuthorize("hasAuthority('ADMIN')") 
+@PreAuthorize("hasAuthority('ADMIN')")  
 public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorVeiculo() {
-	 List<RelatorioCombustivelDTO> lista = abastecimentosService.relatorioPorVeiculo(); 
 	 return ResponseEntity.ok(abastecimentosService.relatorioPorVeiculo());
 }  
    

@@ -21,16 +21,17 @@ public interface RepositoryAbastecimentos extends JpaRepository<abastecimentos, 
 
     @Query("SELECT a FROM abastecimentos a WHERE a.tipoCombustivel = :tipoCombustivel")
     List<abastecimentos> findByTipoCombustivel(@Param("tipoCombustivel") String tipoCombustivel);
-    
+      
     @Query("SELECT COUNT(a) FROM abastecimentos a WHERE a.statusAbastecimento = 'REALIZADA'")
     Long  contarAbastecimentosRealizados();
-       
+             
     @Query("""    
             SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioCombustivelDTO(
                 v.matricula,  
                 SUM(a.quantidadeLitros), 
                 SUM(a.quantidadeLitros * a.precoPorLitro), 
-                AVG(a.precoPorLitro),   
+                AVG(a.precoPorLitro),
+                AVG(a.quantidadeLitros),   
                 a.statusAbastecimento   
             )
             FROM abastecimentos a 
@@ -48,6 +49,7 @@ public interface RepositoryAbastecimentos extends JpaRepository<abastecimentos, 
                 SUM(a.quantidadeLitros),
                 SUM(a.quantidadeLitros * a.precoPorLitro),
                 AVG(a.precoPorLitro),
+                AVG(a.quantidadeLitros),  
                 a.statusAbastecimento  
             )
             FROM abastecimentos a   
