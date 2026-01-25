@@ -42,9 +42,9 @@ public class Manutencao {
 	    
 	    @Column(length = 500)
 	    private String descricao;
-	    
+	    @Column(nullable = false)
 	    private Double custo;
-	    
+	     
 	    @Column(name = "kilometragem_veiculo")
 	    private Double kilometragemVeiculo;
 	

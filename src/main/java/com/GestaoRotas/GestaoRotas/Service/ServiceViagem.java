@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import com.GestaoRotas.GestaoRotas.Custos.custoService;
 import com.GestaoRotas.GestaoRotas.DTO.CancelarViagemRequest;
 import com.GestaoRotas.GestaoRotas.DTO.ConcluirViagemRequest;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioMotoristaDTO;
@@ -39,6 +40,7 @@ public class ServiceViagem {
     private final RepositoryMotorista motoristaRepository;
     private final RepositoryVeiculo veiculoRepository;
     private final RepositoryRotas rotaRepository;
+    private final custoService custoService;
     
     
 public String update(ViagensDTO viagemDTO, long id) {
@@ -218,7 +220,8 @@ public String update(ViagensDTO viagemDTO, long id) {
 	    viagem.setObservacoes(viagemDTO.getObservacoes());
 	    viagem.setData(LocalDateTime.now());
 		
-	    repositoryViagem.save(viagem);
+	   Viagem savedViagem =   repositoryViagem.save(viagem);
+	//   custoService.criarCustoParaViagem(savedViagem, null, null, null)
 	    return "viagem salva com sucesso";
 	}
 	// campos para validar o estato do motorista antes de ser

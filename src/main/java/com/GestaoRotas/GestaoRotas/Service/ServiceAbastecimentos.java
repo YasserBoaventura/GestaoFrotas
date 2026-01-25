@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.GestaoRotas.GestaoRotas.Custos.custoService;
 import com.GestaoRotas.GestaoRotas.DTO.AbastecimentoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioCombustivelDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
@@ -27,7 +28,7 @@ public class ServiceAbastecimentos {
 	private final RepositoryAbastecimentos repositoryAbastecimentos;
 	private final RepositoryViagem  repositorioViagem;
 	private final RepositoryVeiculo repositorioveiculos;
-	
+	private final custoService custoService;
    public Map<String, String>  save(AbastecimentoDTO abstecimentos) {
 	   Map<String, String> sucess= new HashMap<>();
     Veiculo veiculo = this.repositorioveiculos.findById(abstecimentos.getVeiculoId())
@@ -51,7 +52,9 @@ public class ServiceAbastecimentos {
 	abastecimento.setTipoCombustivel(abstecimentos.getTipoCombustivel());
 	abastecimento.setPrecoPorLitro(abstecimentos.getPrecoPorLitro());
 	//saving    
-this.repositoryAbastecimentos.save(abastecimento);
+    abastecimentos saved =  this.repositoryAbastecimentos.save(abastecimento);
+    //criando custo para ser persistida
+    custoService.criarCustoParaAbastecimento(abastecimento); 
      sucess.put("sucesso", " abstecimento salvo com sucesso");
  return  sucess; 
 	}
@@ -115,10 +118,18 @@ public List<RelatorioCombustivelDTO> relatorioPorPeriodo(LocalDate inicio, Local
     return repositoryAbastecimentos.relatorioPorPeriodo(inicio, fim); 
           
 }
-public Long numeroAbastecimento(){
+//numero de abastecimento d realizados
+public Long numeroAbastecimentoRealizados(){
 	return repositoryAbastecimentos.contarAbastecimentosRealizados();  
 }
-
+//numero de abastecimentos cancelados
+public Optional<Long> numeroAbastecimentoCancelados(){ 
+	return repositoryAbastecimentos.contarAbastecimentosCancelados(); 
+}
+//numero de abastecimentos planeada
+public Optional<Long>  numeroAbastecimentoPlaneado(){
+	return repositoryAbastecimentos.contarAbastecimentosPlaneados();
+	}
     
 
 }

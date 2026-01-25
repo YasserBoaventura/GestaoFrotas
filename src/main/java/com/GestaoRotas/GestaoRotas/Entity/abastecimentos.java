@@ -2,6 +2,9 @@ package com.GestaoRotas.GestaoRotas.Entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.GestaoRotas.GestaoRotas.Custos.Custo;
+import com.GestaoRotas.GestaoRotas.Model.StatusCusto;
+import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 import com.GestaoRotas.GestaoRotas.Model.statusAbastecimentos;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -53,9 +56,37 @@ public class abastecimentos {
 	    @JoinColumn(name = "viagem_id", nullable = true) 
 	    @JsonIgnoreProperties({"abastecimentos", "hibernateLazyInitializer", "handler"}) 
 	    private Viagem viagem; 
+	    
+	    
+	    //novos campos para o custo
+	    
+	    // NOVO: relacionamento com Custo
+	    @OneToOne(mappedBy = "abastecimento", cascade = CascadeType.ALL)
+	    @JsonIgnoreProperties({"abastecimento", "hibernateLazyInitializer", "handler"})
+	    private Custo custo;
+	    
+	    // Método para criar custo automaticamente
+	    @PostPersist
+	    public void criarCustoAutomatico() {
+	        if (this.custo == null) {  
+	      Custo custoCombustivel = new Custo();
+	      custoCombustivel.setData(this.getDataAbastecimento());
+	      custoCombustivel.setDescricao("Abastecimento - " + this.getTipoCombustivel());	            custoCombustivel.setValor(this.getValorTotal());
+          custoCombustivel.setTipo(TipoCusto.COMBUSTIVEL);
+	      custoCombustivel.setStatus(StatusCusto.PAGO);
+	      custoCombustivel.setVeiculo(this.getVeiculo());
+	      custoCombustivel.setAbastecimento(this);
+	      custoCombustivel.setNumeroDocumento("ABS-" + this.getId());
+	            
+	            this.custo = custoCombustivel;  
+	            
+	         //depois precisarei salvar no service 
+	        }
+	    }
+	    /////////////
 	                          
 
-	    //  MÉTODO CALCULADO (não armazenado)  //valor total da favor a pagar
+	    //valor total da favor a pagar
 	    public Double getValorTotal() {
 	        if (quantidadeLitros != null && precoPorLitro != null) {
 	            return quantidadeLitros * precoPorLitro;

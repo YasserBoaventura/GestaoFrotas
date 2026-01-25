@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -42,11 +41,15 @@ public class Viagem {
 	    
 	    @Column(name = "kilometragem_final")
 	    private Double kilometragemFinal;
-	    
-	   
 	    private String observacoes;
 	    
 	    private LocalDateTime data;
+	    
+	    @Column(name = "custo_pedagios" ,nullable = true) 
+	    private Double custoPedagios;
+	      
+	    @Column(name = "valor", nullable = false) 
+	    private Double valor;
 	    
 	    // ManyToOne com Motorista 
 

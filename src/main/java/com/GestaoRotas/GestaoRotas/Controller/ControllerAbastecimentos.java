@@ -71,38 +71,46 @@ public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorVeiculo() {
    
 //busca relatorios por periodo dataInicio e dataFim
 @GetMapping("/relatorio-por-periodo") 
-@PreAuthorize("hasAuthority('ADMIN')")  
+@PreAuthorize("hasAuthority('ADMIN')")   
 public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorPeriodo(
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
     System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
     return ResponseEntity.ok(abastecimentosService.relatorioPorPeriodo(inicio, fim));
-}   
-@GetMapping("/abastecimentoRealizado")
+}     
+@PreAuthorize("hasAuthority('ADMIN')")
+@GetMapping("/abastecimentoRealizado") 
   public ResponseEntity<Long> abastecimentosRealizados(){
-		return ResponseEntity.status(HttpStatus.OK).body(abastecimentosService.numeroAbastecimento()); 
-  }
-	    
+		return ResponseEntity.status(HttpStatus.OK).body(abastecimentosService.numeroAbastecimentoRealizados()); 
+  }                
+@GetMapping("/abastecimtosPlaneados") 
+public ResponseEntity<Optional<Long>> abastecimentosPlaneados(){
+	return ResponseEntity.status(HttpStatus.OK).body(abastecimentosService.numeroAbastecimentoPlaneado()); 
+} 
+@GetMapping("/abastecimentosCancelar")
+public ResponseEntity<Optional<Long>> abastecimentosCancelados(){
+	return ResponseEntity.status(HttpStatus.OK).body(abastecimentosService.numeroAbastecimentoCancelados()); 
+}
 //Busca todos os abastecimentos  
-@GetMapping("/findAll")
-//@PreAuthorize("hasAuthority('ADMIN')") 
+@GetMapping("/findAll")  
+@PreAuthorize("hasAuthority('ADMIN')") 
 public ResponseEntity<List<abastecimentos>> findAll(){
- try { 
+ try {  
 	 return ResponseEntity.ok(abastecimentosService.findAll()); 
 	}catch(Exception e) {
 	 return ResponseEntity.badRequest().build();
   }  
    }
 @DeleteMapping("/delete/{id}")
-@PreAuthorize("hasAuthority('ADMIN')") 
+@PreAuthorize("hasAuthority('ADMIN')")  
     public ResponseEntity<String> deleteById(@PathVariable long id){
      try { 
      return ResponseEntity.ok(abastecimentosService.deletar(id)); 
    }catch(Exception e) {
-	   e.getStackTrace();
-    	 return  ResponseEntity.badRequest().build(); 
+	   e.getStackTrace ();
+    	 return ResponseEntity .badRequest().build(); 
     }
-	
+	 
 } 
 @GetMapping("/findById/{id}")
 @PreAuthorize("hasAuthority('ADMIN')")  

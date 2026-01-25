@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
+import com.GestaoRotas.GestaoRotas.Custos.custoService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,7 +32,9 @@ public class ServiceManutencoes {
 	private final RepositoryVeiculo repositoryVeiculo; 
 	private final ServiceVeiculo veiculoService;// ja que vou precisar presistir com o veiculo	
 	//pra a  utilizacao  
+	private final custoService custoService; 
    
+	@Transactional 
 	public String salvar(manuntecaoDTO manutencaoDTO) {
 	   Manutencao manutencao = new Manutencao();
     Veiculo veiculo = repositoryVeiculo.findById( manutencaoDTO.getVeiculo_id()).orElseThrow(()-> new RuntimeException("Veiculo nao encontrado"));
@@ -59,7 +61,8 @@ public class ServiceManutencoes {
     } else {
         manutencao.setStatus(manutencaoDTO.getStatus().AGENDADA);
     }
-    repositoryManuntencao.save(manutencao);
+    Manutencao saved =  repositoryManuntencao.save(manutencao);
+    custoService.criarCustoParaManutencao(saved); 
     return "manutencao salva com sucesso";
  }
  
@@ -370,20 +373,20 @@ public List<RelatorioManutencaoDTO> relatorioPorPeriodo(LocalDate inicio, LocalD
 repositoryManuntencao.findManutencoesVencidas()
     .forEach(m -> {
         String placa = m.getVeiculo() != null ? m.getVeiculo().getMatricula() : "Veículo não encontrado";
-        String detalhes = ""; 
-         
-        if (m.getProximaManutencaoData() != null && m.getProximaManutencaoData().isBefore(hoje) && !m.getStatus().equals(statusManutencao.CONCLUIDA) && !m.getStatus().equals(statusManutencao.EM_ANDAMENTO)) {
+        String detalhes = "";  
+           
+        if (m.getProximaManutencaoData() != null && m.getProximaManutencaoData().isBefore(hoje) && m.getDataConclusao()!= null ) {
             long diasAtraso = ChronoUnit.DAYS.between(m.getProximaManutencaoData(), hoje);
             detalhes = "atrasada há " + diasAtraso + " dias (desde " + m.getProximaManutencaoData() + ")"; 
         } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null && 
                    m.getVeiculo().getKilometragemAtual() >= m.getProximaManutencaoKm()) {
             double kmExcedido = m.getVeiculo().getKilometragemAtual() - m.getProximaManutencaoKm();
             detalhes = "atingiu " + m.getVeiculo().getKilometragemAtual() + "km (excedeu " + kmExcedido + "km do limite)";
-        }  
-          if(!m.getStatus().equals(statusManutencao.EM_ANDAMENTO) && !m.getStatus().equals(statusManutencao.CONCLUIDA) && !m.getStatus().equals(statusManutencao.ATRASADA) ) {
+        }   
+          if( m.getDataManutencao()!= null && m.getDataInicio()== null && m.getDataConclusao()== null ) {
         alertas.add("⚠️ Revisão vencida do veículo " + placa + "  " + detalhes);
     }
-          });
+          }); 
  
 // Próximas manutenções (até 30 dias)
 List<Manutencao> proximas30dias = repositoryManuntencao.findProximasManutencoes(hoje.plusDays(30));
@@ -396,7 +399,7 @@ proximas30dias.stream()
 
         if (m.getProximaManutencaoData() != null) { 
             long diasRestantes = ChronoUnit.DAYS.between(hoje, m.getProximaManutencaoData());
-            if (diasRestantes <= 30 && diasRestantes != 0) { 
+            if (diasRestantes <= 30 && diasRestantes > 0) { 
                 detalhes = "em " + diasRestantes + " dias (" + m.getProximaManutencaoData() + ")";
             }  
         } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null) {
@@ -422,7 +425,7 @@ proximas7dias.stream()
         
         if (m.getProximaManutencaoData() != null) {
             long diasRestantes = ChronoUnit.DAYS.between(hoje, m.getProximaManutencaoData());
-            if (diasRestantes <= 7 && diasRestantes !=0) {
+            if (diasRestantes <= 7 && diasRestantes > 0) { 
                 detalhes = "em " + diasRestantes + " dias"; 
             }
         } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null) {

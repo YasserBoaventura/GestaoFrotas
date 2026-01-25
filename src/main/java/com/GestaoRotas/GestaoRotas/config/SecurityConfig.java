@@ -73,7 +73,7 @@ public class SecurityConfig {
                             "/api/auth/redefinir-senha-token",
                             "/api/auth/redefinir-senha-verificacao",
                             "/api/manutencoes/relatorio-por-periodo",
-                            "/api/abastecimentos/abastecimentoRealizado"
+                            "/custo/dashboard"
                           ).permitAll()
                     .anyRequest().authenticated()
             )  
