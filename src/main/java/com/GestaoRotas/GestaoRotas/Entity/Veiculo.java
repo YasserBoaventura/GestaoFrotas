@@ -82,6 +82,7 @@ public class Veiculo {
 	    private LocalDateTime ultimaAtualizacaoCusto;
 	    
 	    @OneToMany(mappedBy = "veiculo", cascade = CascadeType.ALL)
+	    @JsonIgnore 
 	    @JsonIgnoreProperties({"veiculo", "hibernateLazyInitializer", "handler"})
 	    private List<Custo> custos = new ArrayList<>();
 	    

@@ -25,10 +25,10 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
     boolean existsByManutencaoId(Long manutencaoId);
     boolean existsByViagemId(Long viagemId);
      
-    // Agregações
+    // Agregações   
     @Query("SELECT SUM(c.valor) FROM Custo c WHERE c.veiculo.id = :veiculoId AND c.status = 'PAGO'")
     Double calcularTotalPorVeiculo(@Param("veiculoId") Long veiculoId);
-    
+      
     @Query("SELECT SUM(c.valor) FROM Custo c WHERE YEAR(c.data) = :ano AND MONTH(c.data) = :mes AND c.status = 'PAGO'")
     Double calcularTotalPorPeriodo(@Param("ano") Integer ano, @Param("mes") Integer mes);
     
@@ -49,13 +49,16 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
            "GROUP BY c.tipo")
     List<Object[]> calcularTotalPorTipoPeriodo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
     
-    @Query("SELECT v.matricula, SUM(c.valor) FROM Custo c " +
-           "JOIN c.veiculo v " +
-           "WHERE YEAR(c.data) = :ano AND MONTH(c.data) = :mes AND c.status = 'PAGO' " +
-           "GROUP BY v.id, v.matricula " +
-           "ORDER BY SUM(c.valor) DESC")
-    List<Object[]> findTop5VeiculosMaisCaros(@Param("ano") Integer ano, @Param("mes") Integer mes);
-    
+ // Repository - query atualizada
+ @Query("SELECT v.matricula, v.modelo, SUM(c.valor) FROM Custo c " +
+	       "JOIN c.veiculo v " +
+	       "WHERE YEAR(c.data) = :ano AND MONTH(c.data) = :mes AND c.status = 'PAGO' " +
+	       "GROUP BY v.id, v.matricula, v.modelo " +
+	       "ORDER BY SUM(c.valor) DESC " +
+	       "LIMIT 5")
+	List<Object[]> findTop5VeiculosMaisCaros(@Param("ano") Integer ano, @Param("mes") Integer mes);
+	
+	
     @Query("SELECT v.matricula, SUM(c.valor) FROM Custo c " +
            "JOIN c.veiculo v " +
            "WHERE c.data BETWEEN :inicio AND :fim AND c.status = 'PAGO' " +

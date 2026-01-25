@@ -38,14 +38,15 @@ public class CustoController {
 	        return ResponseEntity.ok(CustoDTO.fromEntity(custo));
 	    }
 	    
-	    // Dashboard
+	    // Dashboard 
 	    @GetMapping("/dashboard")
-	    public ResponseEntity<DashboardCustosDTO> dashboard() {
-	        return ResponseEntity.ok(custoService.getDashboardCustos());
+	    public ResponseEntity<DashboardCustosDTO> getDashboard() {
+	        DashboardCustosDTO dashboard = custoService.getDashboardCustos();
+	        return ResponseEntity.ok(dashboard);
 	    }
 	    
 	    // Relatório 
-	    @PostMapping("/relatorio")
+	    @PostMapping("/relatorio") 
 	    public ResponseEntity<RelatorioCustosDetalhadoDTO> relatorio(@RequestBody RelatorioFilterDTO filtro) {
 	        return ResponseEntity.ok(custoService.gerarRelatorioDetalhado(filtro));
 	    }
