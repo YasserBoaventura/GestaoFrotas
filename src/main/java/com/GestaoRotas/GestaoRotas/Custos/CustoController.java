@@ -1,5 +1,7 @@
 package com.GestaoRotas.GestaoRotas.Custos;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,14 +45,50 @@ public class CustoController {
 	    public ResponseEntity<DashboardCustosDTO> getDashboard() {
 	        DashboardCustosDTO dashboard = custoService.getDashboardCustos();
 	        return ResponseEntity.ok(dashboard);
-	    }
+	    } 
+	     
+	 @PostMapping("/relatorio")         
+	    public ResponseEntity<?> relatorio(@RequestBody RelatorioFilterDTO filtro) {
+	        try {
+	            System.out.println("=== RECEBENDO REQUISIÇÃO DE RELATÓRIO ===");
+	            System.out.println("Filtro recebido no controller:");
+	            System.out.println("  dataInicio: " + filtro.getDataInicio());
+	            System.out.println("  dataFim: " + filtro.getDataFim());
+	            System.out.println("  veiculoId: " + filtro.getVeiculoId());
+	            System.out.println("  tipoCusto: " + filtro.getTipoCusto());
+	            System.out.println("  statusCusto: " + filtro.getStatusCusto());
+	            
+	            RelatorioCustosDetalhadoDTO relatorio = custoService.gerarRelatorioDetalhado(filtro);
+	            return ResponseEntity.ok(relatorio);
+	            
+	        } catch (Exception e) {
+	            System.out.println("=== ERRO NO CONTROLLER ===");
+	            System.out.println("Mensagem: " + e.getMessage());
+	            System.out.println("Causa: " + (e.getCause() != null ? e.getCause().getMessage() : "null"));
+	            e.printStackTrace(); // Isso vai mostrar o stack trace completo
+	             
+	            Map<String, String> errorResponse = new HashMap<>();
+	            errorResponse.put("erro", e.getMessage());
+	            errorResponse.put("causa", e.getCause() != null ? e.getCause().getMessage() : null);
+	            return ResponseEntity.badRequest().body(errorResponse);
+	        }
 	    
-	    // Relatório 
-	    @PostMapping("/relatorio") 
-	    public ResponseEntity<RelatorioCustosDetalhadoDTO> relatorio(@RequestBody RelatorioFilterDTO filtro) {
-	        return ResponseEntity.ok(custoService.gerarRelatorioDetalhado(filtro));
 	    }
-	    
+	 @GetMapping("/numeroCustos")
+	 public ResponseEntity<Long> numeroCustos(){
+		 return ResponseEntity.ok(custoService.numeroCustos()); 
+	 } 
+	 
+	 @GetMapping("/findAll")  
+	 public ResponseEntity<?> findAll(){
+		 try {
+	 return ResponseEntity.status(HttpStatus.ACCEPTED).body(custoService.listar());  
+		 }catch(Exception e) {
+			 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("erro ao listar");
+	 }
+		 }
+	
+	   
 	    // Por veículo
 	    @GetMapping("/veiculo/{veiculoId}")
 	    public ResponseEntity<List<CustoDTO>> porVeiculo(

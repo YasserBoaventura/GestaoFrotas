@@ -21,7 +21,7 @@ public class RelatorioCustosDetalhadoDTO {
     
     // Totais gerais
     private Double totalPeriodo;
-    private Integer quantidadeCustos;
+    private Integer quantidadeCustos; 
     
     // Agrupamentos
     private Map<String, Double> totalPorVeiculo;          // Matrícula -> Total
@@ -42,7 +42,7 @@ public class RelatorioCustosDetalhadoDTO {
     
     // Detalhamento  
     private List<CustoDTO> custosDetalhados;
-    
+     
     // Métodos auxiliares
   
     

@@ -8,7 +8,7 @@
 		<version>3.5.8</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>  
-	<groupId>GestaoRotas</groupId>  <!-- FIXED: Removed extra dot -->
+	<groupId>GestaoRotas</groupId>
 	<artifactId>GestaoRotas</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>GestaoRotas</name>
@@ -21,7 +21,6 @@
 	</properties>
 	
 	<dependencies>
-		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -32,27 +31,30 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
   
-
 		<!-- Databases -->
 		<dependency>
-    <groupId>com.mysql</groupId>
-    <artifactId>mysql-connector-j</artifactId>
-    <version>8.3.0</version>
-</dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<version>8.3.0</version>
+		</dependency>
 		
 		<dependency>
-    <groupId>com.h2database</groupId>
-    <artifactId>h2</artifactId>
-    <scope>runtime</scope>
-</dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 
-		
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
 		
+		<dependency>
+  <groupId>com.fasterxml.jackson.datatype</groupId>
+  <artifactId>jackson-datatype-hibernate6</artifactId>
+</dependency>
+		 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -89,16 +91,29 @@
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>  
 		
-		<!-- Configuracoes de email -->
-		
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-logging</artifactId>
 		</dependency>
 		
+		<!-- FIX: Jackson modules para resolver problema de proxy Hibernate -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-hibernate6</artifactId>
+		</dependency>
 		
-
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+		
+		<!-- FIX: Adicionar Jakarta Persistence API -->
+		<dependency>
+			<groupId>jakarta.persistence</groupId>
+			<artifactId>jakarta.persistence-api</artifactId>
+			<version>3.1.0</version>
+		</dependency>
 		
 	</dependencies>
 
@@ -114,6 +129,9 @@
 							<artifactId>lombok</artifactId>
 						</path>
 					</annotationProcessorPaths>
+					<compilerArgs>
+						<arg>-parameters</arg>
+					</compilerArgs>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -131,4 +149,3 @@
 		</plugins>
 	</build>
 </project>
-

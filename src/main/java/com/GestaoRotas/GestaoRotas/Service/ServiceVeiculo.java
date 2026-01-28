@@ -121,7 +121,7 @@ private boolean temManutencaoVencida(Long veiculoId) {
             .anyMatch(m -> {
                 // Verifica por data
         if (m.getProximaManutencaoData() != null && 
-            m.getProximaManutencaoData().isBefore(hoje)) {
+            m.getProximaManutencaoData().isBefore(hoje) && m.getDataConclusao() != null) {
             return true;
         }
         

@@ -2,6 +2,8 @@ package com.GestaoRotas.GestaoRotas.DTO;
 import java.time.*;
 
 import com.GestaoRotas.GestaoRotas.Custos.Custo;
+import com.GestaoRotas.GestaoRotas.Model.StatusCusto;
+import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,8 +20,8 @@ public class CustoDTO {
     private LocalDate data;
     private String descricao;
     private Double valor;
-    private String tipo;
-    private String status;
+    private  TipoCusto tipo;
+    private StatusCusto status;
     private Long veiculoId;
     private String veiculoMatricula;
     private String observacoes;
@@ -31,8 +33,8 @@ public static CustoDTO fromEntity(Custo custo) {
     dto.setData(custo.getData());
     dto.setDescricao(custo.getDescricao());
     dto.setValor(custo.getValor());
-    dto.setTipo(custo.getTipo().name());
-    dto.setStatus(custo.getStatus().name());
+    dto.setTipo(custo.getTipo());
+    dto.setStatus(custo.getStatus());
     dto.setObservacoes(custo.getObservacoes());
     dto.setNumeroDocumento(custo.getNumeroDocumento());
     

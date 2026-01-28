@@ -117,7 +117,7 @@ public class Veiculo {
 	    @JsonIgnore
      // ManyToMany com Motorista  
 	    @ManyToMany  
-	    @JoinTable(
+	    @JoinTable(  
 	        name = "veiculo_motorista",
 	        joinColumns = @JoinColumn(name = "veiculo_id"),
 	        inverseJoinColumns = @JoinColumn(name = "motorista_id")
@@ -126,8 +126,8 @@ public class Veiculo {
 	     // Métodos auxiliares
 	    public Veiculo(String modelo, String matricula, Integer anoFabricacao,
 	               Double capacidadeTanque, Double kilometragemAtual) {
-	    this.modelo = modelo;
-	    this.matricula = matricula;
+	    this.modelo = modelo; 
+	    this.matricula = matricula; 
 	    this.anoFabricacao = anoFabricacao;
 	    this.capacidadeTanque = capacidadeTanque;
 	    this.kilometragemAtual = kilometragemAtual;

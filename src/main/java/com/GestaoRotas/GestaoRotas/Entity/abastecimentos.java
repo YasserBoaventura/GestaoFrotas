@@ -62,30 +62,33 @@ public class abastecimentos {
 	    
 	    // NOVO: relacionamento com Custo
 	    @OneToOne(mappedBy = "abastecimento", cascade = CascadeType.ALL)
-	    @JsonIgnoreProperties({"abastecimento", "hibernateLazyInitializer", "handler"})
+	    @JsonIgnoreProperties({"abastecimentos", "hibernateLazyInitializer", "handler"})
+	    @JsonBackReference 
 	    private Custo custo;
-	    
+	     
 	    // Método para criar custo automaticamente
+	    /*
 	    @PostPersist
 	    public void criarCustoAutomatico() {
 	        if (this.custo == null) {  
-	      Custo custoCombustivel = new Custo();
-	      custoCombustivel.setData(this.getDataAbastecimento());
-	      custoCombustivel.setDescricao("Abastecimento - " + this.getTipoCombustivel());	            custoCombustivel.setValor(this.getValorTotal());
-          custoCombustivel.setTipo(TipoCusto.COMBUSTIVEL);
-	      custoCombustivel.setStatus(StatusCusto.PAGO);
-	      custoCombustivel.setVeiculo(this.getVeiculo());
-	      custoCombustivel.setAbastecimento(this);
-	      custoCombustivel.setNumeroDocumento("ABS-" + this.getId());
+	            Custo custoCombustivel = new Custo();
+	            custoCombustivel.setData(this.dataAbastecimento);
+	            custoCombustivel.setDescricao("Abastecimento - " + this.getTipoCombustivel());
+	            custoCombustivel.setValor(this.getValorTotal());
+	            custoCombustivel.setTipo(TipoCusto.COMBUSTIVEL);
+	            custoCombustivel.setStatus(StatusCusto.PAGO);
+	            custoCombustivel.setVeiculo(this.getVeiculo());
+	            custoCombustivel.setAbastecimento(this);
+	            custoCombustivel.setViagem(this.getViagem()); 
+	            custoCombustivel.setNumeroDocumento("ABS-" + this.getId());
 	            
 	            this.custo = custoCombustivel;  
-	            
-	         //depois precisarei salvar no service 
+	            // O problema é que aqui NÃO está salvando no banco!
 	        }
 	    }
+	    */
 	    /////////////
-	                          
-
+	 
 	    //valor total da favor a pagar
 	    public Double getValorTotal() {
 	        if (quantidadeLitros != null && precoPorLitro != null) {

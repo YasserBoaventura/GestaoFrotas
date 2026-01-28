@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
 	//TRATAMENTO DOS DEMAIS ERROS DA APLICAÇÃO E DE REGRAS DE NEGÓCIO
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<String> handle03(Exception ex) {
-		ex.printStackTrace();
+		ex.printStackTrace();  
 		return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 	//Tratamentos do Erro throw new IlegalException na aplicacao NB: nomeie com O nome da excecao

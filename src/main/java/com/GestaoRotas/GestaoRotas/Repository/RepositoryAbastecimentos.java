@@ -66,7 +66,9 @@ public interface RepositoryAbastecimentos extends JpaRepository<abastecimentos, 
         List<RelatorioCombustivelDTO> relatorioPorVeiculo(); 
      
     //----
-  
+        @Query("SELECT a FROM abastecimentos a LEFT JOIN FETCH a.viagem WHERE a.id = :id")
+        Optional<abastecimentos> findByIdWithViagem(@Param("id") Long id);
+        
       
      
 } 

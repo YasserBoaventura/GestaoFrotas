@@ -1,6 +1,7 @@
 package com.GestaoRotas.GestaoRotas.Controller;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -40,13 +41,14 @@ public class ControllerAbastecimentos {
      // sava o abastecimento
    @PostMapping("/save")
    @PreAuthorize("hasAuthority('ADMIN')") 
-  public ResponseEntity<Map<String, String>> salvar(@RequestBody AbastecimentoDTO abastecimentoDTO) {
+  public ResponseEntity<Map<String, String>> salvar(@RequestBody @Valid AbastecimentoDTO abastecimentoDTO) {
    try { 
-	    return ResponseEntity.ok(abastecimentosService.save(abastecimentoDTO)); 
-	  }catch(Exception e) {
-	   System.err.print(e.getStackTrace());  
-	  return ResponseEntity.badRequest().build();
-	  } 
+	   return ResponseEntity.ok(abastecimentosService.save(abastecimentoDTO)); 
+	  }catch(Exception e) { 
+	   System.err.print("erro ao salvar abastecimento");
+	   e.printStackTrace();       
+	  return ResponseEntity.badRequest().build(); 
+	  }   
     }            
   @PutMapping("/update/{id}")
   @PreAuthorize("hasAuthority('ADMIN')")  
@@ -82,7 +84,7 @@ public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorPeriodo(
 @GetMapping("/abastecimentoRealizado") 
   public ResponseEntity<Long> abastecimentosRealizados(){
 		return ResponseEntity.status(HttpStatus.OK).body(abastecimentosService.numeroAbastecimentoRealizados()); 
-  }                
+  }                 
 @GetMapping("/abastecimtosPlaneados") 
 public ResponseEntity<Optional<Long>> abastecimentosPlaneados(){
 	return ResponseEntity.status(HttpStatus.OK).body(abastecimentosService.numeroAbastecimentoPlaneado()); 
