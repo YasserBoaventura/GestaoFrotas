@@ -72,17 +72,16 @@ public class ServiceAbastecimentos {
 	        abastecimento.setTipoCombustivel(dto.getTipoCombustivel());
 	        abastecimento.setStatusAbastecimento(dto.getStatusAbastecimento());
 	        
-	        // 4. Salvar abastecimento
+	 
 	        System.out.println("Salvando abastecimento...");
 	        abastecimentos savedAbastecimento = repositoryAbastecimentos.save(abastecimento);
 	        
-	        // 5. **VERIFICAR se a viagem foi salva**
+	 
 	        System.out.println("Abastecimento salvo com ID: " + savedAbastecimento.getId());
 	        System.out.println("Viagem no abastecimento salvo: " + 
 	            (savedAbastecimento.getViagem() != null ? 
 	                "ID " + savedAbastecimento.getViagem().getId() : "NULL"));
-	        
-	        // 6. Recarregar abastecimento com viagem (para garantir)
+	     
 	        abastecimentos abastecimentoComViagem = repositoryAbastecimentos
 	            .findByIdWithViagem(savedAbastecimento.getId())
 	            .orElse(savedAbastecimento);
@@ -91,7 +90,7 @@ public class ServiceAbastecimentos {
 	            (abastecimentoComViagem.getViagem() != null ? 
 	                "ID " + abastecimentoComViagem.getViagem().getId() : "NULL"));
 	        
-	        // 7. Criar custo
+	
 	        System.out.println("Chamando criarCustoParaAbastecimento...");
 	        Custo custo = custoService.criarCustoParaAbastecimento(abastecimentoComViagem);
 	        
@@ -164,20 +163,19 @@ public List<RelatorioCombustivelDTO> relatorioPorVeiculo() {
     return repositoryAbastecimentos.relatorioPorVeiculo();  
          
     }
-// relatorios por periodo data fim e data inicio 
 public List<RelatorioCombustivelDTO> relatorioPorPeriodo(LocalDate inicio, LocalDate fim) {
     return repositoryAbastecimentos.relatorioPorPeriodo(inicio, fim); 
           
 }
-//numero de abastecimento d realizados
+
 public Long numeroAbastecimentoRealizados(){
 	return repositoryAbastecimentos.contarAbastecimentosRealizados();  
 } 
-//numero de abastecimentos cancelados
+
 public Optional<Long> numeroAbastecimentoCancelados(){ 
 	return repositoryAbastecimentos.contarAbastecimentosCancelados(); 
 }
-//numero de abastecimentos planeada
+
 public Optional<Long>  numeroAbastecimentoPlaneado(){
 	return repositoryAbastecimentos.contarAbastecimentosPlaneados();
 	}

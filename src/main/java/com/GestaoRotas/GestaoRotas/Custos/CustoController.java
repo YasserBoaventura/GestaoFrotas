@@ -77,7 +77,7 @@ public class CustoController {
 	 @GetMapping("/numeroCustos")
 	 public ResponseEntity<Long> numeroCustos(){
 		 return ResponseEntity.ok(custoService.numeroCustos()); 
-	 } 
+	 }
 	 
 	 @GetMapping("/findAll")  
 	 public ResponseEntity<?> findAll(){

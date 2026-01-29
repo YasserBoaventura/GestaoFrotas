@@ -7,6 +7,8 @@ import lombok.Setter;
 import java.time.*;
 import java.util.*;
 
+import com.GestaoRotas.GestaoRotas.CustoDTO.VeiculoCustoDTO;
+
 
 @AllArgsConstructor
 @NoArgsConstructor

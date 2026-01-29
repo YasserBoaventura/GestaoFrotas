@@ -30,8 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class ServiceManutencoes {
     private final RepositoryManutencao repositoryManuntencao;
 	private final RepositoryVeiculo repositoryVeiculo; 
-	private final ServiceVeiculo veiculoService;// ja que vou precisar presistir com o veiculo	
-	//pra a  utilizacao  
+	private final ServiceVeiculo veiculoService; 	
 	private final custoService custoService; 
    
 	@Transactional 
@@ -87,7 +86,7 @@ public class ServiceManutencoes {
 	    manutencao.setTipoManutencao(manutencaoDTO.getTipoManutencao());
 	    manutencao.setCusto(manutencaoDTO.getCusto());
 	    manutencao.setProximaManutencaoKm(manutencaoDTO.getProximaManutencaoKm());
-	  ///// repositoryManuntencao.save(manutencao);  
+  
     
        // Define o status inicial
        LocalDate hoje = LocalDate.now();
@@ -136,14 +135,13 @@ public class ServiceManutencoes {
   try {
       // Atualiza o status da manutenção
   manutencao.setStatus(statusManutencao.AGENDADA_HOJE);
-  
-  // REMOVA UMA DAS CHAMADAS SAVE - mantenha apenas uma:
+
   repositoryManuntencao.save(manutencao);
-  // repositoryManuntencao.saveAndFlush(manutencao); 
+
   
   System.out.println("Status atualizado para AGENDADA_HOJE na manutenção ID: " + manutencao.getId());
   
-  // Atualiza o status do veículo para EM_MANUTENCAO
+
   Veiculo veiculo = manutencao.getVeiculo();
   if (veiculo != null && !veiculo.getStatus().equals("EM_MANUTENCAO")) {
   veiculo.setStatus("EM_MANUTENCAO");
@@ -220,8 +218,7 @@ public class ServiceManutencoes {
       String dataHoraFormatada = agora.format(formatter);
        
       manutencao.setDataConclusao(dataHoraFormatada);
-      //a data da manutencao so vai ser cadastrada se for inicializada
- 
+
       repositoryManuntencao.save(manutencao);
        
       // Atualiza o status do veículo
@@ -270,9 +267,7 @@ public class ServiceManutencoes {
       return response;
   }
 
-  /**
-   * Cancela uma manutenção e atualiza o veículo
-   */
+
   @Transactional
   public Map<String, String> cancelarManutencao(Long id, String motivo) {
 	  Map<String ,String> response = new HashMap<>();

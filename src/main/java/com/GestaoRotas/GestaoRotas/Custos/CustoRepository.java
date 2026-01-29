@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.GestaoRotas.GestaoRotas.CustoDTO.CustoListDTO;
+import com.GestaoRotas.GestaoRotas.CustoDTO.VeiculoCustoDTO;
 import com.GestaoRotas.GestaoRotas.Model.StatusCusto;
 import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 
@@ -126,16 +127,50 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
     
     // Contagem simples
     
- 
-    // Repository - query atualizada
- @Query("SELECT v.matricula, v.modelo, SUM(c.valor) FROM Custo c " +
-	       "JOIN c.veiculo v " +
-	       "WHERE YEAR(c.data) = :ano AND MONTH(c.data) = :mes AND c.status = 'PAGO' " +
-	       "GROUP BY v.id, v.matricula, v.modelo " + 
-	       "ORDER BY SUM(c.valor) DESC " +
-	       "LIMIT 5")
-	List<Object[]> findTop5VeiculosMaisCaros(@Param("ano") Integer ano, @Param("mes") Integer mes);
-	
+    @Query("SELECT new com.GestaoRotas.GestaoRotas.CustoDTO.VeiculoCustoDTO(" +
+    	       "v.matricula, v.modelo, SUM(c.valor)) " +
+    	       "FROM Custo c " +
+    	       "JOIN c.veiculo v " +
+    	       "WHERE FUNCTION('YEAR', c.data) = :ano " +
+    	       "AND FUNCTION('MONTH', c.data) = :mes " +
+    	       "AND c.status = 'PAGO' " +
+    	       "GROUP BY v.id, v.matricula, v.modelo " +
+    	       "ORDER BY SUM(c.valor) DESC")
+    	List<VeiculoCustoDTO> findTop5VeiculosMaisCaros(@Param("ano") Integer ano, @Param("mes") Integer mes);
+    
+    @Query("SELECT new com.GestaoRotas.GestaoRotas.CustoDTO.VeiculoCustoDTO(" +
+ 	       "v.matricula, v.modelo, SUM(c.valor)) " +
+ 	       "FROM Custo c " +
+ 	       "JOIN c.veiculo v " +
+ 	       "WHERE c.data BETWEEN :dataInicio AND :dataFim " +
+ 	       "AND c.status = 'PAGO' " +
+ 	       "GROUP BY v.id, v.matricula, v.modelo " +
+ 	       "ORDER BY SUM(c.valor) DESC")
+ 	List<VeiculoCustoDTO> findTop5VeiculosMaisCarosPorPeriodo(
+ 	    @Param("dataInicio") LocalDate dataInicio,
+ 	    @Param("dataFim") LocalDate dataFim);
+    
+ // Query sem filtros para testar
+    @Query("SELECT new com.GestaoRotas.GestaoRotas.CustoDTO.VeiculoCustoDTO(" +
+           "v.matricula, v.modelo, SUM(c.valor)) " +
+           "FROM Custo c " +
+           "JOIN c.veiculo v " +
+           "WHERE c.status = 'PAGO' " +  // Apenas status
+           "GROUP BY v.id, v.matricula, v.modelo " +
+           "ORDER BY SUM(c.valor) DESC " +
+           "LIMIT 5")
+    List<VeiculoCustoDTO> findTop5VeiculosMaisCarosTeste();
+    
+	//esse retorna o objecto ? 
+	 @Query("SELECT v.matricula, v.modelo, SUM(c.valor) FROM Custo c " +
+		       "JOIN c.veiculo v " +
+		       "WHERE YEAR(c.data) = :ano AND MONTH(c.data) = :mes AND c.status = 'PAGO' " +
+		       "GROUP BY v.id, v.matricula, v.modelo " + 
+		       "ORDER BY SUM(c.valor) DESC " +
+		       "LIMIT 5")  
+		List<Object[]> findTop5VeiculosMaisCaross(@Param("ano") Integer ano, @Param("mes") Integer mes);
+		
+		
 	
     @Query("SELECT v.matricula, SUM(c.valor) FROM Custo c " +
            "JOIN c.veiculo v " +

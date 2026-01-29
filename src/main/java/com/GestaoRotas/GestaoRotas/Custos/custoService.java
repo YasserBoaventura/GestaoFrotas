@@ -3,13 +3,13 @@ package com.GestaoRotas.GestaoRotas.Custos;
 import org.springframework.stereotype.Service;
 
 import com.GestaoRotas.GestaoRotas.CustoDTO.CustoListDTO;
+import com.GestaoRotas.GestaoRotas.CustoDTO.VeiculoCustoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.CustoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.CustoRequestDTO;
 import com.GestaoRotas.GestaoRotas.DTO.CustoUpdateDTO;
 import com.GestaoRotas.GestaoRotas.DTO.DashboardCustosDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioCustosDetalhadoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioFilterDTO;
-import com.GestaoRotas.GestaoRotas.DTO.VeiculoCustoDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Manutencao;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Entity.Viagem;
@@ -238,24 +238,23 @@ public class custoService {
             }
             dashboard.setCustosPorTipo(custosPorTipo);
             
-            // 3. Veículos mais caros (corrigido)
+            //
             List<VeiculoCustoDTO> veiculosMaisCaros = new ArrayList<>();
-            List<Object[]> resultados = custoRepository.findTop5VeiculosMaisCaros(ano, mes);
-            
+            List<VeiculoCustoDTO> resultados = custoRepository.findTop5VeiculosMaisCaros(ano, mes);
+               
             if (resultados != null && !resultados.isEmpty()) {
-                for (Object[] obj : resultados) {
-                    if (obj != null && obj.length >= 3) {
-                        String matricula = obj[0] != null ? obj[0].toString() : "N/A";
-                        String modelo = obj[1] != null ? obj[1].toString() : "Desconhecido";
-                        Double total = obj[2] != null ? ((Number) obj[2]).doubleValue() : 0.0;
+           
+                for (VeiculoCustoDTO obj : resultados) {
+                	  
+                    if (obj != null ) {
+                        String matricula = obj.getMatricula() != null ? obj.getMatricula().toString() : "N/A";
+                        String modelo =   obj.getModelo() != null ? obj.getModelo().toString() : "Desconhecido";
+                        Double total =    obj.getTotalCusto() != null ?  obj.getTotalCusto() : 0.0;
                         
                         veiculosMaisCaros.add(new VeiculoCustoDTO(matricula, modelo, total));
                     }
                 }
-            } else {
-                // Dados de exemplo
-                veiculosMaisCaros.add(new VeiculoCustoDTO("AB-AC-23", "Antigo", 3333.0));
-            }
+            } 
             dashboard.setVeiculosMaisCaros(veiculosMaisCaros);
             
             // 4. Últimos custos
@@ -330,7 +329,7 @@ public void migrarAbastecimentosExistentes() {
     public List<CustoListDTO> listar() {
       return custoRepository.findAllAsDTO();  
     }
-    
+     
     
     public RelatorioCustosDetalhadoDTO gerarRelatorioDetalhado(RelatorioFilterDTO filtro) {
         RelatorioCustosDetalhadoDTO relatorio = new RelatorioCustosDetalhadoDTO();
@@ -369,6 +368,19 @@ public void migrarAbastecimentosExistentes() {
         List<Custo> custos = custoRepository.findByPeriodo(
             filtro.getDataInicio(), filtro.getDataFim(), filtro.getVeiculoId());
         
+             // total  porcento por custo //por implementar
+        Map<String, Double> totalPorcentoPorCusto = new HashMap<>(); 
+        
+        // top 5 veiculos mais carros 
+        LocalDate  inicio = filtro.getDataInicioTop5VeiculosMaisCarro();
+        LocalDate   fim = filtro.getDataFimTop5VeiculosMaisCarro(); 
+        List<VeiculoCustoDTO> top5VeiculosMaisCarros = custoRepository.findTop5VeiculosMaisCarosPorPeriodo(inicio,fim);
+          System.out.println("recebendo  as datas "+"Inicio"+ inicio + "Fim"+ fim); 
+        System.out.print(top5VeiculosMaisCarros.size());
+        relatorio.setTop5VeiculosMaisCaros(top5VeiculosMaisCarros);
+        
+        
+        
         relatorio.setCustosDetalhados(custos.stream()
             .map(CustoDTO::fromEntity)
             .collect(Collectors.toList()));
@@ -376,6 +388,7 @@ public void migrarAbastecimentosExistentes() {
         return relatorio;
     }
      
+    
     public Long numeroCustos () {
     	return custoRepository.countAll();
     }

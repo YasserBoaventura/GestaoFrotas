@@ -27,6 +27,10 @@ public class RelatorioFilterDTO {
 	    private boolean agruparPorTipo = true;
 	    private boolean incluirDetalhado = true;
 	    
+	    private  LocalDate dataFimTop5VeiculosMaisCarro ;
+	    private LocalDate  dataInicioTop5VeiculosMaisCarro;
+	     
+	    
 	    // Construtor com valores padrão
 	    public RelatorioFilterDTO() {
 	        this.dataInicio = LocalDate.now().minusMonths(1);
