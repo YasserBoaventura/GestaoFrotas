@@ -62,7 +62,7 @@ public class Custo implements Serializable {
     @JoinColumn(name = "veiculo_id")
     @JsonIgnoreProperties({"custos", "abastecimentos", "manutencoes", "viagens"})
     private Veiculo veiculo;
-    
+     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "abastecimento_id")
     @JsonIgnoreProperties({"custo", "veiculo", "viagem"})

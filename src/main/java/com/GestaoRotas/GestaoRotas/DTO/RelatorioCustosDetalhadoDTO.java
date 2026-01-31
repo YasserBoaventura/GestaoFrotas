@@ -7,6 +7,7 @@ import lombok.Setter;
 import java.time.*;
 import java.util.*;
 
+import com.GestaoRotas.GestaoRotas.CustoDTO.CustoDetalhadoDTO;
 import com.GestaoRotas.GestaoRotas.CustoDTO.VeiculoCustoDTO;
 
 
@@ -39,9 +40,9 @@ public class RelatorioCustosDetalhadoDTO {
     private String tipoMaisFrequente;
     
     // Top 5
-    private List<CustoDTO> top5CustosMaisAltos;
+    private List<CustoDetalhadoDTO> top5CustosMaisAltos;
     private List<VeiculoCustoDTO> top5VeiculosMaisCaros;
-    
+     
     // Detalhamento  
     private List<CustoDTO> custosDetalhados;
      

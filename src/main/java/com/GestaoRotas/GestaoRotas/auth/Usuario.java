@@ -117,7 +117,7 @@ public class Usuario implements UserDetails {
        
     // Métodos auxiliares para segurança
     public void incrementarTentativasLogin() {
-        this.tentativasLogin++;
+        this.tentativasLogin++; 
         if (this.tentativasLogin >= 5) {
             this.contaBloqueada = true;
         }

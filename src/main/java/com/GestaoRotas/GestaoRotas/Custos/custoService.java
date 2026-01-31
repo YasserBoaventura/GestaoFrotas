@@ -1,15 +1,19 @@
 package com.GestaoRotas.GestaoRotas.Custos;
 
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.GestaoRotas.GestaoRotas.CustoDTO.CustoDetalhadoDTO;
 import com.GestaoRotas.GestaoRotas.CustoDTO.CustoListDTO;
+import com.GestaoRotas.GestaoRotas.CustoDTO.RelatorioFilterDTO;
 import com.GestaoRotas.GestaoRotas.CustoDTO.VeiculoCustoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.CustoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.CustoRequestDTO;
 import com.GestaoRotas.GestaoRotas.DTO.CustoUpdateDTO;
 import com.GestaoRotas.GestaoRotas.DTO.DashboardCustosDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioCustosDetalhadoDTO;
-import com.GestaoRotas.GestaoRotas.DTO.RelatorioFilterDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Manutencao;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Entity.Viagem;
@@ -28,6 +32,7 @@ import jakarta.transaction.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
 import java.time.*;
 import java.time.format.TextStyle;
 
@@ -43,14 +48,14 @@ public class custoService {
     private final RepositoryAbastecimentos abastecimentoRepository;
     private final RepositoryManutencao repositoryManutencao;
     private final RepositoryViagem repositoryViagem; 
-  /**
+  /** 
      * Registro manual de qualquer custo
      */
     public Custo registrarCustoManual(CustoRequestDTO request) {
         Veiculo veiculo = veiculoRepository.findById(request.getVeiculoId())
             .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
-        
-        Custo custo = new Custo();
+           var custo = new Custo(); 
+       
         custo.setData(request.getData() != null ? request.getData() : LocalDate.now());
         custo.setDescricao(request.getDescricao());
         custo.setValor(request.getValor());
@@ -81,7 +86,7 @@ public class custoService {
                 .orElseThrow(() -> new RuntimeException("Manutenção não encontrada"));
             custo.setManutencao(manut); 
         }
-         
+          
         if (request.getViagemId() != null) {
             Viagem viagem = repositoryViagem.findById(request.getViagemId())
                 .orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
@@ -180,7 +185,7 @@ public class custoService {
         veiculo.setUltimaAtualizacaoCusto(LocalDateTime.now());
         veiculoRepository.save(veiculo);
     }
-    
+     
     @Transactional
     public void atualizarTotaisTodosVeiculos() {
         List<Veiculo> veiculos = veiculoRepository.findAll();
@@ -200,14 +205,14 @@ public class custoService {
        System.out.println("Dashboard para {}-{}"+ ano + mes);
         
         try { 
-            // 1. Totais do mês (corrigido para evitar NPE)
+        
             Double totalAtual = custoRepository.calcularTotalPorPeriodo(ano, mes);
             Double totalAnterior = custoRepository.calcularTotalPorPeriodo(ano, mes - 1);
             
             dashboard.setTotalMesAtual(totalAtual != null ? totalAtual : 0.0);
             dashboard.setTotalMesAnterior(totalAnterior != null ? totalAnterior : 0.0);
             
-            // Calcular variação (só se tiver dados anteriores)
+            // Calcular variação só se tiver dados anteriores
             if (dashboard.getTotalMesAnterior() != null && 
                 dashboard.getTotalMesAnterior() > 0 && 
                 dashboard.getTotalMesAtual() != null) {
@@ -218,8 +223,8 @@ public class custoService {
             } else {
                 dashboard.setVariacaoPercentual(0.0);
             }
-            
-            // 2. Custo por tipo (inicializar map se vazio)
+                
+            //custo por tipo
             Map<String, Double> custosPorTipo = new HashMap<>();
             List<Object[]> tipoResultados = custoRepository.calcularTotalPorTipoAgrupado(ano, mes);
             
@@ -231,14 +236,11 @@ public class custoService {
                         custosPorTipo.put(tipo, valor);
                     }
                 }
-            } else {
-                // Dados de exemplo para teste
-                custosPorTipo.put("MANUTENCAO_CORRETIVA", 3333.0);
-                custosPorTipo.put("COMBUSTIVEL", 1500.0);
+            
             }
             dashboard.setCustosPorTipo(custosPorTipo);
             
-            //
+            // veiculos
             List<VeiculoCustoDTO> veiculosMaisCaros = new ArrayList<>();
             List<VeiculoCustoDTO> resultados = custoRepository.findTop5VeiculosMaisCaros(ano, mes);
                
@@ -284,7 +286,7 @@ public class custoService {
         return custoRepository.findByVeiculoIdAndDataBetweenOrderByDataDesc(
             veiculoId, inicio, fim);
     }
-    
+     
     public Map<String, Double> getCustoMensalUltimos12Meses() {
         Map<String, Double> resultado = new LinkedHashMap<>();
         LocalDate hoje = LocalDate.now();
@@ -299,8 +301,9 @@ public class custoService {
             
             resultado.put(mesAno, total != null ? total : 0.0);
         }
+           	
         
-        return resultado;
+        return resultado; 
     }
     
     // ========== MIGRAÇÃO DE DADOS EXISTENTES ==========
@@ -308,7 +311,7 @@ public class custoService {
     @Transactional
 public void migrarAbastecimentosExistentes() {
     List<abastecimentos> abastecimentos = abastecimentoRepository.findAll();
-    
+      
     int contador = 0;
     for (abastecimentos abast : abastecimentos) {
         try {
@@ -333,24 +336,24 @@ public void migrarAbastecimentosExistentes() {
     
     public RelatorioCustosDetalhadoDTO gerarRelatorioDetalhado(RelatorioFilterDTO filtro) {
         RelatorioCustosDetalhadoDTO relatorio = new RelatorioCustosDetalhadoDTO();
-        
-        // Dados básicos    
+          
+        //filtros do relatorio por localDate  
         relatorio.setPeriodoInicio(filtro.getDataInicio());
         relatorio.setPeriodoFim(filtro.getDataFim());
-         
-        // Totais  
+                
+        // Totais     
         Double totalPeriodo = custoRepository.calcularTotalPorPeriodoCompleto(
             filtro.getDataInicio(), filtro.getDataFim());
            relatorio.setTotalPeriodo(totalPeriodo);
             System.out.println("totais fim em e inicio: "+ totalPeriodo); 
-           
+             
             //quantidade custos por periodo
             Integer quantidadeCusto = custoRepository.numeroTotalCustoPorPeriodo(filtro.getDataInicio(), filtro.getDataFim()); 
             relatorio.setQuantidadeCustos(quantidadeCusto); 
            System.out.println("quantidade custos: "+quantidadeCusto);
              
            
-        // Por veículo
+        // Por veículo 
         List<Object[]> porVeiculo = custoRepository.calcularTotalPorVeiculoPeriodo(
             filtro.getDataInicio(), filtro.getDataFim());
         
@@ -360,7 +363,7 @@ public void migrarAbastecimentosExistentes() {
         }
         relatorio.setTotalPorVeiculo(mapaVeiculos);
         
-        // Por tipo
+        // Por tipo 
         relatorio.setTotalPorTipo(custoRepository.calcularTotalPorTipoPeriodo(
             filtro.getDataInicio(), filtro.getDataFim()));
         
@@ -370,17 +373,18 @@ public void migrarAbastecimentosExistentes() {
         
              // total  porcento por custo //por implementar
         Map<String, Double> totalPorcentoPorCusto = new HashMap<>(); 
-        
-        // top 5 veiculos mais carros 
+        //-----
+         
         LocalDate  inicio = filtro.getDataInicioTop5VeiculosMaisCarro();
         LocalDate   fim = filtro.getDataFimTop5VeiculosMaisCarro(); 
         List<VeiculoCustoDTO> top5VeiculosMaisCarros = custoRepository.findTop5VeiculosMaisCarosPorPeriodo(inicio,fim);
-          System.out.println("recebendo  as datas "+"Inicio"+ inicio + "Fim"+ fim); 
-        System.out.print(top5VeiculosMaisCarros.size());
-        relatorio.setTop5VeiculosMaisCaros(top5VeiculosMaisCarros);
+       relatorio.setTop5VeiculosMaisCaros(top5VeiculosMaisCarros);
         
-        
-        
+        //top5 os custos  mais altos
+        Pageable pageable = PageRequest.of(0, 5);
+            List<CustoDetalhadoDTO> top5CustosMaisAltos = custoRepository.findTop5CustosMaisAltos(pageable);
+        relatorio.setTop5CustosMaisAltos(top5CustosMaisAltos);
+      
         relatorio.setCustosDetalhados(custos.stream()
             .map(CustoDTO::fromEntity)
             .collect(Collectors.toList()));
@@ -418,7 +422,7 @@ public void migrarAbastecimentosExistentes() {
             } catch (Exception e) {
                 System.err.println("Erro ao migrar manutenção " + manut.getId() + ": " + e.getMessage());
             }
-        }
+        }  
         
         System.out.println("Migração concluída: " + contador + " manutenções migradas");
     }
@@ -458,7 +462,7 @@ public void migrarAbastecimentosExistentes() {
     // ========== ALERTAS E NOTIFICAÇÕES ==========
     
     private void enviarAlertaCustoAlto(abastecimentos abastecimento) {
-        // Implementar lógica de alerta
+        
         String mensagem = String.format(
             "ALERTA: Abastecimento de alto valor - Veículo: %s, Valor: R$ %.2f",
             abastecimento.getVeiculo().getMatricula(),

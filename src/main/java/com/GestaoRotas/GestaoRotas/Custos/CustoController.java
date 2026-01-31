@@ -13,11 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.time.*;
+
+import com.GestaoRotas.GestaoRotas.CustoDTO.RelatorioFilterDTO;
 import com.GestaoRotas.GestaoRotas.DTO.CustoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.CustoRequestDTO;
 import com.GestaoRotas.GestaoRotas.DTO.DashboardCustosDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioCustosDetalhadoDTO;
-import com.GestaoRotas.GestaoRotas.DTO.RelatorioFilterDTO;
 import com.GestaoRotas.GestaoRotas.Model.StatusCusto;
 
 import jakarta.validation.Valid;
@@ -65,7 +66,7 @@ public class CustoController {
 	            System.out.println("=== ERRO NO CONTROLLER ===");
 	            System.out.println("Mensagem: " + e.getMessage());
 	            System.out.println("Causa: " + (e.getCause() != null ? e.getCause().getMessage() : "null"));
-	            e.printStackTrace(); // Isso vai mostrar o stack trace completo
+	            e.printStackTrace(); 
 	             
 	            Map<String, String> errorResponse = new HashMap<>();
 	            errorResponse.put("erro", e.getMessage());

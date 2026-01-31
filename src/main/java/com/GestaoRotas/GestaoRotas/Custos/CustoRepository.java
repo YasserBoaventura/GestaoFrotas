@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.GestaoRotas.GestaoRotas.CustoDTO.CustoDetalhadoDTO;
 import com.GestaoRotas.GestaoRotas.CustoDTO.CustoListDTO;
 import com.GestaoRotas.GestaoRotas.CustoDTO.VeiculoCustoDTO;
 import com.GestaoRotas.GestaoRotas.Model.StatusCusto;
@@ -12,6 +13,7 @@ import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 
 import jakarta.*;
 import java.util.*;
+import java.awt.print.Pageable;
 import java.time.*; 
 @Repository 
 public interface CustoRepository extends JpaRepository<Custo, Long> {
@@ -37,11 +39,10 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
  
     @Query("SELECT SUM(c.valor) FROM Custo c WHERE c.data BETWEEN :inicio AND :fim AND c.status = 'PAGO'")
     Double calcularTotalPorPeriodoCompleto(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
-  
+                      
     //metodo calcular o numero de custos  apenas por periodo 
     @Query("SELECT COUNT(c) FROM Custo c WHERE c.data BETWEEN :inicio AND :fim AND c.status = 'PAGO'")
     Integer numeroTotalCustoPorPeriodo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
-    
     @Query("SELECT SUM(c.valor) FROM Custo c WHERE c.tipo = :tipo AND c.status = 'PAGO'")
     Double calcularTotalPorTipo(@Param("tipo") TipoCusto tipo);
       
@@ -137,11 +138,11 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
     	       "GROUP BY v.id, v.matricula, v.modelo " +
     	       "ORDER BY SUM(c.valor) DESC")
     	List<VeiculoCustoDTO> findTop5VeiculosMaisCaros(@Param("ano") Integer ano, @Param("mes") Integer mes);
-    
+     
     @Query("SELECT new com.GestaoRotas.GestaoRotas.CustoDTO.VeiculoCustoDTO(" +
  	       "v.matricula, v.modelo, SUM(c.valor)) " +
  	       "FROM Custo c " +
- 	       "JOIN c.veiculo v " +
+ 	       "JOIN c.veiculo v " + 
  	       "WHERE c.data BETWEEN :dataInicio AND :dataFim " +
  	       "AND c.status = 'PAGO' " +
  	       "GROUP BY v.id, v.matricula, v.modelo " +
@@ -150,18 +151,8 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
  	    @Param("dataInicio") LocalDate dataInicio,
  	    @Param("dataFim") LocalDate dataFim);
     
- // Query sem filtros para testar
-    @Query("SELECT new com.GestaoRotas.GestaoRotas.CustoDTO.VeiculoCustoDTO(" +
-           "v.matricula, v.modelo, SUM(c.valor)) " +
-           "FROM Custo c " +
-           "JOIN c.veiculo v " +
-           "WHERE c.status = 'PAGO' " +  // Apenas status
-           "GROUP BY v.id, v.matricula, v.modelo " +
-           "ORDER BY SUM(c.valor) DESC " +
-           "LIMIT 5")
-    List<VeiculoCustoDTO> findTop5VeiculosMaisCarosTeste();
-    
-	//esse retorna o objecto ? 
+ 
+	//esse retorna o objecto ?  
 	 @Query("SELECT v.matricula, v.modelo, SUM(c.valor) FROM Custo c " +
 		       "JOIN c.veiculo v " +
 		       "WHERE YEAR(c.data) = :ano AND MONTH(c.data) = :mes AND c.status = 'PAGO' " +
@@ -170,18 +161,27 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
 		       "LIMIT 5")  
 		List<Object[]> findTop5VeiculosMaisCaross(@Param("ano") Integer ano, @Param("mes") Integer mes);
 		
+		// top 5 os custos mais altos
+		@Query("SELECT new com.GestaoRotas.GestaoRotas.CustoDTO.CustoDetalhadoDTO(" +
+			       "c.id, c.descricao, c.valor, c.data, c.tipo, c.status, " +
+			       "v.matricula, v.modelo) " + 
+			       "FROM Custo c " +
+			       "JOIN c.veiculo v " +
+			       "WHERE c.status = 'PAGO' " +
+			       "ORDER BY c.valor DESC "+
+			       "LIMIT 5")
+			List<CustoDetalhadoDTO> findTop5CustosMaisAltos(org.springframework.data.domain.Pageable pageable);
 		
-	
     @Query("SELECT v.matricula, SUM(c.valor) FROM Custo c " +
            "JOIN c.veiculo v " +
            "WHERE c.data BETWEEN :inicio AND :fim AND c.status = 'PAGO' " +
            "GROUP BY v.id, v.matricula")
     List<Object[]> calcularTotalPorVeiculoPeriodo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
     
-    // Consulta com filtros múltiplos
+    // Consulta com filtros multiplos
     @Query("SELECT c FROM Custo c WHERE " +
            "(:inicio IS NULL OR c.data >= :inicio) AND " +
-           "(:fim IS NULL OR c.data <= :fim) AND " +
+           "(:fim IS NULL OR c.data <= :fim) AND " + 
            "(:veiculoId IS NULL OR c.veiculo.id = :veiculoId) " +
            "ORDER BY c.data DESC") 
     List<Custo> findByPeriodo(@Param("inicio") LocalDate inicio, 
@@ -189,13 +189,13 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
                               @Param("veiculoId") Long veiculoId);
     
     // Totais detalhados por veículo
-    @Query("SELECT " +
+    @Query("SELECT " + 
            "SUM(CASE WHEN c.status = 'PAGO' THEN c.valor ELSE 0 END) as total, " +
            "SUM(CASE WHEN c.tipo = 'COMBUSTIVEL' AND c.status = 'PAGO' THEN c.valor ELSE 0 END) as combustivel, " +
            "SUM(CASE WHEN c.tipo IN ('MANUTENCAO_PREVENTIVA', 'MANUTENCAO_CORRETIVA') AND c.status = 'PAGO' THEN c.valor ELSE 0 END) as manutencao " +
            "FROM Custo c WHERE c.veiculo.id = :veiculoId")
     Map<String, Object> calcularTotaisPorVeiculo(@Param("veiculoId") Long veiculoId);
-    
+      
     // Média geral
     @Query("SELECT AVG(v.custoTotal) FROM Veiculo v WHERE v.custoTotal IS NOT NULL")
     Double calcularMediaCustoPorVeiculo();
