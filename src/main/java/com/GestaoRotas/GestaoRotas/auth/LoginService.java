@@ -1,8 +1,10 @@
 //AuthenticationService.java
 package com.GestaoRotas.GestaoRotas.auth;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -13,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.GestaoRotas.GestaoRotas.Entity.Viagem;
 import com.GestaoRotas.GestaoRotas.config.JwtServiceGenerator;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -37,12 +40,38 @@ public class LoginService {
 	}
 
 	public String logar(Login login) {
+	    Usuario user = repository.findByUsername(login.getUsername())
+	            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-		String token = this.gerarToken(login);
-	
-		return token;
-
-	} 
+	    // Verifica se a conta está bloqueada
+	    if (user.getTentativasLogin() == 5) {   // Supondo que tenha um método getter
+	        throw new RuntimeException("Conta bloqueada devido a múltiplas tentativas de login");
+	    }
+	    if(!user.isAccountNonLocked()) {
+	    	  throw new RuntimeException("Conta bloqueada");
+	    }
+	    if(!user.isEnabled()) {
+	    	throw new RuntimeException(" conta desativada solicite um administrador");
+	    }
+          try {
+	        // Tenta autenticar (gerar token)
+	        String token = this.gerarToken(login);
+	        // Se chegou aqui, login foi bem-sucedido
+	        // Reseta as tentativas de login
+	        user.setTentativasLogin(0);  
+	         
+	        user.setUltimoAcesso(LocalDateTime.now());
+	        this.repository.save(user);  
+	        
+	        return token;
+	    } catch (Exception e) {
+	        // Login falhou - incrementa tentativas
+	        user.incrementarTentativasLogin();
+	        this.repository.save(user);
+	        
+	        throw new RuntimeException("Credenciais inválidas");
+	    }
+	}
 // Como pegar os dados do usuario a se cadastrar
 	public String registar(Usuario usuario) { 
    String passwordEncoderStrings = passwordEncoder.encode(usuario.getPassword());
@@ -71,10 +100,47 @@ public class LoginService {
 	    
 	    return repository.save(usuarioExistente);
 	}
+	//Bloquear/Desbloquar
+public Map<String , String> bloquearConta(long id){
+	Map<String, String> response = new HashMap<>();
+	Usuario usuario = repository.findById(id).orElseThrow(()->new RuntimeException(" usuario nao econtrado"));
+  // desbloquar se estiver bloqueado
+	if(usuario.getContaBloqueada() == true) {
+	   Map<String, String> contaDesbloqueada = new HashMap<>();
+	   usuario.setContaBloqueada(false);
+	   repository.save(usuario); 
+	   contaDesbloqueada.put("sucesso", "conta desbloqueada com sucesso");
+	   return contaDesbloqueada; 
+   } 
+   else {
+	usuario.setContaBloqueada(true);   
+	repository.save(usuario);
+ response.put("sucesso", "conta bloqueada com suceso");
+	return response;  
+   }
+} 
+//desativar/ativar
+public Map<String, String > desativarConta(long id){
+	Map<String , String> contaAtivada = new HashMap<>();
+	Usuario usuario = repository.findById(id).orElseThrow(()-> new RuntimeException("usuario nao encontrado"));
+    // desativar a conta se estiver ativa     
+	if(usuario.getAtivo() == true) {
+		Map<String , String> contaDesativada = new  HashMap<>();
+		contaDesativada.put("sucesso", "conta desativada com sucesso");
+				usuario.setAtivo(false);
+        	 repository.save(usuario);
+        	 return contaDesativada;
+       } else {
+        	 contaAtivada.put("sucesso", "conta ativada com sucesso");
+        	 return  contaAtivada;
+         }
+	 
+}
+	
 	//metodo para listar
 	public List<Usuario> findAll(){
 		List<Usuario> lista= new  ArrayList<>();
-		return  lista=this.repository.findAll();
+		return  lista= repository.findAll();
 	}
 	//Metodo pra iliminar usuario
 	public String delete(long id) {

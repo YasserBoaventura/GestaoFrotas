@@ -15,6 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -25,7 +26,8 @@ import java.util.Collections;
 @AllArgsConstructor
 @NoArgsConstructor   
 @Getter
-@Setter 
+@Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Usuario implements UserDetails {
     
     @Id     
@@ -77,13 +79,13 @@ public class Usuario implements UserDetails {
     
     @Column(name = "ultimo_acesso")
     private LocalDateTime ultimoAcesso; 
-    
+        
     @Column(name = "tentativas_login")
     private Integer tentativasLogin = 0;
     
     @Column(name = "conta_bloqueada")
     private Boolean contaBloqueada = false;
-     
+       
     // Métodos de UserDetails
    
     @JsonIgnore
@@ -95,12 +97,12 @@ public class Usuario implements UserDetails {
     
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return true;   
     }
     
     @Override
     public boolean isAccountNonLocked() {
-        return !contaBloqueada;
+        return !contaBloqueada;   
     }
     
     @Override
@@ -112,7 +114,7 @@ public class Usuario implements UserDetails {
     public boolean isEnabled() {
         return ativo;
     }
-      
+       
     // Métodos auxiliares para segurança
     public void incrementarTentativasLogin() {
         this.tentativasLogin++;
@@ -135,12 +137,24 @@ public class Usuario implements UserDetails {
     
     public void invalidarToken() {
         this.tokenUtilizado = true;
-    }  
-    //Funco para verificar
-    
-   
+    } 
+   //ainda por implementar
+/**
+public boolean isContaBloqueada() {
+    if (contaBloqueada && dataBloqueio != null) {
+        // Desbloqueia automaticamente após 30 minutos
+	            LocalDateTime agora = LocalDateTime.now();
+	            Duration duracao = Duration.between(dataBloqueio, agora);
+	            if (duracao.toMinutes() >= 30) {
+	                desbloquearConta();
+	                return false;
+	            }  
+	        }
+	        return contaBloqueada;
+	    }   
+   */
 }
 
-
+ 
 
 

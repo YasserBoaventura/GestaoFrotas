@@ -1,23 +1,16 @@
 package com.GestaoRotas.GestaoRotas.DTO;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RelatorioMotoristaDTO {
- 
+public class RelatorioTopMotoristasDTO {
     private String nomeMotorista;
-    private String telefone;
-    private String status;
     private Long totalViagens;
-    private Double totalQuilometragem;
-    private Double totalCombustivel;
-  
- 
-
+    private Double totalKilometragem;
 }

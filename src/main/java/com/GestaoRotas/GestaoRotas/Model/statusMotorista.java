@@ -5,8 +5,11 @@ public enum statusMotorista {
 	ATIVO,
 	INATIVO,
 	FERIAS,
-	AFASTADO
-	
+	AFASTADO,
+	DISPONIVEL,
+	EM_VIAGEM,
+	BLOQUEADO   
+	 
 	
 	
 }

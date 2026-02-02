@@ -4,6 +4,7 @@ import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,13 +40,13 @@ public class LoginController {
         this.loginService = loginService;
         this.loginRepository = loginRepository;
         this.passwordEncoder = passwordEncoder;
-    }
+    } 
 
     @PostMapping("/login")
     public ResponseEntity<?> logar(@RequestBody Login login) {
         try {
             String token = loginService.logar(login);
-            return ResponseEntity.ok(token);
+             return ResponseEntity.ok(token); 
 
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
@@ -53,7 +54,7 @@ public class LoginController {
             return ResponseEntity.badRequest().body(error);
         }
     }
-
+    
  
 //  POST para pre registro
 
@@ -92,30 +93,57 @@ public class LoginController {
 
    return ResponseEntity.ok("Cadastro realizado com sucesso. Aguarde ativação da conta por um administrador.");
    } 
-		   
-   //Devo fazer aqui ate porque o Repositorio e do tipo usuario
+		//Devo fazer aqui ate porque o Repositorio e do tipo usuario
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/findAll")
-    private ResponseEntity<List<Usuario>> findAll(){
+    public ResponseEntity<List<Usuario>> findAll(){
 	  try { 
 	 	List<Usuario> lista=this.loginService.findAll();
 		return new ResponseEntity<>(lista, HttpStatus.OK);
 	    }catch(Exception e) {
 		return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
 	   }
-  } 
-    
-    //update pra ativar as contas ou desbloquear 
-    @PutMapping("/{id}")
+  }   
+    //desbloquear/bloquear contas
+    @PutMapping("/bloqueio/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Usuario> atualizarUsuario(
+public ResponseEntity<Map<String, String>> bloquearConta( @PathVariable long id){
+	try { 
+ 		Map<String, String> response = this.loginService.bloquearConta(id);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+  	}catch(ClassCastException  e) {
+		Map<String, String> erro = new HashMap<>();
+	 return	ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+	 	
+	}
+}
+      //ativar/destivar conta
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/ativo/{id}")
+    public ResponseEntity<Map<String, String>> desativarConta(@PathVariable long id){
+    	try {
+    		Map<String, String> response = this.loginService.desativarConta(id);
+    		return ResponseEntity.status(HttpStatus.OK).body(response);
+    	}catch(ClassCastException e) { 
+    		Map<String , String> erro =  new HashMap<>();
+    		erro.put("erro", "erro ao tentar fazer altercoes");
+    		e.printStackTrace();
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);     		
+    	}
+    }
+    
+    @PutMapping("/{id}") 
+    @PreAuthorize("hasAuthority('ADMIN')") 
+    public ResponseEntity<Usuario> atualizarUsuario( 
             @PathVariable Long id,
             @RequestBody @Valid Usuario usuario) {
-        
+         
         Usuario usuarioAtualizadoo = this.loginService.atualizarUsuario(id, usuario);
         return ResponseEntity.ok(usuarioAtualizadoo);
     }
     
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')") 
     public ResponseEntity<String> delete(@PathVariable long id){
     	try {
     		String frase=this.loginService.delete(id);

@@ -19,12 +19,13 @@ import lombok.Setter;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import java.io.*;
-
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.GestaoRotas.GestaoRotas.Model.StatusVeiculo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -59,6 +60,13 @@ public class Veiculo {
 	    @ManyToOne(fetch = FetchType.EAGER)
 	    @JoinColumn(name = "marca_id")
 	    private Marca marca;
+	    
+	    @Column(nullable = false, length = 255)
+	    private String status = "DISPONIVEL"; // DISPONIVEL, EM_VIAGEM, EM_MANUTENCAO, MANUTENCAO_VENCIDA, MANUTENCAO_PROXIMA
+	    
+	    private LocalDateTime dataAtualizacaoStatus;
+	    
+	    
 	    // OneToMany com Abastecimento
 	    @JsonIgnore
      @OneToMany(mappedBy = "veiculo", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -85,6 +93,15 @@ public class Veiculo {
 	    )
 	    private Set<Motorista> motoristas = new HashSet<>();
 	     // Métodos auxiliares
+	    public Veiculo(String modelo, String matricula, Integer anoFabricacao,
+	               Double capacidadeTanque, Double kilometragemAtual) {
+	    this.modelo = modelo;
+	    this.matricula = matricula;
+	    this.anoFabricacao = anoFabricacao;
+	    this.capacidadeTanque = capacidadeTanque;
+	    this.kilometragemAtual = kilometragemAtual;
+	}
+
 	    public void addMotorista(Motorista motorista) {
 	        motoristas.add(motorista);
 	        motorista.getVeiculos().add(this);
