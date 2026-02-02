@@ -76,9 +76,10 @@ public class SecurityConfig {
                             "/custo/dashboard",
                             "/custo/relatorio",
                             "/custo/findAll", 
-                            "/custo/numeroCustos"
+                            "/custo/numeroCustos",
+                            "/custo/numeroPorStatus"
                           ).permitAll() 
-                    .anyRequest().authenticated()
+                    .anyRequest().permitAll()
             )  
             .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -108,7 +109,8 @@ public class SecurityConfig {
                 HttpMethod.GET.name(),
                 HttpMethod.POST.name(),
                 HttpMethod.PUT.name(),
-                HttpMethod.DELETE.name()
+                HttpMethod.DELETE.name(),
+                HttpMethod.PATCH.name() 
         ));
         config.setMaxAge(3600L);
 

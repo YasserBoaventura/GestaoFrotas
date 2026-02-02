@@ -59,7 +59,7 @@ public class ServiceManutencoes {
         manutencao.setStatus(manutencaoDTO.getStatus().ATRASADA);
     } else {
         manutencao.setStatus(manutencaoDTO.getStatus().AGENDADA);
-    }
+    } 
     Manutencao saved =  repositoryManuntencao.save(manutencao);
     custoService.criarCustoParaManutencao(saved); 
     return "manutencao salva com sucesso";
@@ -183,7 +183,7 @@ public class ServiceManutencoes {
        
       for (Manutencao manutencao : manutencoesVencidas) {
           // Atualiza o status da manutenção
-    	  String status = "ATRASADA";
+    	  String status = "ATRASADA"; 
           manutencao.setStatus(statusManutencao.ATRASADA);  
            repositoryManuntencao.save(manutencao);
            repositoryManuntencao.saveAndFlush(manutencao);
@@ -370,7 +370,7 @@ repositoryManuntencao.findManutencoesVencidas()
         String placa = m.getVeiculo() != null ? m.getVeiculo().getMatricula() : "Veículo não encontrado";
         String detalhes = "";  
            
-        if (m.getProximaManutencaoData() != null && m.getProximaManutencaoData().isBefore(hoje) && m.getDataConclusao()!= null ) {
+        if (m.getProximaManutencaoData() != null && m.getProximaManutencaoData().isBefore(hoje)) {
             long diasAtraso = ChronoUnit.DAYS.between(m.getProximaManutencaoData(), hoje);
             detalhes = "atrasada há " + diasAtraso + " dias (desde " + m.getProximaManutencaoData() + ")"; 
         } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null && 
@@ -385,13 +385,11 @@ repositoryManuntencao.findManutencoesVencidas()
  
 // Próximas manutenções (até 30 dias)
 List<Manutencao> proximas30dias = repositoryManuntencao.findProximasManutencoes(hoje.plusDays(30));
-
 proximas30dias.stream()
-    .filter(m -> !m.isVencida()) // Filtra apenas não vencidas
     .forEach(m -> { 
         String placa = m.getVeiculo() != null ? m.getVeiculo().getMatricula() : "Veículo não encontrado";
         String detalhes = "";
-
+ 
         if (m.getProximaManutencaoData() != null) { 
             long diasRestantes = ChronoUnit.DAYS.between(hoje, m.getProximaManutencaoData());
             if (diasRestantes <= 30 && diasRestantes > 0) { 

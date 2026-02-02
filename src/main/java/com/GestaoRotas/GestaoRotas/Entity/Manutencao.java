@@ -47,11 +47,11 @@ public class Manutencao {
 	     
 	    @Column(name = "kilometragem_veiculo")
 	    private Double kilometragemVeiculo;
-	
+	 
 	    
 	    //  CAMPOS NOVOS NECESSÁRIOS
 	    @Column(name = "proxima_manutencao_km")
-	    private Integer proximaManutencaoKm; 
+	    private  Double proximaManutencaoKm; 
 	    
 	    @Column(name = "proxima_manutencao_data")
 	    private LocalDate proximaManutencaoData;
@@ -93,8 +93,8 @@ public class Manutencao {
     }
 	    
 	    // Método auxiliar para verificar se está vencida
-	    public boolean isVencida() {
-	        if (proximaManutencaoData != null && proximaManutencaoData.isBefore(LocalDate.now())) {
+	    public boolean isVencida() { 
+	        if (dataManutencao != null && dataManutencao.isBefore(LocalDate.now()) && dataManutencao.isBefore(LocalDate.now()) ) {
 	            return true;
 	        }  
 	        if (proximaManutencaoKm != null && veiculo != null && veiculo.getKilometragemAtual() != null && 

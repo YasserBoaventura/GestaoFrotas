@@ -49,6 +49,11 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
     //conta todos 
     @Query("SELECT COUNT(c) FROM Custo c") 
     Long countAll();
+    
+    
+    Integer countByStatus(StatusCusto status); 
+    
+     Integer countByTipo(TipoCusto tipo); 
      
     // Agrupamentos 
     @Query("SELECT c.tipo, SUM(c.valor) FROM Custo c " +

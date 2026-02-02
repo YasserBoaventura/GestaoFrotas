@@ -48,7 +48,7 @@ public class Custo implements Serializable {
     @Column(name = "data", updatable = false)
     private LocalDate data;
     private String descricao;
-    private Double valor; 
+    private Double valor;  
     
     @Enumerated(EnumType.STRING)
     private TipoCusto tipo;

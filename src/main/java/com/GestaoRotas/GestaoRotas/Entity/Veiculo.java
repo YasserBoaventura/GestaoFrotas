@@ -76,7 +76,7 @@ public class Veiculo {
 	    private Double custoTotal;
 	    
 	    @Column
-	    private Double custoMedioPorKm;
+	    private Double custoMedioPorKm;  
 	    
 	    @Column(name = "ultima_atualizacao_custo")
 	    private LocalDateTime ultimaAtualizacaoCusto;
@@ -126,7 +126,7 @@ public class Veiculo {
 	     // Métodos auxiliares
 	    public Veiculo(String modelo, String matricula, Integer anoFabricacao,
 	               Double capacidadeTanque, Double kilometragemAtual) {
-	    this.modelo = modelo; 
+	    this.modelo = modelo;  
 	    this.matricula = matricula; 
 	    this.anoFabricacao = anoFabricacao;
 	    this.capacidadeTanque = capacidadeTanque;
@@ -153,7 +153,6 @@ public class Veiculo {
 	    	
 	    } 
 	     // Método calculado
-	    // Método calculado 
 	   
 	    public Double getMediaConsumo() {
 	        if (abastecimentoss == null || abastecimentoss.isEmpty()) return 0.0;
@@ -170,14 +169,14 @@ public class Veiculo {
 	    }
 	    // Método pra calcular custos depois que ele carrega o banco
 @PostLoad 
-public void calcularCustos() {
+public void calcularCustos() {  
     if (this.custos != null && !this.custos.isEmpty()) {
         this.custoTotal = this.custos.stream()
             .filter(c -> c.getStatus() == StatusCusto.PAGO)
             .mapToDouble(Custo::getValor)
             .sum();
         
-        // Calcular por tipo
+        // Calcular por tipo 
         this.custoCombustivel = this.custos.stream()
             .filter(c -> c.getStatus() == StatusCusto.PAGO && 
                        c.getTipo() == TipoCusto.COMBUSTIVEL)

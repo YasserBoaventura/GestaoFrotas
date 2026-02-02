@@ -1,4 +1,9 @@
-package com.GestaoRotas.GestaoRotas.DTO;
+package com.GestaoRotas.GestaoRotas.CustoDTO;
+
+import java.time.LocalDate;
+
+import com.GestaoRotas.GestaoRotas.Model.StatusCusto;
+import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Min;
@@ -10,16 +15,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.*;
-
-import com.GestaoRotas.GestaoRotas.Model.StatusCusto;
-import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
-public class CustoRequestDTO {
-	
+@NoArgsConstructor 
+public class CustoRequestDTO { 
 	    @NotNull
 	    private Long veiculoId;
 	    @Column(nullable = false)
@@ -47,5 +47,6 @@ public class CustoRequestDTO {
 	    private String observacoes;
 	    
 	    private String numeroDocumento;
+
 
 }
