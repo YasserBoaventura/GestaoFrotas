@@ -27,6 +27,6 @@ public interface LoginRepository extends JpaRepository<Usuario, Long>{
     //o optional duplo pra usar na validacao  
     Optional<Usuario> findByUsernameAndResetToken(String username, String resetToken);
 
-         
+          
     
 }

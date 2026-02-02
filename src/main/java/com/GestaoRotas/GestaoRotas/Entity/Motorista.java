@@ -48,16 +48,15 @@ public class Motorista {
     @Column(name="statusMotorista" , nullable = false)
 	private statusMotorista status;
 	
-	
-	// ManyToMany com Veiculo
+	// ManyToMany  com Veiculo
 	@ManyToMany(mappedBy = "motoristas")
 	 @JsonIgnore
 	private Set<Veiculo> veiculos = new HashSet<>();
-	
+	 
 	// OneToMany com Viagem 
 	 @JsonIgnore
 	@OneToMany(mappedBy = "motorista", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Viagem> viagens = new ArrayList<>();
+    private List<Viagem> viagens = new ArrayList<>(); 
 	    
 	  
 	    // Métodos auxiliares
@@ -65,7 +64,11 @@ public class Motorista {
 	    viagens.add(viagem);
 	    viagem.setMotorista(this);
 	}
-	
+	//busga o numero de viagens de cada motorista
+     @Transient  
+    public Long getTotalViagens() {
+        return (long) viagens.size();
+    }  
 	// Método calculado
 	public Long getTotalViagensConcluidas() {  
 	    return viagens.stream()

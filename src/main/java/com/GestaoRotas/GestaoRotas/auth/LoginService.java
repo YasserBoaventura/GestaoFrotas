@@ -19,8 +19,10 @@ import com.GestaoRotas.GestaoRotas.Entity.Viagem;
 import com.GestaoRotas.GestaoRotas.config.JwtServiceGenerator;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor 
 public class LoginService {
    
 
@@ -31,13 +33,7 @@ public class LoginService {
 	private final AuthenticationManager authenticationManager;
 	 
 	private final PasswordEncoder passwordEncoder;
-	@Autowired
-	  public LoginService (LoginRepository repo,JwtServiceGenerator jwtServiceGenerator, AuthenticationManager AuthenticationManger, PasswordEncoder passwordEncoder) {
-		this.repository=repo;
-		this.jwtService=jwtServiceGenerator;
-	    this.authenticationManager=AuthenticationManger;
-	    this.passwordEncoder=passwordEncoder;
-	}
+	
 
 	public String logar(Login login) {
 	    Usuario user = repository.findByUsername(login.getUsername())
@@ -175,7 +171,7 @@ public Map<String, String > desativarConta(long id){
 	        //validar se o usuario esta bloqueada
 	        else if(user.getContaBloqueada()==true) {
 	         throw new DisabledException("Conta bloqueada porfavor entre em Contato com o administrador: "+login.getUsername());	
-	        }
+	        } 
 	         
 	        // 4. Gerar token JWT
 	        String jwtToken = jwtService.generateToken(user);

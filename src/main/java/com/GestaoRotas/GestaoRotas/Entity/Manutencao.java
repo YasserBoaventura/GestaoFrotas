@@ -33,10 +33,10 @@ public class Manutencao {
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
 	    
-	    @Column(name = "data_manutencao")
-	    private LocalDate dataManutencao;
+	    @Column(name = "data_manutencao") //
+	    private LocalDate dataManutencao;  
 	     
-	    @Column(name = "tipo_manutencao", length = 50)
+	    @Column(name = "tipo_manutencao", length = 50) 
 	    @Enumerated(EnumType.STRING)
 	    private TipoManutencao tipoManutencao; // "PREVENTIVA", "CORRETIVA", "TROCA_OLEO", "REVISAO"
 	    
@@ -51,23 +51,23 @@ public class Manutencao {
 	    
 	    //  CAMPOS NOVOS NECESSÁRIOS
 	    @Column(name = "proxima_manutencao_km")
-	    private Integer proximaManutencaoKm;
+	    private Integer proximaManutencaoKm; 
 	    
 	    @Column(name = "proxima_manutencao_data")
 	    private LocalDate proximaManutencaoData;
 	    
 	    @Column(name = "dataConclusao")
-	    private LocalDateTime dataConclusao;
-	    @Column(name ="dataInicio")
-	    private LocalDateTime dataInicio;
-	    
+	    private String dataConclusao; 
+	    @Column(name ="dataInicio") 
+	    private String dataInicio;
+	     
 	    // ManyToOne com Veiculo
-	    @ManyToOne(fetch = FetchType.LAZY)
-	    @JoinColumn(name = "veiculo_id", nullable = false)
-	    @JsonIgnoreProperties({"Manutencao", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO
+	    @ManyToOne(fetch = FetchType.LAZY) 
+	    @JsonIgnoreProperties({"abastecimentos", "hibernateLazyInitializer", "handler"})
+	    @JoinColumn(name = "veiculo_id", nullable = false) 
 	    private Veiculo veiculo;
 	    
-
+ 
 	    @Enumerated(EnumType.STRING)  
 	    private statusManutencao status;
 	    
@@ -80,7 +80,7 @@ public class Manutencao {
     }
     
   
-    // Método auxiliar
+    // Método auxiliar 
     @PrePersist
     public void prePersist() {
         if (dataManutencao == null) {

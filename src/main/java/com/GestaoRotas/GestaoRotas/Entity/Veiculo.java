@@ -29,11 +29,10 @@ import com.GestaoRotas.GestaoRotas.Model.StatusVeiculo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-
 @Setter
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor 
 @Table(name = "veiculo")
 public class Veiculo {  
  //------->
@@ -71,11 +70,10 @@ public class Veiculo {
 	    @JsonIgnore
      @OneToMany(mappedBy = "veiculo", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	 private List<abastecimentos> abastecimentoss = new ArrayList<>();
-	    
+	     
 	    // OneToMany com Manutencao
 	    @JsonIgnore
-
-	    @OneToMany(mappedBy = "veiculo", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+        @OneToMany(mappedBy = "veiculo", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	    private List<Manutencao> manutencoes = new ArrayList<>();
 	    @JsonIgnore
 	    // OneToMany com Viagem
@@ -83,9 +81,8 @@ public class Veiculo {
 	    private List<Viagem> viagens = new ArrayList<>();
 	   
 	    @JsonIgnore
-
-	    // ManyToMany com Motorista
-	    @ManyToMany 
+     // ManyToMany com Motorista  
+	    @ManyToMany  
 	    @JoinTable(
 	        name = "veiculo_motorista",
 	        joinColumns = @JoinColumn(name = "veiculo_id"),

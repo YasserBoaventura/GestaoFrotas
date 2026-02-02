@@ -14,16 +14,16 @@ import java.util.*;
 import com.GestaoRotas.GestaoRotas.Entity.Marca;
 import com.GestaoRotas.GestaoRotas.Service.ServiceMarca;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/marca")
+@RequiredArgsConstructor 
 public class ControllerMarca {
 
 	
 	 private final ServiceMarca serviceMarca;
-	 public ControllerMarca(ServiceMarca serviceMarca) {
-		 
-		this.serviceMarca=serviceMarca;
-	 } 
+	
 	 
 	 @PostMapping("/save") 
 	 public ResponseEntity<String> save(@RequestBody Marca marca){

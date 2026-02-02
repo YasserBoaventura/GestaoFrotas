@@ -19,18 +19,17 @@ import com.GestaoRotas.GestaoRotas.Repository.RepositoryManutencao;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryViagem;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor  
 public class ServiceVeiculo {
 
 	private final RepositoryVeiculo repositoryVeiculo;
 	private final RepositoryManutencao repositoryManutencao;
 	private final RepositoryViagem repositoryViagem;
 	
-public ServiceVeiculo(RepositoryVeiculo repositoryVeiculo,RepositoryManutencao repositoryManutencao,RepositoryViagem repositoryViagem ){
-		this.repositoryVeiculo=repositoryVeiculo;
-		this.repositoryManutencao=repositoryManutencao;
-		this.repositoryViagem = repositoryViagem;
-	}
+
 	public String salvar(Veiculo veiculo) {
 		this.repositoryVeiculo.save(veiculo);
 		 return "Veiculo Salvo com sucesso";
@@ -46,18 +45,16 @@ public ServiceVeiculo(RepositoryVeiculo repositoryVeiculo,RepositoryManutencao r
 		return "Veiculo deletado com sucess";    
 	}
 	
-	  public List<Veiculo> findAll() {
-	        List<Veiculo> veiculos = repositoryVeiculo.findAll();
-	         return veiculos;
+  public List<Veiculo> findAll() {
+  return this.repositoryVeiculo.findAll();
 	    }
-	    
-  @Transactional
+	     
+  @Transactional 
    public void atualizarStatusVeiculo(Long veiculoId) {
     Optional<Veiculo> veiculoOpt = repositoryVeiculo.findById(veiculoId);
     if (veiculoOpt.isEmpty()) return;
- 
-    Veiculo veiculo = veiculoOpt.get();
-    String novoStatus = calcularStatusVeiculo(veiculo);
+  Veiculo veiculo = veiculoOpt.get();
+     String novoStatus = calcularStatusVeiculo(veiculo);
      
     // Atualiza o status somente se mudou
     if (!veiculo.getStatus().equals(novoStatus)) {
@@ -66,12 +63,12 @@ public ServiceVeiculo(RepositoryVeiculo repositoryVeiculo,RepositoryManutencao r
         repositoryVeiculo.save(veiculo);
     }  
 }
-	   /**
-	     * Calcula o status do veículo baseado em múltiplos fatores
-	     */
-	    private String calcularStatusVeiculo(Veiculo veiculo) {
+	/**
+     * Calcula o status do veículo baseado em múltiplos fatores
+     * 	     */
+ private String calcularStatusVeiculo(Veiculo veiculo) {
 	        // 1. Verifica se está em viagem
-	        if (estaEmViagem(veiculo.getId())) {
+	 if (estaEmViagem(veiculo.getId())) {
 	            return "EM_VIAGEM";
 	        }
 	    
@@ -108,11 +105,10 @@ public ServiceVeiculo(RepositoryVeiculo repositoryVeiculo,RepositoryManutencao r
 	     */ 
 	    private boolean estaEmManutencaoAtiva(Long veiculoId) {
 	        List<Manutencao> manutencoes = repositoryManutencao.findByVeiculoId(veiculoId);
-	        
 	        return manutencoes.stream()
 	                .anyMatch(m -> m.getStatus() != null && 
 	                              m.getStatus().equals("EM_ANDAMENTO"));
-	    }
+	    } 
  
 	    /**
 	     * Verifica se o veículo tem manutenções vencidas
@@ -140,68 +136,74 @@ private boolean temManutencaoVencida(Long veiculoId) {
         return false;
     });
 }
+// Verifica se o veículo tem manutenções próximas
+	     
+private static final int LIMITE_KM_MANUTENCAO = 1000;
 
-	    /**
-	     * Verifica se o veículo tem manutenções próximas
-	     */
-	    private boolean temManutencaoProxima(Long veiculoId, int diasAntecedencia) {
-	        List<Manutencao> manutencoes = repositoryManutencao.findByVeiculoId(veiculoId);
-	        LocalDate hoje = LocalDate.now();
-	        LocalDate limite = hoje.plusDays(diasAntecedencia);
-    
-    return manutencoes.stream()   
-        .anyMatch(m -> {
-            // Verifica por data  
-            if (m.getProximaManutencaoData() != null && 
-                m.getProximaManutencaoData().isAfter(hoje) &&
-                m.getProximaManutencaoData().isBefore(limite)) {
-                return true;
-            } 
-            
-            // Verifica por quilometragem
-            Veiculo v = m.getVeiculo();
-            if (v != null && m.getProximaManutencaoKm() != null && 
-                v.getKilometragemAtual() != null) {
-                double kmRestantes = m.getProximaManutencaoKm() - v.getKilometragemAtual();
-                return kmRestantes > 0 && kmRestantes <= 1000; // Próximo se faltar 1000km ou menos
-            }
-            
-            return false;
-        });
-	    }
+private boolean temManutencaoProxima(Long veiculoId, int diasAntecedencia) {
+
+    List<Manutencao> manutencoes =
+            repositoryManutencao.findByVeiculoId(veiculoId);
+
+    LocalDate hoje = LocalDate.now();
+    LocalDate limite = hoje.plusDays(diasAntecedencia);
+
+    return manutencoes.stream().anyMatch(m -> {
+      
+        //  Verificação por data
+        LocalDate data = m.getProximaManutencaoData();
+        if (data != null && !data.isBefore(hoje) && !data.isAfter(limite)) {
+            return true;
+        }
+
+        // 🔹 Verificação por quilometragem
+        Veiculo v = m.getVeiculo();
+        if (v != null && m.getProximaManutencaoKm() != null &&
+            v.getKilometragemAtual() != null) {
+
+            double kmRestantes =
+                    m.getProximaManutencaoKm() - v.getKilometragemAtual();
+
+            return kmRestantes > 0 && kmRestantes <= LIMITE_KM_MANUTENCAO;
+        }
+
+        return false;
+    });
+}
+
 
 	    /**
 	     * Atualiza status de todos os veículos
 	     * Pode ser chamado via API ou agendado
 	     */
-	    @Transactional 
-	    public void atualizarStatusTodosVeiculos() {
-	        List<Veiculo> todosVeiculos =  repositoryVeiculo.findAll();
-	        
-	        for (Veiculo veiculo : todosVeiculos) {
-	            String novoStatus = calcularStatusVeiculo(veiculo); 
-	            
-	            if (!veiculo.getStatus().equals(novoStatus.toString())) {
-	                veiculo.setStatus(novoStatus.toString());
-	                veiculo.setDataAtualizacaoStatus(LocalDateTime.now());
-	            }
-	        }
-	        
-	        repositoryVeiculo.saveAll(todosVeiculos);
-	    } 
+    @Transactional 
+    public void atualizarStatusTodosVeiculos() {
+        List<Veiculo> todosVeiculos =  repositoryVeiculo.findAll();
+        
+        for (Veiculo veiculo : todosVeiculos) {
+            String novoStatus = calcularStatusVeiculo(veiculo); 
+            
+            if (!veiculo.getStatus().equals(novoStatus.toString())) {
+                veiculo.setStatus(novoStatus.toString());
+                veiculo.setDataAtualizacaoStatus(LocalDateTime.now());
+            }
+        }
+        
+        repositoryVeiculo.saveAll(todosVeiculos);
+    } 
 
 	    /**
 	     * Atualiza a quilometragem do veículo e verifica status
 	     */
-	    @Transactional 
-	    public void atualizarKilometragem(Long veiculoId, Double novaKilometragem) {
-	        Optional<Veiculo> veiculoOpt = repositoryVeiculo.findById(veiculoId);
-	        if (veiculoOpt.isEmpty()) return;
+    @Transactional 
+    public void atualizarKilometragem(Long veiculoId, Double novaKilometragem) {
+        Optional<Veiculo> veiculoOpt = repositoryVeiculo.findById(veiculoId);
+        if (veiculoOpt.isEmpty()) return;
 
-	        Veiculo veiculo = veiculoOpt.get();
-	        veiculo.setKilometragemAtual(novaKilometragem);
-	        
-	        // Atualiza status após mudança de quilometragem
+        Veiculo veiculo = veiculoOpt.get();
+        veiculo.setKilometragemAtual(novaKilometragem);
+        
+        // Atualiza status após mudança de quilometragem
 	        String novoStatus = calcularStatusVeiculo(veiculo); 
 	        veiculo.setStatus(novoStatus);
 	        veiculo.setDataAtualizacaoStatus(LocalDateTime.now());
@@ -210,14 +212,14 @@ private boolean temManutencaoVencida(Long veiculoId) {
 	    }
  
 	    /**
-	     * Agenda verificação automática de status (executa a cada hora)
-	     */
-	    @Scheduled(cron = "0 0 * * * *") // A cada hora
-	    @Transactional  
-	    public void verificarStatusAgendado() {
-	        System.out.println("Verificando status dos veículos...");
-	        atualizarStatusTodosVeiculos(); 
-	    }
+     * Agenda verificação automática de status (executa a cada hora)
+     */
+    @Scheduled(cron = "0 0 * * * *") // A cada hora
+    @Transactional  
+    public void verificarStatusAgendado() {
+        System.out.println("Verificando status dos veículos...");
+        atualizarStatusTodosVeiculos(); 
+    }
 
 	
 private VeiculoDTO convertToDTO(Veiculo veiculo) {
@@ -238,23 +240,14 @@ private VeiculoDTO convertToDTO(Veiculo veiculo) {
     // Métodos calculados
     dto.setMediaConsumo(veiculo.getMediaConsumo());
     dto.setTotalViagensConcluidas(veiculo.getViagens().stream()
-        .filter(v -> "CONCLUIDA".equals(v.getStatus()))
-        .collect(Collectors.toList())
-        .size());
+         .filter(v -> "CONCLUIDA".equals(v.getStatus()))
+         .collect(Collectors.toList())
+         .size());
         
-    return dto;
+     return dto;
 }
 	
 
-// Método auxiliar para determinar tipo
-private String determinarTipoVeiculo(String modelo) {
-    if (modelo == null) return "OUTRO";
-    modelo = modelo.toUpperCase();
-    if (modelo.contains("CAMINHAO")) return "CAMINHAO";
-    if (modelo.contains("VAN")) return "VAN";
-    if (modelo.contains("CARRO")) return "CARRO";
-    if (modelo.contains("MOTO")) return "MOTO";
-    return "OUTRO";
-}	
+  
 	        
 }

@@ -41,50 +41,39 @@ import com.GestaoRotas.GestaoRotas.Service.ServiceVeiculo;
 import com.GestaoRotas.GestaoRotas.Service.ServiceViagem;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/viagens")
 @CrossOrigin("*")
 @JsonIgnoreProperties(ignoreUnknown = true) 
+@RequiredArgsConstructor
 public class ControllerViagem {
 
       
 	private final ServiceViagem serviceViagem;
 	private final RepositoryViagem repositoryViagem;
 	private final RepositoryVeiculo repositoryVeiculo;
-	private final RepositoryMotorista repositoryMotorista;
+	private final RepositoryMotorista repositoryMotorista; 
 	
-	
-	 
-	public ControllerViagem(ServiceViagem serviceViagem, RepositoryViagem RepositoryViagem, RepositoryVeiculo repositoryVeiculo,RepositoryMotorista repositoryMotorista) {
-       this.serviceViagem=serviceViagem;
-       this.repositoryViagem=RepositoryViagem;
-       this.repositoryVeiculo=repositoryVeiculo;
-       this.repositoryMotorista= repositoryMotorista;
-	}
 	
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@PostMapping("/save")
 	public ResponseEntity<String> criarViagem(@RequestBody ViagensDTO viagemDTO) {
 	try {
-		String viagem = serviceViagem.salvar(viagemDTO);
-	  return ResponseEntity.ok(viagem);
+     return ResponseEntity.ok(serviceViagem.salvar(viagemDTO)); 
 	}catch(Exception e) {
-		System.out.println("entro aqu");
-	  	return ResponseEntity.badRequest().build(); 
+    return ResponseEntity.badRequest().build(); 
 	} 
-	   }
+	   } 
  @GetMapping("/findAll")
+@PreAuthorize("hasAuthority('ADMIN')") 
  public ResponseEntity<List<Viagem>> findAll(){
 	try {
-		List<Viagem> lista=this.serviceViagem.findAll();
-		if(lista.isEmpty()) {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	}
-		return new ResponseEntity<>(lista, HttpStatus.OK);
-		
-	}catch(Exception e) {
+		return  ResponseEntity.ok(serviceViagem.findAll()); 
+		}catch(Exception e) {
 		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);  
-	}
+	} 
 }
 	//
 	@DeleteMapping("/delete/{id}")
@@ -117,140 +106,61 @@ public class ControllerViagem {
 	@GetMapping("/veiculoss/{id}")
 	public ResponseEntity<List<Viagem>> findByVeiculoId( @PathVariable Long id){
 		try {
-			System.out.print("eeee");
-			List<Viagem> viagem = this.serviceViagem.findByVeiculoId(id);
-			return ResponseEntity.ok(viagem);
+			return ResponseEntity.ok(serviceViagem.findByVeiculoId(id));
 			}catch(Exception e) {
 			return ResponseEntity.badRequest().build();
 		}
-	} 
-
-	@PutMapping("/update/{id}")
+	}  
+ 
+@PutMapping("/update/{id}")
+@PreAuthorize("hasAuthority('ADMIN')") 
 public ResponseEntity<String> update(@RequestBody ViagensDTO viagemDTO, @PathVariable long id) {
     try{
-    	String viagem = this.serviceViagem.update(viagemDTO, id);
-        return ResponseEntity.ok(viagem);
-   }catch (Exception e) {
- return ResponseEntity.badRequest().body("Erro ao actualizar: " + e.getMessage());
-    }
+     return ResponseEntity.ok(serviceViagem.update(viagemDTO, id));
+   }catch (Exception e){ 
+ return ResponseEntity.badRequest().body("Erro ao atualizar: " + e.getMessage());
+    }  
 }
-
 //pra concluir a a viagem 
-@PutMapping("/concluir/{id}")
-@PreAuthorize("hasAuthority('ADMIN')") 
-public ResponseEntity<Viagem> ConcluirViagem(
-                                           @RequestBody ConcluirViagemRequest request, @PathVariable long id) {
-	Viagem viagem = repositoryViagem.findById(id)
-      .orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
-           // Atualizar a quilometragem final
-  viagem.setKilometragemFinal(request.getKilometragemFinal());
-  viagem.setObservacoes(request.getObservacoes()); 
-  viagem.setDataHoraChegada(request.getDataHoraChegada());
-     
-  // Chamar o método de negócio que já atualiza status e data
-  viagem.concluirViagem();
-   
-  Viagem viagemAtualizada = repositoryViagem.save(viagem);
-  //atualizacao do motorista
-  
-  Motorista motorista = viagem.getMotorista();
-  if(motorista!=null) {
-  motorista.setStatus(statusMotorista.DISPONIVEL);
-  repositoryMotorista.save(motorista);
-  }
- //  atualize o estado do veiculo quando a viage estiver concluida
-  Veiculo veiculo = viagem.getVeiculo();
-  if(veiculo != null) {
-	  veiculo.setStatus("DISPONIVEL");
-	  repositoryVeiculo.save(veiculo);
-  }
- 
-  return ResponseEntity.ok(viagemAtualizada);
-}
-//Mostra o relatorio nome do mortista do carro , totalViagens , totalEmKm e totalConbustivel usado
-  
+	@PutMapping("/concluir/{id}")
+	@PreAuthorize("hasAuthority('ADMIN')")  
+	public ResponseEntity<Map<String, String>> ConcluirViagem(
+  @RequestBody ConcluirViagemRequest request, @PathVariable long id) {
+	 return ResponseEntity.ok(serviceViagem.ConcluirViagem(request, id)); 
+	} 
+	   
 @PutMapping("/cancelarViagem/{id}")
 @PreAuthorize("hasAuthority('ADMIN')") 
-public ResponseEntity<Viagem> cancelarViagem(
+public ResponseEntity<Map<String, String>> cancelarViagem(
         @RequestBody CancelarViagemRequest request, 
-        @PathVariable long id) {
-     
-    try {
-        Viagem viagem = repositoryViagem.findById(id)
-                .orElseThrow(() -> new RuntimeException("Viagem nao encontrada"));
-  
-// Adicionar motivo às observações se fornecido
-if (request.getMotivo() != null && !request.getMotivo().isEmpty()) {
-    String observacoesAtuais = viagem.getObservacoes() != null ? 
-            viagem.getObservacoes() : "";
-    
-    String novaObservacao = observacoesAtuais + 
-            (observacoesAtuais.isEmpty() ? "" : "\n\n") +
-            "[CANCELADA] Motivo: " + request.getMotivo();
-    
-    viagem.setObservacoes(novaObservacao); 
-}
-
-        viagem.cancelarViagem();
-        Viagem viagemCancelada = this.repositoryViagem.save(viagem);
-        
-        //atualize o veiculo para disponivel se a  viagem for cancelada
-        Veiculo veiculo = viagem.getVeiculo();
-        if(veiculo!= null) {
-        veiculo.setStatus("DISPONIVEL");	
-         repositoryVeiculo.save(veiculo); 
-        }
-        return ResponseEntity.ok(viagemCancelada);
-        
-    } catch(Exception e) { 
-        e.printStackTrace();
-        return ResponseEntity.badRequest().build();
-  }
-} 
-@PutMapping("/inicializarViagem/{id}")
-@PreAuthorize("hasAuthority('ADMIN')")
-public ResponseEntity<Map<String , String>> iniciarViagem(@PathVariable Long id){
-	try {
-	Viagem viagem = this.repositoryViagem.findById(id).orElseThrow(()-> new RuntimeException("viagem nao existente"));
-   viagem.iniciarViagem();
-   //para a atualizacao  do motorista
-     Motorista  motorista = viagem.getMotorista();
- 
-     motorista.setStatus(statusMotorista.EM_VIAGEM);
-        repositoryMotorista.save(motorista);
-    //Actualiza o veiculo mara em Viagem
-   repositoryViagem.save(viagem);
-   //para a actualizacao do veiculo 
-   Veiculo veiculo = viagem.getVeiculo();
-   if(veiculo!= null) {
-   veiculo.setStatus("EM_VIAGEM");
-   veiculo.setDataAtualizacaoStatus(LocalDateTime.now());
-    repositoryVeiculo.save(veiculo);
-    
-    //atualizacao do 
+        @PathVariable long id) { 
+return ResponseEntity.ok(serviceViagem.cancelarViagem(request, id));
   }  
-   Map<String, String> response = new HashMap<>();
-   response.put("message", "viagem inicializada com sucesso");
-   return ResponseEntity.status(HttpStatus.CREATED).body(response);
- }catch(Exception e) {
-	 Map<String, String> errorResponse = new HashMap<>();
-    errorResponse.put("error", e.getMessage());
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-} 
+@PutMapping("/inicializarViagem/{id}") 
+@PreAuthorize("hasAuthority('ADMIN')")     
+public ResponseEntity<Map<String , String>> iniciarViagem(@PathVariable Long id){
+  return ResponseEntity.ok(serviceViagem.iniciarViagem(id)); 
 }  
- @GetMapping("/motoristas")
-    public ResponseEntity<List<RelatorioMotoristaDTO>> relatorioPorMotorista() {
-        return ResponseEntity.ok(serviceViagem.relatorioPorMotorista());
+@GetMapping("/countByStatus/{status}")     
+public ResponseEntity<Long> countByStatus(@PathVariable String status){
+	Long size = serviceViagem.getContByStatus(status); 
+	return ResponseEntity.ok(size);  
+}     
+//Mostra o relatorio nome do mortista do carro , totalViagens , totalEmKm e totalConbustivel usado
+@GetMapping("/motoristas") 
+@PreAuthorize("hasAuthority('ADMIN')")   
+public ResponseEntity<List<RelatorioMotoristaDTO>> relatorioPorMotorista() {
+        return ResponseEntity.ok(serviceViagem.relatorioPorMotorista());   
     } 
     //Mostra o relatorio placa do carro , totalViagens , totalEmKm e totalConbustivel usado
-    @GetMapping("/veiculos")
+    @GetMapping("/veiculos") 
      public ResponseEntity<List<RelatorioPorVeiculoDTO>> relatorioPorVeiculo() {
         return ResponseEntity.ok(serviceViagem.gerarRelatorioPorVeiculo());
-    }  
+    }   
     @GetMapping("/findById/{id}")  
     public ResponseEntity<Viagem> findById(@PathVariable long id){
     	try {
-    		Viagem viagem=this.serviceViagem.findById(id);
+    		Viagem viagem=this.serviceViagem.findById(id); 
     		if(viagem!=null) return new ResponseEntity<>(viagem, HttpStatus.OK);
         	}catch(Exception e) {
     		 return new ResponseEntity<>(null , HttpStatus.BAD_REQUEST);
@@ -267,15 +177,9 @@ public ResponseEntity<Map<String , String>> iniciarViagem(@PathVariable Long id)
     ///
     ///
     ///
+  
     ///
-    ///
-    ///
-    ///
-    ///
-    ///
-    ///
-    ///
-    ///
+    /////ainda por implementar
      @GetMapping("/geral")
     public ResponseEntity<RelatorioGeralDTO> relatorioGeral(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,

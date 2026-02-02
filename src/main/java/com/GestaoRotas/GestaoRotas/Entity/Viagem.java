@@ -32,7 +32,7 @@ public class Viagem {
 	    private LocalDateTime dataHoraPartida;
 	    
 	    @Column(name = "data_hora_chegada")
-	    private LocalDateTime dataHoraChegada;
+	    private LocalDateTime dataHoraChegada; 
 	    
 	    @Column(length = 20)
 	    private String status; // "PLANEADA", "EM_ANDAMENTO", "CONCLUIDA", "CANCELADA"
@@ -70,8 +70,7 @@ public class Viagem {
 	    private Rotas rota;
 	     
 	    // OneToMany com Abastecimento
-	
-	    @OneToMany(mappedBy = "viagem", cascade = {CascadeType.PERSIST})
+	  @OneToMany(mappedBy = "viagem", cascade = {CascadeType.PERSIST})
 	    @JsonIgnoreProperties({"viagem", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO
 	    private List<abastecimentos> abastecimentos = new ArrayList<>();
 	    

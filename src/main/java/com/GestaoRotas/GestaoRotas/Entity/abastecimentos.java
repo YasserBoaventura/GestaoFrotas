@@ -3,6 +3,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.GestaoRotas.GestaoRotas.Model.statusAbastecimentos;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
@@ -23,33 +24,34 @@ public class abastecimentos {
 	    private Long id; 
 	    
 	    @Column(name = "data_abastecimento")
-	    private String  dataAbastecimento;
-	    
+	    private LocalDate dataAbastecimento;
+	     
 	    @Column(name = "quantidade_litros")
 	    private Double quantidadeLitros;
 	    
-	    @Column(name = "preco_por_litro") 
+	    @Column(name = "preco_por_litro")  
 	    private Double precoPorLitro;
 	    
 	    @Column(name = "tipo_combustivel", length = 50)
 	    private String tipoCombustivel;
 	     
-
+ 
 	    @Column(name = "status")
-	    private String  statusAbastecimento;
+	    @Enumerated(EnumType.STRING)  
+	    private  statusAbastecimentos  statusAbastecimento;
 	    @Column(name = "kilometragem_veiculo")
 	    private Double kilometragemVeiculo;
 	    
 	    // ManyToOne com Veiculo (OBRIGATÓRIO)
 	    @ManyToOne(fetch = FetchType.LAZY)
 	    @JoinColumn(name = "veiculo_id", nullable = false)
-	    @JsonIgnoreProperties({"abastecimentos", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO
-	    private Veiculo veiculo;
-	    
-	    // ManyToOne com Viagem (OPCIONAL)
+	    @JsonIgnoreProperties({"abastecimentos", "hibernateLazyInitializer", "handler"}) 
+	    private Veiculo veiculo;  
+	     
+	    // ManyToOne com Viagem   
 	    @ManyToOne(fetch = FetchType.LAZY)
-	    @JoinColumn(name = "viagem_id", nullable = true)
-	    @JsonIgnoreProperties({"abastecimentos", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO
+	    @JoinColumn(name = "viagem_id", nullable = true) 
+	    @JsonIgnoreProperties({"abastecimentos", "hibernateLazyInitializer", "handler"}) 
 	    private Viagem viagem; 
 	                          
 
@@ -65,7 +67,7 @@ public class abastecimentos {
 	    @PrePersist
 	    public void prePersist() {
 	        if (dataAbastecimento == null) {
-	            dataAbastecimento = "";
+	          
 	        }
 	    }
 	      

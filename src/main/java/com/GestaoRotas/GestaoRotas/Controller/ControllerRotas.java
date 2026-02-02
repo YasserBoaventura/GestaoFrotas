@@ -14,25 +14,20 @@ import java.util.*;
 import com.GestaoRotas.GestaoRotas.Entity.Rotas;
 import com.GestaoRotas.GestaoRotas.Service.SericeRotas;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/rotas")
+@RequiredArgsConstructor
 public class ControllerRotas { 
 
 	private final SericeRotas serviceRotas;
 	
-    public ControllerRotas(SericeRotas serviceRotas) {
-	 	this.serviceRotas=serviceRotas;
-	 }
 	
 	 @PostMapping("/save") 
 	public ResponseEntity<String>  salvar(@RequestBody Rotas rotas){
 		 try { 
-		 	String frase=this.serviceRotas.save(rotas);
-		 	if(frase.isEmpty()) {
-			 	return new ResponseEntity<>("Nao foi possivel salvar a rota", HttpStatus.NO_CONTENT);
-			 }   
-			 return new ResponseEntity<>(frase, HttpStatus.OK);
-					
+		  return ResponseEntity.ok(serviceRotas.save(rotas)); 	
 		}catch(Exception e) {
 			e.getStackTrace().notifyAll();
 		return new ResponseEntity<>(" Erro" , HttpStatus.BAD_REQUEST);
@@ -42,53 +37,37 @@ public class ControllerRotas {
 	 @DeleteMapping("/delete/{id}")
 	 public ResponseEntity<String> deleteByID(@PathVariable long id){
 		 try {
-			 String frase=this.serviceRotas.deleteById(id);
-			 if(frase.isEmpty()) {
-				 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			 }
-			 return new ResponseEntity<>(frase, HttpStatus.OK);
+			 return ResponseEntity.ok(serviceRotas.deleteById(id)); 
 		 }catch(Exception e) {
 			 return new ResponseEntity<>("Erro: ",HttpStatus.BAD_REQUEST);
-		}
+		} 
 	 }
 	 @GetMapping("/findAll")
 	public ResponseEntity<List<Rotas>> findAll(){
 		try { 
-			 List<Rotas> lista=this.serviceRotas.findAll();
-			 return new ResponseEntity<>(lista, HttpStatus.OK);
-			 
+			 return ResponseEntity.ok(serviceRotas.findAll()); 
 		 }catch(Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);  
 		 }
 		 
 } 
    @PutMapping("update/{id}")
-public ResponseEntity<?> update(@RequestBody Rotas rotas, @PathVariable Long id) {
+public ResponseEntity<String> update(@RequestBody Rotas rotas, @PathVariable Long id) {
     try {
-        Rotas rotaAtualizada = serviceRotas.update(rotas, id);
-        System.out.print("wwww " +rotaAtualizada.getTotalViagens());
-        String sucesso = "Rota atualizada com sucesoo";
-        return ResponseEntity.ok(sucesso);
+        return ResponseEntity.ok(serviceRotas.update(rotas, id)); 
     } catch (Exception e) {  
         return ResponseEntity.badRequest()
             .body("Erro ao atualizar rota: " + e.getMessage());
     }
 }
  @GetMapping("findById/{id}")
-  
- public ResponseEntity<Rotas> findById(@PathVariable long id){
+  public ResponseEntity<Rotas> findById(@PathVariable long id){
 	 try {
-		 Rotas rota=this.serviceRotas.findById(id);
-		 if(rota==null) {
-			 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		 } else {
-			 
-		return new ResponseEntity<>(rota, HttpStatus.OK);
-		 }
-	 }catch(Exception e) {
-		 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+	 return  ResponseEntity.ok(serviceRotas.findById(id));
+	}catch(Exception e) {
+	 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		 
-	 }
+ }
 		 
 	 }
 }

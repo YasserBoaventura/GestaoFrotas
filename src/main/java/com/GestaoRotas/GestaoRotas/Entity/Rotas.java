@@ -44,7 +44,7 @@ public class Rotas {
     
     private String descricao;
     
-    // OneToMany com Viagem
+    // OneToMany com Viagem 
     @JsonIgnore
     @OneToMany(mappedBy = "rota", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Viagem> viagens = new ArrayList<>();
@@ -52,18 +52,15 @@ public class Rotas {
   // Métodos auxiliares
     public void addViagem(Viagem viagem) {
         viagens.add(viagem);
-        viagem.setRota(this);
+        viagem.setRota(this); 
     }
     @Column(name = "totalViagens")
     private Long TotalViagens = getTotalViagens();
     
     // Método calculado
-    public Long getTotalViagens() {
+    public Long getTotalViagens() { 
         return (long) viagens.size();
-        
+         
     } 
-    public void imprimirTotaisViagens() {
-    	long total = getTotalViagens();
-    	System.out.println(total);
-    }
+    
 }

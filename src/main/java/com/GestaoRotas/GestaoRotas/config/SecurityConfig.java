@@ -66,22 +66,17 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(
-                            "/api/login",
+                    .requestMatchers( 
+                            "/api/login", 
                             "/api/auto-cadastro",
                             "/api/auth/solicitar-recuperacao",
                             "/api/auth/redefinir-senha-token",
                             "/api/auth/redefinir-senha-verificacao",
-                            "/manutencoes/save",
-                            "/api/viagens/motoristas",
-                            "/api/viagens/veiculos",
-                            "/api/viagens/veiculoss/",
-                            "/api/manutencoes/findAll",
-                            "/api/manutencoes/relatorio/veiculos"
-                           
-                    ).permitAll()
+                            "/api/manutencoes/relatorio-por-periodo",
+                            "/api/abastecimentos/abastecimentoRealizado"
+                          ).permitAll()
                     .anyRequest().authenticated()
-            )
+            )  
             .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )

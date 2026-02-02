@@ -12,25 +12,24 @@ import com.GestaoRotas.GestaoRotas.DTO.RelatorioCombustivelDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Entity.Viagem;
 import com.GestaoRotas.GestaoRotas.Entity.abastecimentos;
+import com.GestaoRotas.GestaoRotas.Model.statusAbastecimentos;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryAbastecimentos;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryViagem;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor  
 public class ServiceAbastecimentos {
  
 	
 	private final RepositoryAbastecimentos repositoryAbastecimentos;
 	private final RepositoryViagem  repositorioViagem;
 	private final RepositoryVeiculo repositorioveiculos;
-	public ServiceAbastecimentos(RepositoryAbastecimentos repositoryAbastecimentos ,RepositoryVeiculo repositorioveiculos, RepositoryViagem  repositorioViagem) {
-		this.repositoryAbastecimentos=repositoryAbastecimentos;
-		 this.repositorioveiculos =repositorioveiculos;
-		 this.repositorioViagem = repositorioViagem;
-	}
-	  
-
-public abastecimentos save(AbastecimentoDTO abstecimentos) {
+	
+   public Map<String, String>  save(AbastecimentoDTO abstecimentos) {
+	   Map<String, String> sucess= new HashMap<>();
     Veiculo veiculo = this.repositorioveiculos.findById(abstecimentos.getVeiculoId())
             .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
  
@@ -43,50 +42,43 @@ public abastecimentos save(AbastecimentoDTO abstecimentos) {
                 .orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
         abastecimento.setViagem(viagem);   
     } else {     
-        abastecimento.setViagem(null);
+        abastecimento.setViagem(null);    
     }
-
     abastecimento.setDataAbastecimento(abstecimentos.getDataAbastecimento());
     abastecimento.setKilometragemVeiculo(abstecimentos.getKilometragemVeiculo());
-     abastecimento.setQuantidadeLitros(abstecimentos.getQuantidadeLitros());
-      abastecimento.setStatusAbastecimento(abstecimentos.getStatusAbastecimento());
-  //  abastecimento.setDataAbastecimento(abstecimentos.getStatusAbastecimento());
-	    abastecimento.setTipoCombustivel(abstecimentos.getTipoCombustivel());
-	    abastecimento.setPrecoPorLitro(abstecimentos.getPrecoPorLitro());
-	    
-
-	    return this.repositoryAbastecimentos.save(abastecimento);
+    abastecimento.setQuantidadeLitros(abstecimentos.getQuantidadeLitros());
+    abastecimento.setStatusAbastecimento(abstecimentos.getStatusAbastecimento());
+	abastecimento.setTipoCombustivel(abstecimentos.getTipoCombustivel());
+	abastecimento.setPrecoPorLitro(abstecimentos.getPrecoPorLitro());
+	//saving    
+this.repositoryAbastecimentos.save(abastecimento);
+     sucess.put("sucesso", " abstecimento salvo com sucesso");
+ return  sucess; 
 	}
  //Busca tos os  abastecimentos feitos
     public List<abastecimentos> findAll(){
-    List<abastecimentos> lista=this.repositoryAbastecimentos.findAll();
-              return lista;
+   return this.repositoryAbastecimentos.findAll();
+            
     }  
     //Deletar por id
 public String deletar(long id) {
-	if(this.repositoryAbastecimentos.existsById(id)) {
 	this.repositoryAbastecimentos.deleteById(id);
-	return "abastecimento deletado com sucesso";
-	}
-	else if(!this.repositoryAbastecimentos.existsById(id)) {
-		return  "Nao existe um abastecimento com esse id";
-	}
-	return "...";
+    return "abastecimento  deletado com sucesso";
 	
-} 
+}  
 public abastecimentos findById(long id) {
   return this.repositoryAbastecimentos.findById(id).get();
 }
     //Atualizacao de abastecimento de foreem mal escritos
 public String update(AbastecimentoDTO abstecimentos, long id) {
-    // CORREÇÃO: Buscar pelo ID do endpoint, não do DTO
+   
     abastecimentos abastecimento = this.repositoryAbastecimentos.findById(id)
         .orElseThrow(() -> new RuntimeException("Abastecimento não encontrado com ID: " + id));
     
     Veiculo veiculo = this.repositorioveiculos.findById(abstecimentos.getVeiculoId())
         .orElseThrow(() -> new RuntimeException("Veiculo não encontrado com ID: " + abstecimentos.getVeiculoId()));
      
-    // Atualizar campos
+    // Atualizar campos 
     abastecimento.setVeiculo(veiculo);
     abastecimento.setDataAbastecimento(abstecimentos.getDataAbastecimento());
     abastecimento.setKilometragemVeiculo(abstecimentos.getKilometragemVeiculo());
@@ -115,26 +107,18 @@ public String update(AbastecimentoDTO abstecimentos, long id) {
 }   
 // relario de de abastecimento por veiculo 
 public List<RelatorioCombustivelDTO> relatorioPorVeiculo() {   
-    return repositoryAbastecimentos.relatorioPorVeiculo().stream()
-            .map(obj -> new RelatorioCombustivelDTO(
-                    (String) obj[0],
-                    (Double) obj[1],
-                    (Double) obj[2],
-                    (Double) obj[3]  
-            )) 
-            .collect(Collectors.toList());
+    return repositoryAbastecimentos.relatorioPorVeiculo();  
+         
     }
 // relatorios por periodo data fim e data inicio 
 public List<RelatorioCombustivelDTO> relatorioPorPeriodo(LocalDate inicio, LocalDate fim) {
-    return repositoryAbastecimentos.relatorioPorPeriodo(inicio, fim).stream()
-            .map(obj -> new RelatorioCombustivelDTO(
-                    (String) obj[0],
-                    (Double) obj[1],
-                    (Double) obj[2],
-                    (Double) obj[3]
-            ))
-            .collect(Collectors.toList()); 
+    return repositoryAbastecimentos.relatorioPorPeriodo(inicio, fim); 
+          
 }
+public Long numeroAbastecimento(){
+	return repositoryAbastecimentos.contarAbastecimentosRealizados();  
+}
+
     
 
 }

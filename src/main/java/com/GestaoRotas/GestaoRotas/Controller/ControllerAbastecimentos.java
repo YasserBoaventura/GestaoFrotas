@@ -1,11 +1,13 @@
 package com.GestaoRotas.GestaoRotas.Controller;
 
 import jakarta.persistence.*;
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,94 +29,89 @@ import com.GestaoRotas.GestaoRotas.Service.ServiceAbastecimentos;
 
 @RestController
 @RequestMapping("api/abastecimentos")
+@RequiredArgsConstructor 
 @CrossOrigin("*")
 public class ControllerAbastecimentos {
 
 	
   private final ServiceAbastecimentos abastecimentosService;
   
-   public ControllerAbastecimentos(ServiceAbastecimentos abastecimentos) {
-	this.abastecimentosService=abastecimentos;   
-   }
-   
-	   // sava o abastecimento
+  
+     // sava o abastecimento
    @PostMapping("/save")
-  public ResponseEntity<abastecimentos> salvar(@RequestBody AbastecimentoDTO abastecimentoDTO) {
+   @PreAuthorize("hasAuthority('ADMIN')") 
+  public ResponseEntity<Map<String, String>> salvar(@RequestBody AbastecimentoDTO abastecimentoDTO) {
    try { 
-	  abastecimentos abastecimentos= this.abastecimentosService.save(abastecimentoDTO);
-	  return  ResponseEntity.ok(abastecimentos); 
+	    return ResponseEntity.ok(abastecimentosService.save(abastecimentoDTO)); 
 	  }catch(Exception e) {
-	   System.out.print(e.getStackTrace());  
+	   System.err.print(e.getStackTrace());  
 	  return ResponseEntity.badRequest().build();
-	  }
+	  } 
     }            
   @PutMapping("/update/{id}")
+  @PreAuthorize("hasAuthority('ADMIN')")  
   public ResponseEntity<String> update(@PathVariable long id, @RequestBody AbastecimentoDTO abastecimentoDTO) {
       try {
-     
-      
       String response = this.abastecimentosService.update(abastecimentoDTO, id);
       return ResponseEntity.status(HttpStatus.OK).body(response);
-  } catch(Exception e) {
+  } catch(Exception e) { 
       System.err.println("Erro ao atualizar abastecimento: " + e.getMessage());
       e.printStackTrace();
-      String erro = "erro ao actualizar abastecimento: " + e.getMessage();
+       String erro = "erro ao actualizar abastecimento: " + e.getMessage();
           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
       }
   } 
 
   // relatio de abastecimento por veiculo 
 @GetMapping("/por-veiculo")
+@PreAuthorize("hasAuthority('ADMIN')")  
 public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorVeiculo() {
-    return ResponseEntity.ok(abastecimentosService.relatorioPorVeiculo());
+	 return ResponseEntity.ok(abastecimentosService.relatorioPorVeiculo());
 }  
-  
+   
 //busca relatorios por periodo dataInicio e dataFim
-@GetMapping("/relatorio-por-periodo")  
+@GetMapping("/relatorio-por-periodo") 
+@PreAuthorize("hasAuthority('ADMIN')")  
 public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorPeriodo(
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
     System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
     return ResponseEntity.ok(abastecimentosService.relatorioPorPeriodo(inicio, fim));
-}
- 
-	    //Busca todos os abastecimentos  
+}   
+@GetMapping("/abastecimentoRealizado")
+  public ResponseEntity<Long> abastecimentosRealizados(){
+		return ResponseEntity.status(HttpStatus.OK).body(abastecimentosService.numeroAbastecimento()); 
+  }
+	    
+//Busca todos os abastecimentos  
 @GetMapping("/findAll")
+//@PreAuthorize("hasAuthority('ADMIN')") 
 public ResponseEntity<List<abastecimentos>> findAll(){
- try {
-	  List<abastecimentos> lista=this.abastecimentosService.findAll();
-	   if(lista.isEmpty()) {
-		   return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	   }
-	 return new ResponseEntity<>(lista, HttpStatus.OK);
+ try { 
+	 return ResponseEntity.ok(abastecimentosService.findAll()); 
 	}catch(Exception e) {
-	 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
- } 
+	 return ResponseEntity.badRequest().build();
+  }  
    }
 @DeleteMapping("/delete/{id}")
+@PreAuthorize("hasAuthority('ADMIN')") 
     public ResponseEntity<String> deleteById(@PathVariable long id){
      try { 
-    	  String frase=this.abastecimentosService.deletar(id);
-    	  return new ResponseEntity<>(frase, HttpStatus.OK);
+     return ResponseEntity.ok(abastecimentosService.deletar(id)); 
    }catch(Exception e) {
 	   e.getStackTrace();
-    	 return new ResponseEntity<>("Erro", HttpStatus.BAD_REQUEST);
+    	 return  ResponseEntity.badRequest().build(); 
     }
 	
-}
+} 
 @GetMapping("/findById/{id}")
+@PreAuthorize("hasAuthority('ADMIN')")  
 public ResponseEntity<abastecimentos> findById(@PathVariable long id){
 	try {
-		abastecimentos abastecimento=new abastecimentos();
-		if(abastecimento==null) 
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	
-   return new ResponseEntity<>(abastecimento,HttpStatus.OK);
+		return ResponseEntity.ok(abastecimentosService.findById(id));
 	  }catch(Exception e) {
 		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 	}
 }
-
-	       	
-	    
+ 	    
 }
