@@ -104,8 +104,12 @@ public class ServiceManutencoes {
            manutencao.setStatus(manutencaoDTO.getStatus().AGENDADA);
        }
        manutencao.setStatus(manutencaoDTO.getStatus());
-       repositoryManuntencao.save(manutencao);
-    return "manuntencao atualizada com sucesso";
+       
+     Manutencao manutencaoActualizada =  repositoryManuntencao.save(manutencao);
+     //metodo pra actualizacao de manutencao em custos
+       custoService.actualizarCustoManutencao(manutencaoActualizada);  
+      
+    return "manutencao atualizada com sucesso";
   } 
   //
   @Scheduled(cron = "0 0 0 * * *") // Executa todos os dias à meia-noite

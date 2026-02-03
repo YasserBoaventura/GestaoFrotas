@@ -24,6 +24,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -61,18 +62,18 @@ public class Custo implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "veiculo_id")
     @JsonIgnoreProperties({"custos", "abastecimentos", "manutencoes", "viagens"})
-    private Veiculo veiculo;
+    private Veiculo veiculo; 
      
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "abastecimento_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "abastecimento_id", unique = true)
     @JsonIgnoreProperties({"custo", "veiculo", "viagem"})
-    private abastecimentos abastecimento;
+    private abastecimentos abastecimento; 
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "manutencao_id")
-    @JsonIgnoreProperties({"custo", "veiculo"})
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manutencao_id", unique = true)
+    @JsonIgnoreProperties({"custo", "veiculo"})   
     private Manutencao manutencao;
-     
+      
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "viagem_id")
     @JsonIgnoreProperties({"custos", "veiculo", "motorista", "rota", "abastecimentos"})

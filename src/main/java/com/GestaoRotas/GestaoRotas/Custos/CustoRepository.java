@@ -20,9 +20,10 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
 	 // Consultas básicas
     List<Custo> findByVeiculoIdOrderByDataDesc(Long veiculoId);
     List<Custo> findByVeiculoIdAndDataBetweenOrderByDataDesc(Long veiculoId, LocalDate inicio, LocalDate fim);
-    List<Custo> findByAbastecimentoId(Long abastecimentoId);
-    List<Custo> findByManutencaoId(Long manutencaoId);
+    Optional<Custo> findByAbastecimentoId(Long abastecimentoId); 
+    Optional<Custo> findByManutencaoId(Long manutencaoId);
     List<Custo> findByViagemId(Long viagemId);
+    List<Custo> findByVeiculoId(Long veiculoId); 
     List<Custo> findTop10ByOrderByDataDesc();
     
     // Verificação de existência
@@ -30,6 +31,8 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
     boolean existsByManutencaoId(Long manutencaoId);
     boolean existsByViagemId(Long viagemId);
      
+    
+
     // Agregações   
     @Query("SELECT SUM(c.valor) FROM Custo c WHERE c.veiculo.id = :veiculoId AND c.status = 'PAGO'")
     Double calcularTotalPorVeiculo(@Param("veiculoId") Long veiculoId);

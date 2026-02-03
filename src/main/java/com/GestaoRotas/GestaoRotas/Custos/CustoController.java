@@ -48,8 +48,8 @@ public class CustoController {
       custo = custoService.registrarCustoManual(request);
         return ResponseEntity.ok(CustoDTO.fromEntity(custo));
     }    
-   @PutMapping("/update/{id}")  
- public  ResponseEntity<Custo> atualizarCusto(@PathVariable Long id, @RequestBody CustoUpdateDTO updateDTO){
+   @PutMapping("/update/{id}")       
+ public ResponseEntity<Custo> atualizarCusto(@PathVariable Long id, @RequestBody CustoUpdateDTO updateDTO){
 	 try {
 		  return ResponseEntity.ok(custoService.atualizarCusto(id, updateDTO)); 
 	 }catch(Exception e) {
@@ -71,7 +71,7 @@ public class CustoController {
     public ResponseEntity<DashboardCustosDTO> getDashboard() {
         DashboardCustosDTO dashboard = custoService.getDashboardCustos();
         return ResponseEntity.ok(dashboard);
-    } 
+    }  
      
  @PostMapping("/relatorio")         
 public ResponseEntity<?> relatorio(@RequestBody RelatorioFilterDTO filtro) {

@@ -42,7 +42,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class custoService  implements CustoServiceImpl {
  
-	 
+	  
     private final CustoRepository custoRepository;
     private final RepositoryVeiculo veiculoRepository;
     private final RepositoryAbastecimentos abastecimentoRepository;
@@ -122,6 +122,27 @@ public class custoService  implements CustoServiceImpl {
         return saved; 
     }  
     
+    public Custo actualizarCustoParaAbastecimento(abastecimentos abastecimento) {
+        // verificar se o abastecimento existe
+    	abastecimentos abastecimentoExistente = abastecimentoRepository.findById(abastecimento.getId()).orElseThrow(() -> new RuntimeException("abastecimento nao encontrado")); 
+        Custo custo = custoRepository.findByAbastecimentoId(abastecimento.getId()).orElseThrow(() -> new RuntimeException("Custo nao encontrado")); 
+        custo.setData(abastecimento.getDataAbastecimento());
+        custo.setDescricao("Abastecimento - " + abastecimento.getTipoCombustivel());
+        custo.setValor(abastecimento.getValorTotal());
+        custo.setTipo(TipoCusto.COMBUSTIVEL); 
+        custo.setStatus(StatusCusto.PAGO);
+        custo.setVeiculo(abastecimento.getVeiculo()); 
+        custo.setViagem(abastecimento.getViagem()); 
+        custo.setAbastecimento(abastecimento);
+        custo.setNumeroDocumento("ABS-" + abastecimento.getId());
+          
+        Custo saved = custoRepository.save(custo);
+        atualizarTotaisVeiculo(abastecimento.getVeiculo().getId());
+        
+        return saved; 
+    }  
+    
+    
     @Transactional
     public Custo criarCustoParaManutencao(Manutencao manutencao) {
         Custo custo = new Custo(); 
@@ -141,6 +162,28 @@ public class custoService  implements CustoServiceImpl {
         return saved;
     }
       
+    //esse metodo vai ser utilizar pra actualizar 
+    @Transactional 
+    public Custo actualizarCustoManutencao(Manutencao manutencao) {
+    Manutencao manutencaoExistente = repositoryManutencao.findById(manutencao.getId()).orElseThrow(() -> new RuntimeException("Manutencao nao encontrada"));
+    Custo custo = custoRepository.findByManutencaoId(manutencao.getId()).orElseThrow(() -> new RuntimeException("custo nao encontrado"));  
+        custo.setData(manutencao.getDataManutencao()); 
+        custo.setDescricao("Manutenção - " + manutencao.getTipoManutencao());
+        custo.setValor(manutencao.getCusto()); 
+        custo.setTipo(determinarTipoManutencao(manutencao.getTipoManutencao().toString()));
+        custo.setStatus(StatusCusto.PAGO);  
+        custo.setVeiculo(manutencao.getVeiculo()); 
+        custo.setManutencao(manutencao);
+        custo.setNumeroDocumento("MAN-" + manutencao.getId());
+        custo.setObservacoes(manutencao.getDescricao());
+          
+        Custo saved = custoRepository.save(custo);
+        atualizarTotaisVeiculo(manutencaoExistente.getId()); 
+          
+        return saved;
+        
+    }
+      
     private TipoCusto determinarTipoManutencao(String tipoManutencao) {
         if (tipoManutencao.contains("PREVENTIVA") || tipoManutencao.contains("REVISÃO")) {
             return TipoCusto.MANUTENCAO_PREVENTIVA;
@@ -148,24 +191,7 @@ public class custoService  implements CustoServiceImpl {
         return TipoCusto.MANUTENCAO_CORRETIVA;  
     }
     
-    @Transactional
-    public Custo criarCustoParaViagem(Viagem viagem, TipoCusto tipo, String descricao, Double valor) {
-        Custo custo = new Custo();
-        custo.setData(LocalDate.now());
-        custo.setDescricao(descricao);
-        custo.setValor(valor);
-        custo.setTipo(tipo);  
-        custo.setStatus(StatusCusto.PAGO); 
-        custo.setVeiculo(viagem.getVeiculo());
-        custo.setViagem(viagem);   
-        custo.setNumeroDocumento("VIA-" + viagem.getId() + "-" + UUID.randomUUID().toString().substring(0, 8));
-        
-        Custo saved = custoRepository.save(custo);
-        atualizarTotaisVeiculo(viagem.getVeiculo().getId());
-         
-        return saved; 
-    }
-    
+   
     // ========== ATUALIZAÇÃO DE TOTAIS ==========
     
     @Transactional
@@ -455,14 +481,8 @@ public void migrarAbastecimentosExistentes() {
      
     @Transactional
     public void processarNovaViagem(Viagem viagem) {
-        // Criar custos padrão para viagem 
-        
-        // Exemplo: criar custo para pedágios se houver
-        if (viagem.getCustoPedagios() != null && viagem.getCustoPedagios() > 0) {
-            criarCustoParaViagem(viagem, TipoCusto.PEDAGIO, 
-                "Pedágios - Viagem " + viagem.getId(), viagem.getCustoPedagios());
-        }
-    } 
+   
+    }
     
     // ========== ALERTAS E NOTIFICAÇÕES ==========
     

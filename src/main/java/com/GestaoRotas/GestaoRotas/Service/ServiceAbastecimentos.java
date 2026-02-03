@@ -35,69 +35,33 @@ public class ServiceAbastecimentos {
 	 @Transactional
 	    public Map<String, String> save(AbastecimentoDTO dto) {
 	        Map<String, String> response = new HashMap<>();
-	        
-	        System.out.println("=== DEBUG: Iniciando save abastecimento ===");
-	        System.out.println("ViagemId recebido no DTO: " + dto.getViagemId());
-	        
-	        // 1. Buscar veículo (já feito)
 	        Veiculo veiculo = repositorioveiculos.findById(dto.getVeiculoId())
 	            .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
-	        
-	        // 2. Criar abastecimento
-	        abastecimentos abastecimento = new abastecimentos();
+	      abastecimentos abastecimento = new abastecimentos();
 	        abastecimento.setVeiculo(veiculo);
-	        
-	        // 3. **CRÍTICO: Buscar e associar a viagem ANTES de salvar**
-	        if (dto.getViagemId() != null) {
-	            System.out.println("Buscando viagem ID: " + dto.getViagemId());
-	            
-	            // Buscar viagem do banco
-	            Viagem viagem = repositorioViagem.findById(dto.getViagemId())
-	                .orElseThrow(() -> new RuntimeException("Viagem não encontrada com ID: " + dto.getViagemId()));
-	            
-	            System.out.println("Viagem encontrada: ID " + viagem.getId());
-	            
-	            // Associar viagem ao abastecimento
-	            abastecimento.setViagem(viagem);
-	        } else {
-	            System.out.println("DTO não tem viagemId, abastecimento ficará sem viagem");
-	            abastecimento.setViagem(null);
-	        }
-	        
-	        // Preencher outros campos...
-	        abastecimento.setDataAbastecimento(dto.getDataAbastecimento());
-	        abastecimento.setKilometragemVeiculo(dto.getKilometragemVeiculo());
-	        abastecimento.setQuantidadeLitros(dto.getQuantidadeLitros());
-	        abastecimento.setPrecoPorLitro(dto.getPrecoPorLitro());
-	        abastecimento.setTipoCombustivel(dto.getTipoCombustivel());
-	        abastecimento.setStatusAbastecimento(dto.getStatusAbastecimento());
-	        
-	 
-	        System.out.println("Salvando abastecimento...");
-	        abastecimentos savedAbastecimento = repositoryAbastecimentos.save(abastecimento);
-	        
-	 
-	        System.out.println("Abastecimento salvo com ID: " + savedAbastecimento.getId());
-	        System.out.println("Viagem no abastecimento salvo: " + 
-	            (savedAbastecimento.getViagem() != null ? 
-	                "ID " + savedAbastecimento.getViagem().getId() : "NULL"));
-	     
-	        abastecimentos abastecimentoComViagem = repositoryAbastecimentos
-	            .findByIdWithViagem(savedAbastecimento.getId())
-	            .orElse(savedAbastecimento);
-	        
-	        System.out.println("Após recarregar - Viagem: " + 
-	            (abastecimentoComViagem.getViagem() != null ? 
-	                "ID " + abastecimentoComViagem.getViagem().getId() : "NULL"));
-	        
-	
-	        System.out.println("Chamando criarCustoParaAbastecimento...");
-	        Custo custo = custoService.criarCustoParaAbastecimento(abastecimentoComViagem);
-	        
-	        System.out.println("Custo criado com ID: " + custo.getId());
-	        System.out.println("Viagem no custo: " + 
-	            (custo.getViagem() != null ? "ID " + custo.getViagem().getId() : "NULL"));
-	        
+	       if (dto.getViagemId() != null) {
+	        	Viagem viagem = repositorioViagem.findById(dto.getViagemId())
+                .orElseThrow(() -> new RuntimeException("Viagem não encontrada com ID: " + dto.getViagemId()));
+                abastecimento.setViagem(viagem);
+        } else {
+            abastecimento.setViagem(null);
+        }
+ 
+    // Preencher outros campos...
+    abastecimento.setDataAbastecimento(dto.getDataAbastecimento());
+    abastecimento.setKilometragemVeiculo(dto.getKilometragemVeiculo());
+    abastecimento.setQuantidadeLitros(dto.getQuantidadeLitros());
+    abastecimento.setPrecoPorLitro(dto.getPrecoPorLitro());
+    abastecimento.setTipoCombustivel(dto.getTipoCombustivel());
+    abastecimento.setStatusAbastecimento(dto.getStatusAbastecimento());
+    
+    abastecimentos savedAbastecimento = repositoryAbastecimentos.save(abastecimento);
+  
+        abastecimentos abastecimentoComViagem = repositoryAbastecimentos
+            .findByIdWithViagem(savedAbastecimento.getId())
+            .orElse(savedAbastecimento);
+        //criando custo pra o abastecimento
+      Custo custo = custoService.criarCustoParaAbastecimento(abastecimentoComViagem);
 	        response.put("sucesso", "Abastecimento salvo");
 	        response.put("abastecimentoId", String.valueOf(savedAbastecimento.getId()));
 	        response.put("custoId", String.valueOf(custo.getId()));
@@ -139,10 +103,7 @@ public String update(AbastecimentoDTO abstecimentos, long id) {
     abastecimento.setPrecoPorLitro(abstecimentos.getPrecoPorLitro());
     abastecimento.setQuantidadeLitros(abstecimentos.getQuantidadeLitros()); // Falta esta linha!
     abastecimento.setStatusAbastecimento(abstecimentos.getStatusAbastecimento());
-    
- 
-    // abastecimento.setStatusAbastecimento(abstecimentos.getStatusAbastecimento()); // REMOVER ESTA
-    
+
     // Se houver viagemId, busca; se não, mantém null
     if (abstecimentos.getViagemId() ==0) { 
         Viagem viagem = this.repositorioViagem.findById(abstecimentos.getViagemId())
@@ -151,11 +112,9 @@ public String update(AbastecimentoDTO abstecimentos, long id) {
     } else {   
         abastecimento.setViagem(null);   
     }
-    
-    // Adicionar log para debug
-    System.out.println("Abastecimento atualizado: " + abastecimento);
-    
-    repositoryAbastecimentos.save(abastecimento);
+   abastecimentos abastecimentoActualizado =  repositoryAbastecimentos.save(abastecimento);
+   //actualizando os custo pra o abastecimento actualizao
+   custoService.actualizarCustoParaAbastecimento(abastecimentoActualizado); 
     return "sucesso ao actualizar abastecimento";
 }   
 // relario de de abastecimento por veiculo 
@@ -165,20 +124,16 @@ public List<RelatorioCombustivelDTO> relatorioPorVeiculo() {
     }
 public List<RelatorioCombustivelDTO> relatorioPorPeriodo(LocalDate inicio, LocalDate fim) {
     return repositoryAbastecimentos.relatorioPorPeriodo(inicio, fim); 
-          
-}
-
+   }
 public Long numeroAbastecimentoRealizados(){
 	return repositoryAbastecimentos.contarAbastecimentosRealizados();  
 } 
-
 public Optional<Long> numeroAbastecimentoCancelados(){ 
 	return repositoryAbastecimentos.contarAbastecimentosCancelados(); 
 }
-
 public Optional<Long>  numeroAbastecimentoPlaneado(){
 	return repositoryAbastecimentos.contarAbastecimentosPlaneados();
-	}
+}
     
 
 }

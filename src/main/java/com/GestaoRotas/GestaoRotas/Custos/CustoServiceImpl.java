@@ -37,7 +37,7 @@ public interface CustoServiceImpl {
     
    Custo criarCustoParaManutencao(Manutencao manutencao); 
       
-   Custo criarCustoParaViagem(Viagem viagem, TipoCusto tipo, String descricao, Double valor);
+  // Custo criarCustoParaViagem(Viagem viagem, TipoCusto tipo, String descricao, Double valor);
    
    void atualizarTotaisVeiculo(Long veiculoId); 
   
