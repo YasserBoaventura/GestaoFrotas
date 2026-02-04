@@ -8,6 +8,7 @@ import java.util.*;
 
 import com.GestaoRotas.GestaoRotas.CustoDTO.CustoListDTO;
 import com.GestaoRotas.GestaoRotas.CustoDTO.CustoRequestDTO;
+import com.GestaoRotas.GestaoRotas.CustoDTO.CustoViagemDTO;
 import com.GestaoRotas.GestaoRotas.CustoDTO.RelatorioFilterDTO;
 
 import com.GestaoRotas.GestaoRotas.DTO.CustoUpdateDTO;
@@ -27,18 +28,17 @@ public interface CustoServiceImpl {
 	
 	Custo  registrarCustoManual(CustoRequestDTO request);  
 	
-	 Custo atualizarCusto(Long id, CustoUpdateDTO updateDTO) ; 
+	 String atualizarCusto(Long id, CustoUpdateDTO updateDTO) ; 
 	 
 	   String excluirCusto(Long id); 
 	
 	 List<CustoListDTO> listar(); 
-	 
+	  
     Custo criarCustoParaAbastecimento(abastecimentos abastecimento);
     
    Custo criarCustoParaManutencao(Manutencao manutencao); 
-      
-  // Custo criarCustoParaViagem(Viagem viagem, TipoCusto tipo, String descricao, Double valor);
-   
+   Custo criarCustoParaViagem(CustoViagemDTO custoViagemDTO);;
+  Custo actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id);  
    void atualizarTotaisVeiculo(Long veiculoId); 
   
     DashboardCustosDTO getDashboardCustos(); 
@@ -53,13 +53,13 @@ public interface CustoServiceImpl {
     
    void  enviarAlertaCustoAlto(abastecimentos abastecimento);
       
-   void  migrarAbastecimentosExistentes();
+  void  migrarAbastecimentosExistentes();
    
   void  processarNovaManutencao(Manutencao manutencao);
   
   void processarNovoAbastecimento(abastecimentos abastecimento); 
   
-  void processarNovaViagem(Viagem viagem); 
+  void processarNovaViagem(Viagem viagem, CustoViagemDTO custoViagemDTO); 
 
   List<Veiculo> getVeiculosComCustoAcimaDaMedia(); 
 }

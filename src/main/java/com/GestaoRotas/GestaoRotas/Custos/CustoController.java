@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.*;
 
 import com.GestaoRotas.GestaoRotas.CustoDTO.CustoRequestDTO;
+import com.GestaoRotas.GestaoRotas.CustoDTO.CustoViagemDTO;
 import com.GestaoRotas.GestaoRotas.CustoDTO.RelatorioFilterDTO;
 import com.GestaoRotas.GestaoRotas.DTO.CustoDTO;
 
@@ -47,31 +48,50 @@ public class CustoController {
        BeanUtils.copyProperties(request, custo); 
       custo = custoService.registrarCustoManual(request);
         return ResponseEntity.ok(CustoDTO.fromEntity(custo));
-    }    
-   @PutMapping("/update/{id}")       
- public ResponseEntity<Custo> atualizarCusto(@PathVariable Long id, @RequestBody CustoUpdateDTO updateDTO){
+    }     
+   @PutMapping("/update/{id}")          
+ public ResponseEntity<String> atualizarCusto(@PathVariable Long id, @RequestBody @Valid CustoUpdateDTO updateDTO){
 	 try {
 		  return ResponseEntity.ok(custoService.atualizarCusto(id, updateDTO)); 
-	 }catch(Exception e) {
+	 }catch(Exception e) { 
 		 e.getCause().getMessage(); 
 		 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);  
 	 }
  }
-   @DeleteMapping("/delete/{id}")
-  public ResponseEntity<String> delete(@PathVariable Long id){
+   @DeleteMapping("/delete/{id}") 
+  public ResponseEntity<String> delete(@PathVariable Long id){ 
 	  try {
 		  return ResponseEntity.ok(custoService.excluirCusto(id)); 
 	  }catch(Exception e) {
 		  e.getCause().getMessage(); 
 		return ResponseEntity.badRequest().body("erro ao excluir custo"); 	  
 	  }
-  }  
+  } 
+   @PostMapping("/criarCustoViagem")
+    public ResponseEntity<Custo> criarCustoParaViagem(@RequestBody CustoViagemDTO custoViagemDTO){
+    	try {
+    return ResponseEntity.ok(custoService.criarCustoParaViagem(custoViagemDTO)); 
+    	}catch(Exception e) {
+    	return ResponseEntity.badRequest().build(); 
+    	}
+    }
+   
+@PutMapping("/actualizarCustoParaViagem/{id}")
+   public  ResponseEntity<Custo>actualizaCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id){
+	   try {
+		   return ResponseEntity.ok(custoService.actualizarCustoParaViagem(custoViagemDTO, id)); 
+		  }catch(Exception e) {
+			  return ResponseEntity.badRequest().build(); 
+	   }
+   }
+   
   // Dashboard 
 @GetMapping("/dashboard")
     public ResponseEntity<DashboardCustosDTO> getDashboard() {
         DashboardCustosDTO dashboard = custoService.getDashboardCustos();
         return ResponseEntity.ok(dashboard);
     }  
+
      
  @PostMapping("/relatorio")         
 public ResponseEntity<?> relatorio(@RequestBody RelatorioFilterDTO filtro) {

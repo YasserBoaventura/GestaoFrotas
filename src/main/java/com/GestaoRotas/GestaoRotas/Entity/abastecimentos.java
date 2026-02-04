@@ -7,6 +7,7 @@ import com.GestaoRotas.GestaoRotas.Model.StatusCusto;
 import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 import com.GestaoRotas.GestaoRotas.Model.statusAbastecimentos;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
@@ -21,6 +22,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class abastecimentos {
         @Id
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,8 +64,7 @@ public class abastecimentos {
 	    
 	    // NOVO: relacionamento com Custo
 	    @OneToOne(mappedBy = "abastecimento", cascade = CascadeType.ALL)
-	    @JsonIgnoreProperties({"abastecimentos", "hibernateLazyInitializer", "handler"})
-	    @JsonBackReference 
+	    @JsonIgnore
 	    private Custo custo;
 	     
 	    // Método para criar custo automaticamente

@@ -36,7 +36,7 @@ import java.time.*;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor  
+@NoArgsConstructor 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Custo implements Serializable {
 	 
@@ -72,10 +72,10 @@ public class Custo implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manutencao_id", unique = true)
     @JsonIgnoreProperties({"custo", "veiculo"})   
-    private Manutencao manutencao;
+    private Manutencao manutencao; 
       
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "viagem_id")
+    @JoinColumn(name = "viagem_id") 
     @JsonIgnoreProperties({"custos", "veiculo", "motorista", "rota", "abastecimentos"})
     private Viagem viagem;
     
@@ -99,5 +99,5 @@ public class Custo implements Serializable {
                ", tipo=" + tipo + 
                ", status=" + status + "}";
     }
-
+   
 }
