@@ -50,7 +50,7 @@ public class Custo implements Serializable {
     private LocalDate data;
     private String descricao;
     private Double valor;  
-    
+     
     @Enumerated(EnumType.STRING)
     private TipoCusto tipo;
     
@@ -61,7 +61,7 @@ public class Custo implements Serializable {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "veiculo_id")
-    @JsonIgnoreProperties({"custos", "abastecimentos", "manutencoes", "viagens"})
+    @JsonIgnoreProperties({"custos", "abastecimentos", "manutencoes", "viagem"})
     private Veiculo veiculo; 
      
     @OneToOne(fetch = FetchType.LAZY)
@@ -81,7 +81,7 @@ public class Custo implements Serializable {
     
     private String observacoes;
     private String numeroDocumento;
-    
+    private LocalDateTime dataActualizacao; 
     // Método para identificar a origem
     public String getOrigem() {
         if (abastecimento != null) return "ABASTECIMENTO";

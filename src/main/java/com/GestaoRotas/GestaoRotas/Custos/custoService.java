@@ -27,7 +27,7 @@ import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryViagem;
 import com.GestaoRotas.GestaoRotas.Service.ServiceAbastecimentos;
 import com.GestaoRotas.GestaoRotas.Service.ServiceVeiculo;
-
+import com.GestaoRotas.GestaoRotas.config.BusinessException;
 
 import jakarta.transaction.Transactional;
 
@@ -184,16 +184,13 @@ public class custoService  implements CustoServiceImpl {
         return saved;
         
     }
-      
-    private TipoCusto determinarTipoManutencao(String tipoManutencao) {
+       private TipoCusto determinarTipoManutencao(String tipoManutencao) {
         if (tipoManutencao.contains("PREVENTIVA") || tipoManutencao.contains("REVISÃO")) {
             return TipoCusto.MANUTENCAO_PREVENTIVA;
         }
         return TipoCusto.MANUTENCAO_CORRETIVA;  
     } 
-     
-   
-@Transactional 
+ @Transactional  
 public Custo criarCustoParaViagem(CustoViagemDTO custoViagemDTO) {
 	try {
     Custo custo = new Custo();
@@ -202,8 +199,8 @@ public Custo criarCustoParaViagem(CustoViagemDTO custoViagemDTO) {
     custo.setValor(custoViagemDTO.getValor());  
     custo.setTipo(custoViagemDTO.getTipo());    
     custo.setStatus(StatusCusto.PAGO); 
-    
-    //pegando o veiculo
+    custo.setObservacoes(custoViagemDTO.getObservacoes()); 
+    //pegando o veiculo 
     Veiculo veiculo = veiculoRepository.findById(custoViagemDTO.getVeiculoId()).orElseThrow(() -> new RuntimeException("Veiculo nao encontrado")); 
     // pegando a viagem
     Viagem viagem = repositoryViagem.findById(custoViagemDTO.getViagemId()).orElseThrow(() -> new RuntimeException("Viagem nao encontrada")); 
@@ -218,11 +215,9 @@ public Custo criarCustoParaViagem(CustoViagemDTO custoViagemDTO) {
 		System.err.println("erro ao criar custo pra: " +e.getCause().getMessage().toString());
     	return null;
     	}
-    	 
-    }
-
+  }
 @Transactional
-public Custo actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id) {
+public String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id) {
  	try {
  		Custo custoActualizado =  custoRepository.findById(id).orElseThrow(() -> new RuntimeException("Custo pra viagem nao encontrada")); 
  		 custoActualizado.setData(LocalDate.now());
@@ -230,24 +225,23 @@ public Custo actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id) {
  		 custoActualizado.setValor(custoViagemDTO.getValor());  
  		 custoActualizado.setTipo(custoViagemDTO.getTipo());    
  		 custoActualizado.setStatus(StatusCusto.PAGO); 
- 	     
- 	    //pegando o veiculo
+ 		 custoActualizado.setObservacoes(custoViagemDTO.getObservacoes()); 
+ 	     custoActualizado.setDataActualizacao(LocalDateTime.now());
+  	    //pegando o veiculo
  	    Veiculo veiculo = veiculoRepository.findById(custoViagemDTO.getVeiculoId()).orElseThrow(() -> new RuntimeException("Veiculo nao encontrado")); 
  	    // pegando a viagem
  	    Viagem viagem = repositoryViagem.findById(custoViagemDTO.getViagemId()).orElseThrow(() -> new RuntimeException("Viagem nao encontrada")); 
- 	 custoActualizado.setVeiculo(veiculo); 
+ 	 custoActualizado.setVeiculo(veiculo);     
  	 custoActualizado.setViagem(viagem);   
  	 custoActualizado.setNumeroDocumento("VIA-" + viagem.getId() + "-" + UUID.randomUUID().toString().substring(0, 8));
  	    Custo saved = custoRepository.save(custoActualizado);
  	    atualizarTotaisVeiculo(viagem.getVeiculo().getId());
- 	     return saved; 
+ 	     return "custo pra viagem actualizado com sucesso"; 
  	}catch(Exception e) {
- 	System.err.println("erro actualizar custo para viagem : "+ e.getCause().getMessage().toString());
- 		return null; 
- 		}
- }
-    
-    // ========== ATUALIZAÇÃO DE TOTAIS ==========
+ 	System.err.println("erro actualizar custo para viagem : "+ e.getCause().getMessage().toString()); 
+ 		 String err = "erro ao actualizar custo pra viagem "+e.getMessage().toString();
+	 return  err;  }
+ }  // ========== ATUALIZAÇÃO DE TOTAIS ==========
     
     @Transactional
     public void atualizarTotaisVeiculo(Long veiculoId) {
@@ -409,8 +403,11 @@ public void migrarAbastecimentosExistentes() {
      
     System.out.println("Migração concluída: " + contador + " abastecimentos migrados");
 }
-    
-    //findAll
+    //verifica por periodo apenas
+  public List<CustoDTO> buscarPorPeriodo(LocalDate inicio, LocalDate fim){
+    	  return custoRepository.buscarPorPeriodoDTO(inicio, fim); 
+     }
+      //findAll
     public List<CustoListDTO> listar() {
       return custoRepository.findAllAsDTO();  
     }  
@@ -456,7 +453,7 @@ public void migrarAbastecimentosExistentes() {
         //-----
          
         LocalDate  inicio = filtro.getDataInicioTop5VeiculosMaisCarro();
-        LocalDate   fim = filtro.getDataFimTop5VeiculosMaisCarro(); 
+        LocalDate  fim = filtro.getDataFimTop5VeiculosMaisCarro(); 
         List<VeiculoCustoDTO> top5VeiculosMaisCarros = custoRepository.findTop5VeiculosMaisCarosPorPeriodo(inicio,fim);
        relatorio.setTop5VeiculosMaisCaros(top5VeiculosMaisCarros);
         
@@ -471,8 +468,7 @@ public void migrarAbastecimentosExistentes() {
          
         return relatorio;
     }
-     
-	    public Long numeroCustos () {
+     public Long numeroCustos () {
 	    	return custoRepository.countAll();
 	    } 
 	       
@@ -500,16 +496,16 @@ public void migrarAbastecimentosExistentes() {
         List<Manutencao> manutencoes = repositoryManutencao.findAll();
          
         int contador = 0;
-        for (Manutencao manut : manutencoes) {
-            try {
-                if (!custoRepository.existsByManutencaoId(manut.getId())) {
-                    criarCustoParaManutencao(manut);
-                    contador++;
-                }
-            } catch (Exception e) {
-                System.err.println("Erro ao migrar manutenção " + manut.getId() + ": " + e.getMessage());
+    for (Manutencao manut : manutencoes) {
+        try {
+            if (!custoRepository.existsByManutencaoId(manut.getId())) {
+                criarCustoParaManutencao(manut);
+                contador++;
             }
-        }  
+        } catch (Exception e) {
+            System.err.println("Erro ao migrar manutenção " + manut.getId() + ": " + e.getMessage());
+        }
+    }  
         
         System.out.println("Migração concluída: " + contador + " manutenções migradas");
     }
@@ -579,7 +575,7 @@ public void migrarAbastecimentosExistentes() {
         if (updateDTO.getTipo() != null) custo.setTipo(updateDTO.getTipo());
         if (updateDTO.getStatus() != null) custo.setStatus(updateDTO.getStatus());
         if (updateDTO.getObservacoes() != null) custo.setObservacoes(updateDTO.getObservacoes());
-          
+        custo.setDataActualizacao(LocalDateTime.now()); 
         Custo updated = custoRepository.save(custo);
         
         // Recalcular totais do veículo

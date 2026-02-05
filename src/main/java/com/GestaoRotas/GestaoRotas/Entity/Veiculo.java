@@ -83,7 +83,7 @@ public class Veiculo {
 	    
 	    @OneToMany(mappedBy = "veiculo", cascade = CascadeType.ALL)
 	    @JsonIgnore 
-	    @JsonIgnoreProperties({"veiculo", "hibernateLazyInitializer", "handler"})
+	  //  @JsonIgnoreProperties({"veiculo", "hibernateLazyInitializer", "handler"})
 	    private List<Custo> custos = new ArrayList<>();
 	    
 	    @Column(name = "custo_combustivel")

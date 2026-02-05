@@ -10,10 +10,11 @@ import com.GestaoRotas.GestaoRotas.CustoDTO.CustoListDTO;
 import com.GestaoRotas.GestaoRotas.CustoDTO.CustoRequestDTO;
 import com.GestaoRotas.GestaoRotas.CustoDTO.CustoViagemDTO;
 import com.GestaoRotas.GestaoRotas.CustoDTO.RelatorioFilterDTO;
-
+import com.GestaoRotas.GestaoRotas.DTO.CustoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.CustoUpdateDTO;
 import com.GestaoRotas.GestaoRotas.DTO.DashboardCustosDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioCustosDetalhadoDTO;
+import com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Manutencao;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Entity.Viagem;
@@ -25,20 +26,19 @@ import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 @Service
 public interface CustoServiceImpl {
 
-	
-	Custo  registrarCustoManual(CustoRequestDTO request);  
+	 
+	Custo registrarCustoManual(CustoRequestDTO request);  
 	
 	 String atualizarCusto(Long id, CustoUpdateDTO updateDTO) ; 
 	 
 	   String excluirCusto(Long id); 
 	
 	 List<CustoListDTO> listar(); 
-	  
-    Custo criarCustoParaAbastecimento(abastecimentos abastecimento);
-    
-   Custo criarCustoParaManutencao(Manutencao manutencao); 
+	List<CustoDTO> buscarPorPeriodo(LocalDate inicio, LocalDate fim);
+		  Custo criarCustoParaAbastecimento(abastecimentos abastecimento);
+    Custo criarCustoParaManutencao(Manutencao manutencao); 
    Custo criarCustoParaViagem(CustoViagemDTO custoViagemDTO);;
-  Custo actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id);  
+ String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id);  
    void atualizarTotaisVeiculo(Long veiculoId); 
   
     DashboardCustosDTO getDashboardCustos(); 

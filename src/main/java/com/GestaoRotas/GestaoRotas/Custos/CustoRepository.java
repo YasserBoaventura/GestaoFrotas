@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.GestaoRotas.GestaoRotas.CustoDTO.CustoDetalhadoDTO;
 import com.GestaoRotas.GestaoRotas.CustoDTO.CustoListDTO;
 import com.GestaoRotas.GestaoRotas.CustoDTO.VeiculoCustoDTO;
+import com.GestaoRotas.GestaoRotas.DTO.CustoDTO;
 import com.GestaoRotas.GestaoRotas.Model.StatusCusto;
 import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 
@@ -25,14 +26,12 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
     List<Custo> findByViagemId(Long viagemId);
     List<Custo> findByVeiculoId(Long veiculoId); 
     List<Custo> findTop10ByOrderByDataDesc();
-    
+     
     // Verificação de existência
     boolean existsByAbastecimentoId(Long abastecimentoId);
     boolean existsByManutencaoId(Long manutencaoId);
     boolean existsByViagemId(Long viagemId);
      
-    
-
     // Agregações   
     @Query("SELECT SUM(c.valor) FROM Custo c WHERE c.veiculo.id = :veiculoId AND c.status = 'PAGO'")
     Double calcularTotalPorVeiculo(@Param("veiculoId") Long veiculoId);
@@ -69,8 +68,17 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
            "GROUP BY c.tipo")
     List<Object[]> calcularTotalPorTipoPeriodo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
 
-    
-    // querys usando dto
+    // listar tudo por data inicio e fim
+    @Query("SELECT NEW com.GestaoRotas.GestaoRotas.DTO.CustoDTO(" +
+           "c.id, c.data, c.descricao, c.valor, c.tipo, c.status, " +
+           "v.id, v.matricula, c.observacoes, c.numeroDocumento) " +
+           "FROM Custo c " +
+           "LEFT JOIN c.veiculo v " +
+           "WHERE (:dataInicio IS NULL OR c.data >= :dataInicio) " +
+           "AND (:dataFim IS NULL OR c.data <= :dataFim) " +
+           "ORDER BY c.data DESC")
+    List<CustoDTO> buscarPorPeriodoDTO(@Param("dataInicio") LocalDate dataInicio, 
+                                      @Param("dataFim") LocalDate dataFim);
     
     // Query para findAll seguro usando DTO
     @Query("SELECT new com.GestaoRotas.GestaoRotas.CustoDTO.CustoListDTO(" +

@@ -124,14 +124,23 @@ public class GlobalExceptionHandler {
 		Map<String,String> erro = new HashMap<>();
 		erro.put("erro", ex.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro); 
-	}
+	} 
 	@ExceptionHandler(UsernameNotFoundException.class) 
 	public ResponseEntity<Map<String ,String>>  handleUsernameNotFoundException(UsernameNotFoundException ex){
 		Map<String, String>  erro = new HashMap<>();
 		erro.put("erro" , ex.getMessage()); 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
-		
-	}
-} 
+		}
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<?> handleBusinessException(BusinessException ex) {
+       Map<String,String> response = new HashMap<>();
+        response.put("erro", ex.getMessage());
+           return ResponseEntity
+                .badRequest() // HTTP 400
+                .body(response);  
+    } 
+}
+
+ 
  
 
