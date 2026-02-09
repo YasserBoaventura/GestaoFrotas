@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @Setter
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor  
+@NoArgsConstructor   
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DashboardCustosDTO { 
     private Double totalMesAtual = 0.0;
@@ -20,7 +20,7 @@ public class DashboardCustosDTO {
     private Map<String, Double> custosPorTipo; 
     private List<VeiculoCustoDTO> veiculosMaisCaros;
     private List<CustoDTO> ultimosCustos;   
-    private String mensagem; // Para debug  
-}
+    private String mensagem; // Para debug   
+}  
 
 

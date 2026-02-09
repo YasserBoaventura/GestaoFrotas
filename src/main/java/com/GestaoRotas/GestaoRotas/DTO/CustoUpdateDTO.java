@@ -20,5 +20,5 @@ public class CustoUpdateDTO {
 	private TipoCusto tipo;
 	private StatusCusto status;
 	private String observacoes;
-    
+     
 }

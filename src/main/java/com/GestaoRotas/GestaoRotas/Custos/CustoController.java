@@ -35,30 +35,32 @@ import lombok.RequiredArgsConstructor;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/custo")
-@CrossOrigin("*") 
+@RestController 
+@RequestMapping("api/custo")
+@CrossOrigin("*")  
 @RequiredArgsConstructor
 public class CustoController {
-	 
+	  
 	    private final custoService custoService;
-	     
-	    // Registro manual 
-@PostMapping("/criarCusto") 
-    public ResponseEntity<CustoDTO> criar(@RequestBody @Valid CustoRequestDTO request) {
-       var custo = new Custo();  
-       BeanUtils.copyProperties(request, custo); 
-      custo = custoService.registrarCustoManual(request);
+	      
+	    // Registro manual  
+@PostMapping("/criarCusto")     
+public ResponseEntity<CustoDTO> criar(@RequestBody CustoRequestDTO request) {
+    try { 
+        Custo custo = custoService.registrarCustoManual(request);
         return ResponseEntity.ok(CustoDTO.fromEntity(custo));
-    }      
-   @PutMapping("/update/{id}")          
+    } catch (Exception e) { 
+        return ResponseEntity.badRequest().build(); 
+    }   
+}        
+  @PutMapping("/update/{id}")           
  public ResponseEntity<String> atualizarCusto(@PathVariable Long id, @RequestBody @Valid CustoUpdateDTO updateDTO){
 	 try {
 		  return ResponseEntity.ok(custoService.atualizarCusto(id, updateDTO)); 
-	 }catch(Exception e) { 
+	 }catch(Exception e) {  
 		 e.getCause().getMessage(); 
 		 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);  
-	  }
+	  } 
  }
  @DeleteMapping("/delete/{id}")  
   public ResponseEntity<String> delete(@PathVariable Long id){ 
@@ -68,12 +70,12 @@ public class CustoController {
 		  e.getCause().getMessage(); 
 		return ResponseEntity.badRequest().body("erro ao excluir custo"); 	  
 	  }
-  }   
+  }                   
    @PostMapping("/criarCustoViagem")
     public ResponseEntity<Custo> criarCustoParaViagem(@RequestBody @Valid CustoViagemDTO custoViagemDTO){
     	try { 
     return ResponseEntity.ok(custoService.criarCustoParaViagem(custoViagemDTO)); 
-    	}catch(Exception e) {
+    	}catch(Exception e) {     
     	return ResponseEntity.badRequest().build(); 
     	} 
     }  
@@ -85,44 +87,48 @@ public class CustoController {
 			  return ResponseEntity.badRequest().build(); 
 	   }
    } 
-    //por data inicio e fim apenas
- @GetMapping("/relatorio-por-periodo")      
- public ResponseEntity<List<CustoDTO>> relatorioPorPeriodo(
-          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
-          @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
-      System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
-      return ResponseEntity.ok(custoService.buscarPorPeriodo(inicio, fim)); 
-  }    
-   // Dashboard 
-@GetMapping("/dashboard") 
+   //Dashboard  
+@GetMapping("/dashboard")  
     public ResponseEntity<DashboardCustosDTO> getDashboard() {
         DashboardCustosDTO dashboard = custoService.getDashboardCustos();
         return ResponseEntity.ok(dashboard);
-    }      
- @PostMapping("/relatorio")         
+    }  
+// listar por data inicio e fim apenas
+@GetMapping("/relatorio-por-periodo")       
+public ResponseEntity<List<CustoDTO>> relatorioPorPeriodo(
+       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
+   System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
+   return ResponseEntity.ok(custoService.buscarPorPeriodo(inicio, fim)); 
+}  
+ @PostMapping("/relatorio")           
 public ResponseEntity<?> relatorio(@RequestBody RelatorioFilterDTO filtro) {
-    try {
+    try {    
        RelatorioCustosDetalhadoDTO relatorio = custoService.gerarRelatorioDetalhado(filtro);
-        return ResponseEntity.ok(relatorio);
-       } catch (Exception e) {
-       Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("erro", e.getMessage());
+        return ResponseEntity.ok(relatorio); 
+       } catch (Exception e) { 
+       Map<String, String> errorResponse = new HashMap<>();   
+        errorResponse.put("erro", e.getMessage()); 
  errorResponse.put("causa", e.getCause() != null ? e.getCause().getMessage() : null);
             return ResponseEntity.badRequest().body(errorResponse);
         }
-    }
- @GetMapping("/numeroCustos")
- public ResponseEntity<Long> numeroCustos(){
+    } 
+@GetMapping("/numeroCustos") 
+ public ResponseEntity<Optional<Long>> numeroCustos(){
 	 return ResponseEntity.ok(custoService.numeroCustos()); 
  } 
+ @GetMapping("/valorTotal") 
+ public ResponseEntity<Double>valorTotalCustos(){
+ 	return ResponseEntity.ok(custoService.valorTotalCustos());
+ } 
  @GetMapping("/numeroPorStatus/{status}")
- public ResponseEntity<Integer> numeroCustoPorStatus(@PathVariable StatusCusto status) {
+ public ResponseEntity<Optional<Integer>> numeroCustoPorStatus(@PathVariable StatusCusto status) {
    return ResponseEntity.ok(custoService.numeroCustoPorStatus(status)); 
- }    
- @GetMapping("/numeroPorTipo/{tipo}")
- public ResponseEntity<Integer> numeroCustoPorTipo(@PathVariable TipoCusto tipo) {
+ }     
+ @GetMapping("/numeroPorTipo/{tipo}") 
+ public ResponseEntity<Optional<Integer>> numeroCustoPorTipo(@PathVariable TipoCusto tipo) {
    return ResponseEntity.ok(custoService.numeroCustoPorTipo(tipo)); 
- }    
+ }       
  @GetMapping("/findAll")  
  public ResponseEntity<?> findAll(){ 
 	 try { 
@@ -151,13 +157,13 @@ public ResponseEntity<?> relatorio(@RequestBody RelatorioFilterDTO filtro) {
 		 return ResponseEntity.badRequest().body(erro); 
 	 }
  }
- // Por veículo
-@GetMapping("/veiculo/{veiculoId}")
+ // relatorio por data inicio e fim e veiculo
+@GetMapping("/veiculo/{veiculoId}") 
     public ResponseEntity<List<CustoDTO>> porVeiculo(
             @PathVariable Long veiculoId,
             @RequestParam(required = false) String inicio,
             @RequestParam(required = false) String fim) {
-         
+          
         LocalDate dataInicio = inicio != null ? LocalDate.parse(inicio) : null;
         LocalDate dataFim = fim != null ? LocalDate.parse(fim) : null;
         
@@ -165,5 +171,5 @@ public ResponseEntity<?> relatorio(@RequestBody RelatorioFilterDTO filtro) {
         return ResponseEntity.ok(custos.stream()
             .map(CustoDTO::fromEntity)
             .collect(Collectors.toList())); 
-    }
+    }   
 }

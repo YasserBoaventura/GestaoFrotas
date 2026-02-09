@@ -50,13 +50,16 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
       
     //conta todos 
     @Query("SELECT COUNT(c) FROM Custo c") 
-    Long countAll();
+    Optional<Long> countAll();
     
     
-    Integer countByStatus(StatusCusto status); 
+   Optional<Integer> countByStatus(StatusCusto status); 
     
-     Integer countByTipo(TipoCusto tipo); 
+   Optional<Integer> countByTipo(TipoCusto tipo); 
      
+   @Query("SELECT SUM(c.valor) FROM Custo c") 
+   Double valorTotalCustos();
+   
     // Agrupamentos 
     @Query("SELECT c.tipo, SUM(c.valor) FROM Custo c " +
            "WHERE YEAR(c.data) = :ano AND MONTH(c.data) = :mes AND c.status = 'PAGO' " +
@@ -67,7 +70,7 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
            "WHERE c.data BETWEEN :inicio AND :fim AND c.status = 'PAGO' " +
            "GROUP BY c.tipo")
     List<Object[]> calcularTotalPorTipoPeriodo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
-
+               
     // listar tudo por data inicio e fim
     @Query("SELECT NEW com.GestaoRotas.GestaoRotas.DTO.CustoDTO(" +
            "c.id, c.data, c.descricao, c.valor, c.tipo, c.status, " +
@@ -152,7 +155,8 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
     	       "AND FUNCTION('MONTH', c.data) = :mes " +
     	       "AND c.status = 'PAGO' " +
     	       "GROUP BY v.id, v.matricula, v.modelo " +
-    	       "ORDER BY SUM(c.valor) DESC")
+    	       "ORDER BY SUM(c.valor) DESC "+
+		       "LIMIT 5")
     	List<VeiculoCustoDTO> findTop5VeiculosMaisCaros(@Param("ano") Integer ano, @Param("mes") Integer mes);
      
     @Query("SELECT new com.GestaoRotas.GestaoRotas.CustoDTO.VeiculoCustoDTO(" +
@@ -174,7 +178,7 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
 		       "WHERE YEAR(c.data) = :ano AND MONTH(c.data) = :mes AND c.status = 'PAGO' " +
 		       "GROUP BY v.id, v.matricula, v.modelo " + 
 		       "ORDER BY SUM(c.valor) DESC " +
-		       "LIMIT 5")  
+		       " LIMIT 5")  
 		List<Object[]> findTop5VeiculosMaisCaross(@Param("ano") Integer ano, @Param("mes") Integer mes);
 		
 		// top 5 os custos mais altos

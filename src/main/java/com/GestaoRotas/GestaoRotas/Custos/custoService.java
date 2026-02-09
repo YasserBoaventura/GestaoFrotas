@@ -53,24 +53,41 @@ public class custoService  implements CustoServiceImpl {
      * Registro manual de qualquer custo
      */
     public Custo registrarCustoManual(CustoRequestDTO request) {
+        // Buscar veículo (obrigatório)
         Veiculo veiculo = veiculoRepository.findById(request.getVeiculoId())
             .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
-              
         
         var custo = new Custo();   
-       
+        
         custo.setData(request.getData() != null ? request.getData() : LocalDate.now());
         custo.setDescricao(request.getDescricao());
         custo.setValor(request.getValor());
         custo.setTipo(request.getTipo());
         custo.setStatus(request.getStatus() != null ? request.getStatus() : StatusCusto.PAGO);
         custo.setVeiculo(veiculo);
-        custo.setObservacoes(request.getObservacoes()); 
-        custo.setNumeroDocumento(request.getNumeroDocumento());
-         	
-        // Vincular com entidades específicas
-        vincularComEntidade(request, custo);
         
+        // Buscar viagem apenas se o ID não for nulo
+        if (request.getViagemId() != null) {
+            Viagem viagem = repositoryViagem.findById(request.getViagemId())
+                .orElse(null); // Retorna null se não encontrar
+            custo.setViagem(viagem);
+        }
+        
+        // Buscar manutenção apenas se o ID não for nulo
+        if (request.getManutencaoId() != null) {
+            Manutencao manutencao = repositoryManutencao.findById(request.getManutencaoId())
+                .orElse(null);
+            custo.setManutencao(manutencao);
+        }
+        // Buscar abastecimento apenas se o ID não for nulo
+        if (request.getAbastecimentoId() != null) {
+            abastecimentos abastecimento = abastecimentoRepository.findById(request.getAbastecimentoId())
+                .orElse(null);
+            custo.setAbastecimento(abastecimento);
+        }
+        
+        custo.setObservacoes(request.getObservacoes()); 
+        custo.setNumeroDocumento("CM-"  + "-" + UUID.randomUUID().toString().substring(0, 8));
         Custo saved = custoRepository.save(custo);
         atualizarTotaisVeiculo(veiculo.getId());
         
@@ -104,9 +121,8 @@ public class custoService  implements CustoServiceImpl {
         // Verificar se já existe custo para este abastecimento
         if (custoRepository.existsByAbastecimentoId(abastecimento.getId())) {
             throw new RuntimeException("Custo já existe para este abastecimento");
-        } 
-                
-        Custo custo = new Custo();
+        }  
+         Custo custo = new Custo();
         custo.setData(abastecimento.getDataAbastecimento());
         custo.setDescricao("Abastecimento - " + abastecimento.getTipoCombustivel());
         custo.setValor(abastecimento.getValorTotal());
@@ -164,7 +180,7 @@ public class custoService  implements CustoServiceImpl {
     }
       
     //esse metodo vai ser utilizar pra actualizar 
-    @Transactional 
+    @Transactional   
     public Custo actualizarCustoManutencao(Manutencao manutencao) {
     Manutencao manutencaoExistente = repositoryManutencao.findById(manutencao.getId()).orElseThrow(() -> new RuntimeException("Manutencao nao encontrada"));
     Custo custo = custoRepository.findByManutencaoId(manutencao.getId()).orElseThrow(() -> new RuntimeException("custo nao encontrado"));  
@@ -204,7 +220,7 @@ public Custo criarCustoParaViagem(CustoViagemDTO custoViagemDTO) {
     Veiculo veiculo = veiculoRepository.findById(custoViagemDTO.getVeiculoId()).orElseThrow(() -> new RuntimeException("Veiculo nao encontrado")); 
     // pegando a viagem
     Viagem viagem = repositoryViagem.findById(custoViagemDTO.getViagemId()).orElseThrow(() -> new RuntimeException("Viagem nao encontrada")); 
-    custo.setVeiculo(veiculo); 
+    custo.setVeiculo(veiculo);  
     custo.setViagem(viagem);   
     custo.setNumeroDocumento("VIA-" + viagem.getId() + "-" + UUID.randomUUID().toString().substring(0, 8));
     Custo saved = custoRepository.save(custo);
@@ -216,7 +232,7 @@ public Custo criarCustoParaViagem(CustoViagemDTO custoViagemDTO) {
     	return null;
     	}
   }
-@Transactional
+@Transactional 
 public String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id) {
  	try {
  		Custo custoActualizado =  custoRepository.findById(id).orElseThrow(() -> new RuntimeException("Custo pra viagem nao encontrada")); 
@@ -270,36 +286,36 @@ public String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id) 
     
     // ========== CONSULTAS E RELATÓRIOS ==========
     
-    public DashboardCustosDTO getDashboardCustos() {
-        DashboardCustosDTO dashboard = new DashboardCustosDTO();
-        dashboard.setMensagem("Dashboard carregado com sucesso");
-        
-        LocalDate hoje = LocalDate.now();
-        int ano = hoje.getYear();
-        int mes = hoje.getMonthValue();
-        
-       System.out.println("Dashboard para {}-{}"+ ano + mes);
-        
-    try {  
+public DashboardCustosDTO getDashboardCustos() {
+    DashboardCustosDTO dashboard = new DashboardCustosDTO();
+    dashboard.setMensagem("Dashboard carregado com sucesso");
     
-        Double totalAtual = custoRepository.calcularTotalPorPeriodo(ano, mes);
-        Double totalAnterior = custoRepository.calcularTotalPorPeriodo(ano, mes - 1);
+    LocalDate hoje = LocalDate.now();
+    int ano = hoje.getYear();
+    int mes = hoje.getMonthValue();
+    
+   System.out.println("Dashboard para {}-{}"+ ano + mes);
+    
+try {  
+
+    Double totalAtual = custoRepository.calcularTotalPorPeriodo(ano, mes);
+    Double totalAnterior = custoRepository.calcularTotalPorPeriodo(ano, mes - 1);
+    
+    dashboard.setTotalMesAtual(totalAtual != null ? totalAtual : 0.0);
+    dashboard.setTotalMesAnterior(totalAnterior != null ? totalAnterior : 0.0);
+     
+    // Calcular variação só se tiver dados anteriores
+    if (dashboard.getTotalMesAnterior() != null && 
+        dashboard.getTotalMesAnterior() > 0 && 
+        dashboard.getTotalMesAtual() != null) {
         
-        dashboard.setTotalMesAtual(totalAtual != null ? totalAtual : 0.0);
-        dashboard.setTotalMesAnterior(totalAnterior != null ? totalAnterior : 0.0);
-        
-        // Calcular variação só se tiver dados anteriores
-        if (dashboard.getTotalMesAnterior() != null && 
-            dashboard.getTotalMesAnterior() > 0 && 
-            dashboard.getTotalMesAtual() != null) {
+        Double variacao = ((dashboard.getTotalMesAtual() - dashboard.getTotalMesAnterior()) / 
+                         dashboard.getTotalMesAnterior()) * 100;
+        dashboard.setVariacaoPercentual(variacao);
+    } else {
+        dashboard.setVariacaoPercentual(0.0);
+    } 
             
-            Double variacao = ((dashboard.getTotalMesAtual() - dashboard.getTotalMesAnterior()) / 
-                             dashboard.getTotalMesAnterior()) * 100;
-            dashboard.setVariacaoPercentual(variacao);
-        } else {
-            dashboard.setVariacaoPercentual(0.0);
-        } 
-                
         //custo por tipo
         Map<String, Double> custosPorTipo = new HashMap<>();
         List<Object[]> tipoResultados = custoRepository.calcularTotalPorTipoAgrupado(ano, mes);
@@ -324,7 +340,7 @@ public String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id) 
    
         for (VeiculoCustoDTO obj : resultados) {
          	  
-            if (obj != null ) {
+            if (obj != null ) { 
                 String matricula = obj.getMatricula() != null ? obj.getMatricula().toString() : "N/A";
                 String modelo =   obj.getModelo() != null ? obj.getModelo().toString() : "Desconhecido";
                 Double total =    obj.getTotalCusto() != null ?  obj.getTotalCusto() : 0.0;
@@ -352,10 +368,10 @@ public String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id) 
         
         return dashboard;
     } 
-    
-  
-      
-    public List<Custo> buscarCustosPorVeiculoPeriodo(Long veiculoId, LocalDate inicio, LocalDate fim) {
+public Double valorTotalCustos() {
+	return custoRepository.valorTotalCustos(); 
+}
+public List<Custo> buscarCustosPorVeiculoPeriodo(Long veiculoId, LocalDate inicio, LocalDate fim) {
         if (inicio == null) inicio = LocalDate.now().minusMonths(1);
         if (fim == null) fim = LocalDate.now();
         
@@ -406,7 +422,7 @@ public void migrarAbastecimentosExistentes() {
     //verifica por periodo apenas
   public List<CustoDTO> buscarPorPeriodo(LocalDate inicio, LocalDate fim){
     	  return custoRepository.buscarPorPeriodoDTO(inicio, fim); 
-     }
+     } 
       //findAll
     public List<CustoListDTO> listar() {
       return custoRepository.findAllAsDTO();  
@@ -468,14 +484,14 @@ public void migrarAbastecimentosExistentes() {
          
         return relatorio;
     }
-     public Long numeroCustos () {
+     public Optional<Long> numeroCustos () {
 	    	return custoRepository.countAll();
 	    } 
 	       
-       public Integer numeroCustoPorStatus(StatusCusto status) {
-    	   return custoRepository.countByStatus(status); 
-       } 
-       public Integer numeroCustoPorTipo(TipoCusto tipo) {
+       public  Optional<Integer> numeroCustoPorStatus(StatusCusto status) {
+    	   return custoRepository.countByStatus(status);  
+       }  
+       public Optional<Integer> numeroCustoPorTipo(TipoCusto tipo) {
     	   return custoRepository.countByTipo(tipo); 
        }
        

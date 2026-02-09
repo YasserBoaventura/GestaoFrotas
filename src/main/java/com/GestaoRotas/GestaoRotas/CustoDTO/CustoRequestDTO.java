@@ -20,9 +20,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor 
 public class CustoRequestDTO { 
-	    @NotNull
+
 	    private Long veiculoId;
-	    @Column(nullable = false)
+	
 	    private LocalDate data;
 	    
 	    @NotBlank

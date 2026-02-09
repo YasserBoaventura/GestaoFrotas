@@ -26,7 +26,7 @@ import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 @Service
 public interface CustoServiceImpl {
 
-	 
+	  
 	Custo registrarCustoManual(CustoRequestDTO request);  
 	
 	 String atualizarCusto(Long id, CustoUpdateDTO updateDTO) ; 
@@ -35,7 +35,7 @@ public interface CustoServiceImpl {
 	
 	 List<CustoListDTO> listar(); 
 	List<CustoDTO> buscarPorPeriodo(LocalDate inicio, LocalDate fim);
-		  Custo criarCustoParaAbastecimento(abastecimentos abastecimento);
+  Custo criarCustoParaAbastecimento(abastecimentos abastecimento);
     Custo criarCustoParaManutencao(Manutencao manutencao); 
    Custo criarCustoParaViagem(CustoViagemDTO custoViagemDTO);;
  String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id);  
