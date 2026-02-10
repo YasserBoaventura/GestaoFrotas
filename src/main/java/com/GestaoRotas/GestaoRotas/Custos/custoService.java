@@ -39,9 +39,9 @@ import java.time.format.TextStyle;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@Service 
 @RequiredArgsConstructor
-public class custoService  implements CustoServiceImpl {
+public class  custoService  implements CustoServiceImpl {
  
 	  
     private final CustoRepository custoRepository;
@@ -348,7 +348,7 @@ try {
                 veiculosMaisCaros.add(new VeiculoCustoDTO(matricula, modelo, total));
             }
         }
-        } 
+        }  
             dashboard.setVeiculosMaisCaros(veiculosMaisCaros);
             
             // 4. Últimos custos
@@ -360,7 +360,9 @@ try {
             } else {
                 dashboard.setUltimosCustos(new ArrayList<>());
             }
-             
+            //buscando o numero total de custos
+          Integer  totalCustos = custoRepository.countAll(); 
+             dashboard.setTotalCustos(totalCustos); 
         } catch (Exception e) {
         	System.err.println("Erro ao gerar dashboard: {}"+ e.getMessage());      
             dashboard.setMensagem("Erro ao carregar dashboard: " + e.getMessage());
@@ -483,8 +485,8 @@ public void migrarAbastecimentosExistentes() {
             .collect(Collectors.toList()));
          
         return relatorio;
-    }
-     public Optional<Long> numeroCustos () {
+    } 
+     public Integer numeroCustos () {
 	    	return custoRepository.countAll();
 	    } 
 	       

@@ -87,7 +87,7 @@ public ResponseEntity<CustoDTO> criar(@RequestBody CustoRequestDTO request) {
 			  return ResponseEntity.badRequest().build(); 
 	   }
    } 
-   //Dashboard  
+   //Dashboard   
 @GetMapping("/dashboard")  
     public ResponseEntity<DashboardCustosDTO> getDashboard() {
         DashboardCustosDTO dashboard = custoService.getDashboardCustos();
@@ -113,10 +113,10 @@ public ResponseEntity<?> relatorio(@RequestBody RelatorioFilterDTO filtro) {
             return ResponseEntity.badRequest().body(errorResponse);
         }
     } 
-@GetMapping("/numeroCustos") 
- public ResponseEntity<Optional<Long>> numeroCustos(){
+@GetMapping("/numeroCustos")  
+ public ResponseEntity<Integer> numeroCustos(){
 	 return ResponseEntity.ok(custoService.numeroCustos()); 
- } 
+ }  
  @GetMapping("/valorTotal") 
  public ResponseEntity<Double>valorTotalCustos(){
  	return ResponseEntity.ok(custoService.valorTotalCustos());
@@ -129,7 +129,7 @@ public ResponseEntity<?> relatorio(@RequestBody RelatorioFilterDTO filtro) {
  public ResponseEntity<Optional<Integer>> numeroCustoPorTipo(@PathVariable TipoCusto tipo) {
    return ResponseEntity.ok(custoService.numeroCustoPorTipo(tipo)); 
  }       
- @GetMapping("/findAll")  
+ @GetMapping("/findAll")   
  public ResponseEntity<?> findAll(){ 
 	 try { 
  return ResponseEntity.status(HttpStatus.ACCEPTED).body(custoService.listar());  

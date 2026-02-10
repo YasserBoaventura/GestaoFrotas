@@ -50,7 +50,7 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
       
     //conta todos 
     @Query("SELECT COUNT(c) FROM Custo c") 
-    Optional<Long> countAll();
+    Integer countAll();
     
     
    Optional<Integer> countByStatus(StatusCusto status); 

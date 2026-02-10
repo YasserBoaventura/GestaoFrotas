@@ -24,7 +24,7 @@ import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 
 @Primary
 @Service
-public interface CustoServiceImpl {
+public  interface CustoServiceImpl {  
 
 	  
 	Custo registrarCustoManual(CustoRequestDTO request);  
