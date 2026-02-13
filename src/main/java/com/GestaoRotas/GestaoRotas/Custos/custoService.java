@@ -40,8 +40,8 @@ import java.time.format.TextStyle;
 import lombok.RequiredArgsConstructor;
 
 @Service 
-@RequiredArgsConstructor
-public class  custoService  implements CustoServiceImpl {
+@RequiredArgsConstructor 
+public non-sealed class custoService  implements CustoServiceImpl {
  
 	   
     private final CustoRepository custoRepository;
@@ -138,12 +138,12 @@ public class  custoService  implements CustoServiceImpl {
         atualizarTotaisVeiculo(abastecimento.getVeiculo().getId());
         
         return saved; 
-    }  
-    
+    }   
+    @Transactional
     public Custo actualizarCustoParaAbastecimento(abastecimentos abastecimento) {
-        // verificar se o abastecimento existe
+        // verificar se o abastecimento existe 
     	abastecimentos abastecimentoExistente = abastecimentoRepository.findById(abastecimento.getId()).orElseThrow(() -> new RuntimeException("abastecimento nao encontrado")); 
-        Custo custo = custoRepository.findByAbastecimentoId(abastecimento.getId()).orElseThrow(() -> new RuntimeException("Custo nao encontrado")); 
+        Custo custo = custoRepository.findByAbastecimentoId(abastecimento.getId()).orElseThrow(() -> new RuntimeException("Custo nao encontrado!")); 
         custo.setData(abastecimento.getDataAbastecimento());
         custo.setDescricao("Abastecimento - " + abastecimento.getTipoCombustivel());
         custo.setValor(abastecimento.getValorTotal());
@@ -153,7 +153,7 @@ public class  custoService  implements CustoServiceImpl {
         custo.setViagem(abastecimento.getViagem()); 
         custo.setAbastecimento(abastecimento);
         custo.setNumeroDocumento("ABS-" + abastecimento.getId());
-          
+           
         Custo saved = custoRepository.save(custo);
         atualizarTotaisVeiculo(abastecimento.getVeiculo().getId());
         
@@ -386,7 +386,7 @@ public List<Custo> buscarCustosPorVeiculoPeriodo(Long veiculoId, LocalDate inici
         Map<String, Double> resultado = new LinkedHashMap<>();
         LocalDate hoje = LocalDate.now();
            
-        for(int i = 11; i >= 0; i--) {
+        for(int i = 11; i >= 0; i--) {  
             LocalDate data = hoje.minusMonths(i);
             String mesAno = data.getMonth().getDisplayName(TextStyle.SHORT, new Locale("pt")) + 
                           "/" + data.getYear();

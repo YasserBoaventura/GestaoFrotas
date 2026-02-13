@@ -107,11 +107,11 @@ public ResponseEntity<List<CustoDTO>> relatorioPorPeriodo(
        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
    return ResponseEntity.ok(custoService.buscarPorPeriodo(inicio, fim)); 
-}           
- @PostMapping("/relatorio")      
+}            
+ @PostMapping("/relatorio")       
  @PreAuthorize("hasAuthority('ADMIN')")     
 public ResponseEntity<?> relatorio(@RequestBody RelatorioFilterDTO filtro) {
-    try {           
+    try {            
        RelatorioCustosDetalhadoDTO relatorio = custoService.gerarRelatorioDetalhado(filtro);
         return ResponseEntity.ok(relatorio); 
        } catch (Exception e) {  

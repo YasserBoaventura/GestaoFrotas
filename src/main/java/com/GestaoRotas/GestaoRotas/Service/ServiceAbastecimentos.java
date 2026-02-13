@@ -105,10 +105,10 @@ public String update(AbastecimentoDTO abstecimentos, long id) {
     abastecimento.setStatusAbastecimento(abstecimentos.getStatusAbastecimento());
 
     // Se houver viagemId, busca; se não, mantém null
-    if (abstecimentos.getViagemId() ==0) { 
+    if (abstecimentos.getViagemId() != null) { 
         Viagem viagem = this.repositorioViagem.findById(abstecimentos.getViagemId())
             .orElseThrow(() -> new RuntimeException("Viagem não encontrada com ID: " + abstecimentos.getViagemId()));
-        abastecimento.setViagem(viagem);
+        abastecimento.setViagem(viagem); 
     } else {   
         abastecimento.setViagem(null);   
     }

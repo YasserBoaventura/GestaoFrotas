@@ -21,10 +21,10 @@ import com.GestaoRotas.GestaoRotas.Entity.Viagem;
 import com.GestaoRotas.GestaoRotas.Entity.abastecimentos;
 import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 
-
+ 
 @Primary
 @Service
-public  interface  CustoServiceImpl {  
+public sealed interface  CustoServiceImpl permits custoService  {  
 
 	  
 	Custo registrarCustoManual(CustoRequestDTO request);  
@@ -34,12 +34,18 @@ public  interface  CustoServiceImpl {
 	   String excluirCusto(Long id); 
 	
 	 List<CustoListDTO> listar(); 
-	List<CustoDTO> buscarPorPeriodo(LocalDate inicio, LocalDate fim);
-  Custo criarCustoParaAbastecimento(abastecimentos abastecimento);
-    Custo criarCustoParaManutencao(Manutencao manutencao); 
-   Custo criarCustoParaViagem(CustoViagemDTO custoViagemDTO);;
- String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id);  
-   void atualizarTotaisVeiculo(Long veiculoId); 
+	
+	 List<CustoDTO> buscarPorPeriodo(LocalDate inicio, LocalDate fim);
+  
+	Custo criarCustoParaAbastecimento(abastecimentos abastecimento);
+    
+  Custo criarCustoParaManutencao(Manutencao manutencao); 
+   
+    Custo criarCustoParaViagem(CustoViagemDTO custoViagemDTO);;
+ 
+   String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id);  
+  
+ void atualizarTotaisVeiculo(Long veiculoId); 
   
     DashboardCustosDTO getDashboardCustos(); 
    

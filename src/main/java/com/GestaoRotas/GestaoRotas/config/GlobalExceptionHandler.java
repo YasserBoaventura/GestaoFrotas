@@ -147,12 +147,6 @@ public class GlobalExceptionHandler {
       response.put("erro",ex.getMessage()); 
     	return ResponseEntity.badRequest().body(response);   
     }
-    @ExceptionHandler(ClassNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleClassNotFoundException(ClassNotFoundException ex){
-    Map<String,String> response= new HashMap<>();
-    response.put("erro", ex.getMessage()); 
-    	return ResponseEntity.badRequest().body(response); 
-    }  
     @ExceptionHandler(FileNotFoundException.class)
     public ResponseEntity<Map<String,String>> handleFileNotFoundException(FileNotFoundException ex){
     	Map<String,String> response = new HashMap<>(); 
