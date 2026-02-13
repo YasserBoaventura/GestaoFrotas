@@ -43,16 +43,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class  custoService  implements CustoServiceImpl {
  
-	  
+	   
     private final CustoRepository custoRepository;
     private final RepositoryVeiculo veiculoRepository;
     private final RepositoryAbastecimentos abastecimentoRepository;
     private final RepositoryManutencao repositoryManutencao;
     private final RepositoryViagem repositoryViagem; 
-  /** 
-     * Registro manual de qualquer custo
-     */
-    public Custo registrarCustoManual(CustoRequestDTO request) {
+  
+    
+    //Registro manual de qualquer custo 
+ public Custo registrarCustoManual(CustoRequestDTO request) {
         // Buscar veículo (obrigatório)
         Veiculo veiculo = veiculoRepository.findById(request.getVeiculoId())
             .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
@@ -122,6 +122,7 @@ public class  custoService  implements CustoServiceImpl {
         if (custoRepository.existsByAbastecimentoId(abastecimento.getId())) {
             throw new RuntimeException("Custo já existe para este abastecimento");
         }  
+        
          Custo custo = new Custo();
         custo.setData(abastecimento.getDataAbastecimento());
         custo.setDescricao("Abastecimento - " + abastecimento.getTipoCombustivel());
@@ -210,7 +211,7 @@ public class  custoService  implements CustoServiceImpl {
 public Custo criarCustoParaViagem(CustoViagemDTO custoViagemDTO) {
 	try {
     Custo custo = new Custo();
-    custo.setData(LocalDate.now());
+    custo.setData(LocalDate.now()); 
     custo.setDescricao(custoViagemDTO.getDescricao());
     custo.setValor(custoViagemDTO.getValor());  
     custo.setTipo(custoViagemDTO.getTipo());    
@@ -255,8 +256,8 @@ public String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id) 
  	     return "custo pra viagem actualizado com sucesso"; 
  	}catch(Exception e) {
  	System.err.println("erro actualizar custo para viagem : "+ e.getCause().getMessage().toString()); 
- 		 String err = "erro ao actualizar custo pra viagem "+e.getMessage().toString();
-	 return  err;  }
+ 		 String err =(String) e.getCause().getMessage().toString();
+ 	 return  err;  } 
  }  // ========== ATUALIZAÇÃO DE TOTAIS ==========
     
     @Transactional
@@ -315,24 +316,24 @@ try {
     } else {
         dashboard.setVariacaoPercentual(0.0);
     } 
-            
-        //custo por tipo
-        Map<String, Double> custosPorTipo = new HashMap<>();
-        List<Object[]> tipoResultados = custoRepository.calcularTotalPorTipoAgrupado(ano, mes);
         
-        if (tipoResultados != null && !tipoResultados.isEmpty()) {
-            for (Object[] obj : tipoResultados) {
-                if (obj != null && obj.length >= 2) {
-                    String tipo = obj[0] != null ? obj[0].toString() : "OUTROS";
-                    Double valor = obj[1] != null ? ((Number) obj[1]).doubleValue() : 0.0;
-                    custosPorTipo.put(tipo, valor);
-                }
-            } 
-        
-        }
-        dashboard.setCustosPorTipo(custosPorTipo);
-        
-        // veiculos
+    //custo por tipo
+Map<String, Double> custosPorTipo = new HashMap<>();
+List<Object[]> tipoResultados = custoRepository.calcularTotalPorTipoAgrupado(ano, mes);
+
+if (tipoResultados != null && !tipoResultados.isEmpty()) {
+    for (Object[] obj : tipoResultados) {
+        if (obj != null && obj.length >= 2) {
+            String tipo = obj[0] != null ? obj[0].toString() : "OUTROS";
+        Double valor = obj[1] != null ? ((Number) obj[1]).doubleValue() : 0.0;
+        custosPorTipo.put(tipo, valor);
+    }
+} 
+
+}
+dashboard.setCustosPorTipo(custosPorTipo);
+
+// veiculos
         List<VeiculoCustoDTO> veiculosMaisCaros = new ArrayList<>();
         List<VeiculoCustoDTO> resultados = custoRepository.findTop5VeiculosMaisCaros(ano, mes);
            
@@ -342,32 +343,32 @@ try {
          	  
             if (obj != null ) { 
                 String matricula = obj.getMatricula() != null ? obj.getMatricula().toString() : "N/A";
-                String modelo =   obj.getModelo() != null ? obj.getModelo().toString() : "Desconhecido";
-                Double total =    obj.getTotalCusto() != null ?  obj.getTotalCusto() : 0.0;
-                
-                veiculosMaisCaros.add(new VeiculoCustoDTO(matricula, modelo, total));
-            }
-        }
-        }  
-            dashboard.setVeiculosMaisCaros(veiculosMaisCaros);
-            
-            // 4. Últimos custos
-            List<Custo> ultimosCustos = custoRepository.findTop10ByOrderByDataDesc();
-            if (ultimosCustos != null && !ultimosCustos.isEmpty()) {
-                dashboard.setUltimosCustos(ultimosCustos.stream()
-                    .map(CustoDTO::fromEntity)
-                    .collect(Collectors.toList()));
-            } else {
-                dashboard.setUltimosCustos(new ArrayList<>());
-            }
-            //buscando o numero total de custos
-          Integer  totalCustos = custoRepository.countAll(); 
-             dashboard.setTotalCustos(totalCustos); 
-        } catch (Exception e) {
-        	System.err.println("Erro ao gerar dashboard: {}"+ e.getMessage());      
-            dashboard.setMensagem("Erro ao carregar dashboard: " + e.getMessage());
-        } 
+String modelo =   obj.getModelo() != null ? obj.getModelo().toString() : "Desconhecido";
+        Double total =    obj.getTotalCusto() != null ?  obj.getTotalCusto() : 0.0;
         
+        veiculosMaisCaros.add(new VeiculoCustoDTO(matricula, modelo, total));
+    }
+}
+}  
+    dashboard.setVeiculosMaisCaros(veiculosMaisCaros);
+    
+    // 4. Últimos custos
+List<Custo> ultimosCustos = custoRepository.findTop10ByOrderByDataDesc();
+if (ultimosCustos != null && !ultimosCustos.isEmpty()) {
+    dashboard.setUltimosCustos(ultimosCustos.stream()
+        .map(CustoDTO::fromEntity)
+        .collect(Collectors.toList()));
+} else {
+    dashboard.setUltimosCustos(new ArrayList<>());
+}
+//buscando o numero total de custos
+  Integer  totalCustos = custoRepository.countAll(); 
+     dashboard.setTotalCustos(totalCustos); 
+} catch (Exception e) {
+	System.err.println("Erro ao gerar dashboard: {}"+ e.getMessage());      
+dashboard.setMensagem("Erro ao carregar dashboard: " + e.getMessage());
+} 
+
         return dashboard;
     } 
 public Double valorTotalCustos() {
@@ -445,9 +446,12 @@ public void migrarAbastecimentosExistentes() {
             //quantidade custos por periodo
             Integer quantidadeCusto = custoRepository.numeroTotalCustoPorPeriodo(filtro.getDataInicio(), filtro.getDataFim()); 
             relatorio.setQuantidadeCustos(quantidadeCusto); 
-           System.out.println("quantidade custos: "+quantidadeCusto);
-             
+
            
+           // media por periodo
+           Double mediaPorPeriodo = custoRepository.mediaCustosPeriodo(filtro.getDataInicio(), filtro.getDataFim());  
+           relatorio.setMediaCustoPeriodo(mediaPorPeriodo); 
+ 
         // Por veículo 
         List<Object[]> porVeiculo = custoRepository.calcularTotalPorVeiculoPeriodo(
             filtro.getDataInicio(), filtro.getDataFim());
@@ -488,15 +492,18 @@ public void migrarAbastecimentosExistentes() {
     } 
      public Integer numeroCustos () {
 	    	return custoRepository.countAll();
-	    } 
+	    }  
 	       
-       public  Optional<Integer> numeroCustoPorStatus(StatusCusto status) {
+       public Optional<Integer> numeroCustoPorStatus(StatusCusto status) {
     	   return custoRepository.countByStatus(status);  
        }  
        public Optional<Integer> numeroCustoPorTipo(TipoCusto tipo) {
     	   return custoRepository.countByTipo(tipo); 
        }
        
+       public boolean verificarAbastecimentoId(Long id) {
+    	   return custoRepository.existsByAbastecimentoId(id); 
+       }
  // Método auxiliar para converter
     private List<?> converterParaListaTotalPorTipo(List<Object[]> dados) {
         List<Map<String, Object>> resultado = new ArrayList<>();
@@ -528,8 +535,7 @@ public void migrarAbastecimentosExistentes() {
         System.out.println("Migração concluída: " + contador + " manutenções migradas");
     }
     
-    // ========== INTEGRAÇÃO COM SERVICES EXISTENTES ==========
-      
+   
     @Transactional
     public void processarNovoAbastecimento(abastecimentos abastecimento) {
         criarCustoParaAbastecimento(abastecimento);
@@ -603,7 +609,7 @@ public void migrarAbastecimentosExistentes() {
         
         return "custo actualizado com sucesso!";
     }
-     
+     @Transactional
     public String excluirCusto(Long id) {
         Custo custo = custoRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Custo não encontrado"));

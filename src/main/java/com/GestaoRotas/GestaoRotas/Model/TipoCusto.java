@@ -9,7 +9,9 @@ public enum TipoCusto {
     SEGURO,
     LICENCIAMENTO,
     MULTA,
-    PNEU,
+    PNEU, 
+    IPVA,
+    PORTAGEM, 
     SALARIO_MOTORISTA,
     OUTROS
-}
+} 

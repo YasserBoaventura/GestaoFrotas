@@ -71,15 +71,9 @@ public class SecurityConfig {
                             "/api/auto-cadastro",
                             "/api/auth/solicitar-recuperacao",
                             "/api/auth/redefinir-senha-token",
-                            "/api/auth/redefinir-senha-verificacao",
-                            "/api/manutencoes/relatorio-por-periodo",
-                            "/custo/dashboard",
-                            "/custo/relatorio",
-                            "/custo/findAll", 
-                            "/custo/numeroCustos",
-                            "/custo/numeroPorStatus"
+                            "/api/auth/redefinir-senha-verificacao"                       
                           ).permitAll() 
-                    .anyRequest().permitAll()
+                    .anyRequest().authenticated()
             )  
             .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

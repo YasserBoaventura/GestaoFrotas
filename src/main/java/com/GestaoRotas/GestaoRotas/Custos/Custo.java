@@ -81,6 +81,7 @@ public class Custo implements Serializable {
     
     private String observacoes;
     private String numeroDocumento;
+    @Column(updatable = false)
     private LocalDateTime dataActualizacao; 
     // Método para identificar a origem
     public String getOrigem() {

@@ -31,7 +31,7 @@ public class RelatorioCustosDetalhadoDTO {
     private List<?> totalPorTipo;             // Tipo -> Total
     private Map<String, Double> totalPorCentroCusto;      // CentroCusto -> Total
     private Map<String, Double> totalPorMes;              // Mês/Ano -> Total
-    
+    private Double mediaCustoPeriodo; 
     // Estatísticas
     private Double mediaDiaria; 
     private Double mediaPorVeiculo;

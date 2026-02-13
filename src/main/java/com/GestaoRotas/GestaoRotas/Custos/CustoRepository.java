@@ -22,10 +22,10 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
     List<Custo> findByVeiculoIdOrderByDataDesc(Long veiculoId);
     List<Custo> findByVeiculoIdAndDataBetweenOrderByDataDesc(Long veiculoId, LocalDate inicio, LocalDate fim);
     Optional<Custo> findByAbastecimentoId(Long abastecimentoId); 
-    Optional<Custo> findByManutencaoId(Long manutencaoId);
+    Optional<Custo> findByManutencaoId(Long manutencaoId); 
     List<Custo> findByViagemId(Long viagemId);
     List<Custo> findByVeiculoId(Long veiculoId); 
-    List<Custo> findTop10ByOrderByDataDesc();
+    List<Custo> findTop10ByOrderByDataDesc();	  
      
     // Verificação de existência
     boolean existsByAbastecimentoId(Long abastecimentoId);
@@ -41,14 +41,14 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
  
     @Query("SELECT SUM(c.valor) FROM Custo c WHERE c.data BETWEEN :inicio AND :fim AND c.status = 'PAGO'")
     Double calcularTotalPorPeriodoCompleto(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
-                      
+                        
     //metodo calcular o numero de custos  apenas por periodo 
     @Query("SELECT COUNT(c) FROM Custo c WHERE c.data BETWEEN :inicio AND :fim AND c.status = 'PAGO'")
     Integer numeroTotalCustoPorPeriodo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
     @Query("SELECT SUM(c.valor) FROM Custo c WHERE c.tipo = :tipo AND c.status = 'PAGO'")
     Double calcularTotalPorTipo(@Param("tipo") TipoCusto tipo);
       
-    //conta todos 
+    //conta todos  
     @Query("SELECT COUNT(c) FROM Custo c") 
     Integer countAll();
     
@@ -60,7 +60,10 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
    @Query("SELECT SUM(c.valor) FROM Custo c") 
    Double valorTotalCustos();
    
-    // Agrupamentos 
+   // custo medio pra a utilizacao no dashbord
+   @Query("SELECT AVG(c.valor) FROM Custo c WHERE c.data BETWEEN :inicio AND :fim AND c.status = 'PAGO'")
+   Double mediaCustosPeriodo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
+    // Agrupamentos     
     @Query("SELECT c.tipo, SUM(c.valor) FROM Custo c " +
            "WHERE YEAR(c.data) = :ano AND MONTH(c.data) = :mes AND c.status = 'PAGO' " +
            "GROUP BY c.tipo")

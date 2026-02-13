@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +45,8 @@ public class CustoController {
 	    private final custoService custoService;
 	      
 	    // Registro manual  
-@PostMapping("/criarCusto")     
+@PostMapping("/criarCusto")   
+@PreAuthorize("hasAuthority('ADMIN')") 
 public ResponseEntity<CustoDTO> criar(@RequestBody CustoRequestDTO request) {
     try { 
         Custo custo = custoService.registrarCustoManual(request);
@@ -52,8 +54,9 @@ public ResponseEntity<CustoDTO> criar(@RequestBody CustoRequestDTO request) {
     } catch (Exception e) { 
         return ResponseEntity.badRequest().build(); 
     }   
-}        
-  @PutMapping("/update/{id}")           
+}         
+ @PutMapping("/update/{id}")  
+ @PreAuthorize("hasAuthority('ADMIN')")
  public ResponseEntity<String> atualizarCusto(@PathVariable Long id, @RequestBody @Valid CustoUpdateDTO updateDTO){
 	 try {
 		  return ResponseEntity.ok(custoService.atualizarCusto(id, updateDTO)); 
@@ -62,7 +65,8 @@ public ResponseEntity<CustoDTO> criar(@RequestBody CustoRequestDTO request) {
 		 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);  
 	  } 
  }
- @DeleteMapping("/delete/{id}")  
+ @DeleteMapping("/delete/{id}") 
+ @PreAuthorize("hasAuthority('ADMIN')")     
   public ResponseEntity<String> delete(@PathVariable Long id){ 
 	  try {
 		  return ResponseEntity.ok(custoService.excluirCusto(id)); 
@@ -72,6 +76,7 @@ public ResponseEntity<CustoDTO> criar(@RequestBody CustoRequestDTO request) {
 	  }
   }                   
    @PostMapping("/criarCustoViagem")
+   @PreAuthorize("hasAuthority('ADMIN')")     
     public ResponseEntity<Custo> criarCustoParaViagem(@RequestBody @Valid CustoViagemDTO custoViagemDTO){
     	try { 
     return ResponseEntity.ok(custoService.criarCustoParaViagem(custoViagemDTO)); 
@@ -80,6 +85,7 @@ public ResponseEntity<CustoDTO> criar(@RequestBody CustoRequestDTO request) {
     	} 
     }  
  @PutMapping("/actualizarCustoParaViagem/{id}")
+ @PreAuthorize("hasAuthority('ADMIN')")     
    public ResponseEntity<String>actualizaCustoParaViagem(@RequestBody @Valid CustoViagemDTO custoViagemDTO,@PathVariable Long id){
 	   try {  
 		   return ResponseEntity.ok(custoService.actualizarCustoParaViagem(custoViagemDTO, id)); 
@@ -87,49 +93,56 @@ public ResponseEntity<CustoDTO> criar(@RequestBody CustoRequestDTO request) {
 			  return ResponseEntity.badRequest().build(); 
 	   }
    } 
-   //Dashboard   
+   //Dashboard    
 @GetMapping("/dashboard")  
+@PreAuthorize("hasAuthority('ADMIN')")     
     public ResponseEntity<DashboardCustosDTO> getDashboard() {
         DashboardCustosDTO dashboard = custoService.getDashboardCustos();
         return ResponseEntity.ok(dashboard);
     }  
 // listar por data inicio e fim apenas
-@GetMapping("/relatorio-por-periodo")       
+@GetMapping("/relatorio-por-periodo")    
+@PreAuthorize("hasAuthority('ADMIN')")     
 public ResponseEntity<List<CustoDTO>> relatorioPorPeriodo(
        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
-   System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
    return ResponseEntity.ok(custoService.buscarPorPeriodo(inicio, fim)); 
-}  
- @PostMapping("/relatorio")           
+}           
+ @PostMapping("/relatorio")      
+ @PreAuthorize("hasAuthority('ADMIN')")     
 public ResponseEntity<?> relatorio(@RequestBody RelatorioFilterDTO filtro) {
-    try {    
+    try {           
        RelatorioCustosDetalhadoDTO relatorio = custoService.gerarRelatorioDetalhado(filtro);
         return ResponseEntity.ok(relatorio); 
-       } catch (Exception e) { 
+       } catch (Exception e) {  
        Map<String, String> errorResponse = new HashMap<>();   
         errorResponse.put("erro", e.getMessage()); 
  errorResponse.put("causa", e.getCause() != null ? e.getCause().getMessage() : null);
             return ResponseEntity.badRequest().body(errorResponse);
-        }
-    } 
+        } 
+    }  
 @GetMapping("/numeroCustos")  
+@PreAuthorize("hasAuthority('ADMIN')")      
  public ResponseEntity<Integer> numeroCustos(){
 	 return ResponseEntity.ok(custoService.numeroCustos()); 
  }  
  @GetMapping("/valorTotal") 
+ @PreAuthorize("hasAuthority('ADMIN')")     
  public ResponseEntity<Double>valorTotalCustos(){
  	return ResponseEntity.ok(custoService.valorTotalCustos());
  } 
  @GetMapping("/numeroPorStatus/{status}")
+ @PreAuthorize("hasAuthority('ADMIN')")     
  public ResponseEntity<Optional<Integer>> numeroCustoPorStatus(@PathVariable StatusCusto status) {
    return ResponseEntity.ok(custoService.numeroCustoPorStatus(status)); 
  }     
  @GetMapping("/numeroPorTipo/{tipo}") 
+ @PreAuthorize("hasAuthority('ADMIN')")     
  public ResponseEntity<Optional<Integer>> numeroCustoPorTipo(@PathVariable TipoCusto tipo) {
    return ResponseEntity.ok(custoService.numeroCustoPorTipo(tipo)); 
  }       
  @GetMapping("/findAll")   
+ @PreAuthorize("hasAuthority('ADMIN')")     
  public ResponseEntity<?> findAll(){ 
 	 try { 
  return ResponseEntity.status(HttpStatus.ACCEPTED).body(custoService.listar());  
@@ -139,6 +152,7 @@ public ResponseEntity<?> relatorio(@RequestBody RelatorioFilterDTO filtro) {
  }
 	 }
  @GetMapping("/veiculosCustosAcimaMedia")
+ @PreAuthorize("hasAuthority('ADMIN')")     
   public ResponseEntity<List<Veiculo>> getVeiculosComCustoAcimaDaMedia(){
 	  try {
 		  return ResponseEntity.status(HttpStatus.OK).body(custoService.getVeiculosComCustoAcimaDaMedia()); 
@@ -148,6 +162,7 @@ public ResponseEntity<?> relatorio(@RequestBody RelatorioFilterDTO filtro) {
 	  }   
   } 
  @GetMapping("/custoMesalUltimos12Meses")
+ @PreAuthorize("hasAuthority('ADMIN')")     
  public ResponseEntity<Map<?, ?>> getCustoMensalUltimos12Meses(){
 	 try {
 		 return ResponseEntity.ok(custoService.getCustoMensalUltimos12Meses());
@@ -159,6 +174,7 @@ public ResponseEntity<?> relatorio(@RequestBody RelatorioFilterDTO filtro) {
  }
  // relatorio por data inicio e fim e veiculo
 @GetMapping("/veiculo/{veiculoId}") 
+@PreAuthorize("hasAuthority('ADMIN')")     
     public ResponseEntity<List<CustoDTO>> porVeiculo(
             @PathVariable Long veiculoId,
             @RequestParam(required = false) String inicio,

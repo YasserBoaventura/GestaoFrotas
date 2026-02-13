@@ -47,7 +47,7 @@ public class Veiculo {
 	    @Column(nullable = false, length = 100)
 	    private String modelo;
 	    
-	    @Column(unique = true, length = 20)
+	    @Column(unique = true, length = 20)   
 	    private String matricula;
 	    
 	    @Column(name = "ano_fabricacao")
@@ -176,7 +176,7 @@ public void calcularCustos() {
             .mapToDouble(Custo::getValor)
             .sum();
         
-        // Calcular por tipo 
+        // Calcular por tipo   
         this.custoCombustivel = this.custos.stream()
             .filter(c -> c.getStatus() == StatusCusto.PAGO && 
                        c.getTipo() == TipoCusto.COMBUSTIVEL)

@@ -20,7 +20,7 @@ public class DashboardCustosDTO {
     private Map<String, Double> custosPorTipo; 
     private List<VeiculoCustoDTO> veiculosMaisCaros;
     private List<CustoDTO> ultimosCustos;   
-    private Integer totalCustos;   
+    private Integer totalCustos;  
     private String mensagem; // Para debug   
 }  
 

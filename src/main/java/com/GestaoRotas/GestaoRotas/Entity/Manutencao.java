@@ -36,7 +36,7 @@ public class Manutencao {
 	    
 	    @Column(name = "data_manutencao") //
 	    private LocalDate dataManutencao;  
-	     
+	      
 	    @Column(name = "tipo_manutencao", length = 50) 
 	    @Enumerated(EnumType.STRING)
 	    private TipoManutencao tipoManutencao; // "PREVENTIVA", "CORRETIVA", "TROCA_OLEO", "REVISAO"
@@ -49,7 +49,7 @@ public class Manutencao {
 	    @Column(name = "kilometragem_veiculo")
 	    private Double kilometragemVeiculo;
 	 
-	    
+	     
 	    //  CAMPOS NOVOS NECESSÁRIOS
 	    @Column(name = "proxima_manutencao_km")
 	    private  Double proximaManutencaoKm; 

@@ -28,12 +28,11 @@ import java.util.Map;
 
 @RestController 
 @RequestMapping("/api/manutencoes") 
-@RequiredArgsConstructor 
+@RequiredArgsConstructor
+@CrossOrigin("*")
 public class ControllerManutencoes {
 
     private final ServiceManutencoes manutencaoService;
-    private final RepositoryManutencao repositoryManutencao;
-    
 
   @PostMapping("/save")
 public ResponseEntity<String> cadastrar(@RequestBody manuntecaoDTO manutencaoDTO) {
@@ -57,12 +56,7 @@ public ResponseEntity<String> cadastrar(@RequestBody manuntecaoDTO manutencaoDTO
 @GetMapping("/findByIdVeiculo/{veiculoId}")
 public ResponseEntity<List<Manutencao>> listarPorVeiculo(@PathVariable long veiculoId) {
 try {
-	List<Manutencao>  lista=this.manutencaoService.listarPorVeiculo(veiculoId);
-	if(lista.isEmpty()) {
-		 return new ResponseEntity<>(HttpStatus.NO_CONTENT);	    	
-		} else { 
-	 	return new ResponseEntity<>(lista, HttpStatus.OK);
-		}
+	return ResponseEntity.ok(manutencaoService.listarPorVeiculo(veiculoId)); 
 	     }catch(Exception e) {
 	    	return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 	   }
@@ -153,8 +147,9 @@ public ResponseEntity<Map<String, String>> cancelarManutencao(@RequestBody Strin
     @GetMapping("/por-veiculo") 
     public ResponseEntity<List<RelatorioManutencaoDTO>> relatorioPorVeiculo() {
         return ResponseEntity.ok(manutencaoService.gerarRelatorioPorVeiculo());
-    }                      
-    @GetMapping("/relatorio-por-periodo")      
+    }                       
+    @GetMapping("/relatorio-por-periodo") 
+    @PreAuthorize("hasAuthority('ADMIN')")  
    public ResponseEntity<List<RelatorioManutencaoDTO>> relatorioPorPeriodo(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
