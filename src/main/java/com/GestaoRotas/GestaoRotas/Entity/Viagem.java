@@ -45,13 +45,12 @@ public class Viagem {
 	    private Double kilometragemFinal;
 	    private String observacoes;
 	    
-	    private LocalDateTime data;
+	    private LocalDateTime data; 
 	    
 	    @Column(name = "custo_pedagios" ,nullable = true) 
 	    private Double custoPedagios;
 	      
-	    @Column(name = "valor", nullable = false) 
-	    private Double valor;
+	   
 	    
 	    // ManyToOne com Motorista 
 

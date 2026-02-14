@@ -39,8 +39,8 @@ import java.time.format.TextStyle;
 
 import lombok.RequiredArgsConstructor;
 
-@Service 
-@RequiredArgsConstructor 
+@Service  
+@RequiredArgsConstructor  
 public non-sealed class custoService  implements CustoServiceImpl {
  
 	   
@@ -609,14 +609,15 @@ public void migrarAbastecimentosExistentes() {
         
         return "custo actualizado com sucesso!";
     }
-     @Transactional
-    public String excluirCusto(Long id) {
+
+    public String excluirCusto(Long id) { 
         Custo custo = custoRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Custo não encontrado"));
         
         Long veiculoId = custo.getVeiculo() != null ? custo.getVeiculo().getId() : null;
         
-        custoRepository.delete(custo);
+        custoRepository.deleteById(id);
+        
          
         // Recalcular totais se tinha veículo 
         if (veiculoId != null) {

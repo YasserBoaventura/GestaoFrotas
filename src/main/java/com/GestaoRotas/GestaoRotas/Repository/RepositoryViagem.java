@@ -14,105 +14,109 @@ import com.GestaoRotas.GestaoRotas.Entity.Viagem;
 
 @Repository
 public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
- 
+
     // Lista viagens por id do motorista  
     List<Viagem> findByMotoristaId(Long motoristaId);
 
-    //busca por status e Veiculo
+    // Busca por status e veículo
     List<Viagem> findByVeiculoIdAndStatus(Long veiculoId, String status);
-    
+
     // Relatório por motorista
     @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioMotoristaDTO(" +
            "v.motorista.nome, " +
-            "v.motorista.telefone," +
-            "v.status ,"+  
-           "COUNT(v), " +   
+           "v.motorista.telefone, " +
+           "v.status, " +
+           "COUNT(v), " +
            "COALESCE(SUM(v.kilometragemFinal - v.kilometragemInicial), 0), " +
-           "COALESCE(SUM(a.quantidadeLitros), 0)) " +
+           "COALESCE(SUM(a.quantidadeLitros), 0), " +
+           "CASE WHEN SUM(a.quantidadeLitros) > 0 THEN SUM(v.kilometragemFinal - v.kilometragemInicial) / SUM(a.quantidadeLitros) ELSE 0 END" +
+           ") " +
            "FROM Viagem v " +
-           "LEFT JOIN v.abastecimentos a " + 
-           "WHERE v.status = 'CONCLUIDA' " +    
-           "GROUP BY v.motorista.id, v.motorista.nome")
+           "LEFT JOIN v.abastecimentos a " +
+           "WHERE v.status = 'CONCLUIDA' " +
+           "GROUP BY v.motorista.id, v.motorista.nome, v.motorista.telefone, v.status")
     List<RelatorioMotoristaDTO> relatorioPorMotorista();
-           
+
     // Relatório por veículo
     @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioPorVeiculoDTO(" +
            "v.veiculo.matricula, " +
-            "v.veiculo.modelo, "+ 
+           "v.veiculo.modelo, " +
            "COUNT(v), " +
            "COALESCE(SUM(v.kilometragemFinal - v.kilometragemInicial), 0), " +
-           "COALESCE(SUM(a.quantidadeLitros), 0)) " +
+           "COALESCE(SUM(a.quantidadeLitros), 0), " +
+           "CASE WHEN SUM(a.quantidadeLitros) > 0 THEN SUM(v.kilometragemFinal - v.kilometragemInicial) / SUM(a.quantidadeLitros) ELSE 0 END" +
+           ") " +
            "FROM Viagem v " +
-           "LEFT JOIN  v.abastecimentos a " + 
+           "LEFT JOIN v.abastecimentos a " +
            "WHERE v.status = 'CONCLUIDA' " +
-           "GROUP BY v.veiculo.id, v.veiculo.matricula") 
-    List<RelatorioPorVeiculoDTO> relatorioPorVeiculo(); 
-   
-    // Consultas adicionais úteis 
+           "GROUP BY v.veiculo.id, v.veiculo.matricula, v.veiculo.modelo")
+    List<RelatorioPorVeiculoDTO> relatorioPorVeiculo();
+
+    // Consultas adicionais
     List<Viagem> findByStatus(String status);
     List<Viagem> findByVeiculoId(Long veiculoId);
     List<Viagem> findByDataHoraPartidaBetween(LocalDateTime start, LocalDateTime end);
-       
 
-     
-    // 1. Relatório por motorista com filtro de data 
+    // Relatório por motorista com filtro de data
     @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioMotoristaDTO(" +
            "v.motorista.nome, " +
-            "v.motorista.telefone," +
-            "v.status," +
+           "v.motorista.telefone, " +
+           "v.status, " +
            "COUNT(v), " +
            "COALESCE(SUM(v.kilometragemFinal - v.kilometragemInicial), 0), " +
-           "COALESCE(SUM(a.quantidadeLitros), 0)) " +
+           "COALESCE(SUM(a.quantidadeLitros), 0), " +
+           "CASE WHEN SUM(a.quantidadeLitros) > 0 THEN SUM(v.kilometragemFinal - v.kilometragemInicial) / SUM(a.quantidadeLitros) ELSE 0 END" +
+           ") " +
            "FROM Viagem v " +
            "LEFT JOIN v.abastecimentos a " +
            "WHERE v.status = 'CONCLUIDA' " +
            "AND v.data BETWEEN :dataInicio AND :dataFim " +
-           "GROUP BY v.motorista.id, v.motorista.nome")
+           "GROUP BY v.motorista.id, v.motorista.nome, v.motorista.telefone, v.status")
     List<RelatorioMotoristaDTO> relatorioPorMotoristaPorPeriodo(
             @Param("dataInicio") LocalDateTime dataInicio,
-            @Param("dataFim") LocalDateTime dataFim); 
-       
-    // 2. Relatório por veículo com filtro de data 
+            @Param("dataFim") LocalDateTime dataFim);
+
+    // Relatório por veículo com filtro de data
     @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioPorVeiculoDTO(" +
            "v.veiculo.matricula, " +
-            "v.veiculo.modelo, " +
+           "v.veiculo.modelo, " +
            "COUNT(v), " +
            "COALESCE(SUM(v.kilometragemFinal - v.kilometragemInicial), 0), " +
-           "COALESCE(SUM(a.quantidadeLitros), 0)) " +
+           "COALESCE(SUM(a.quantidadeLitros), 0), " +
+           "CASE WHEN SUM(a.quantidadeLitros) > 0 THEN SUM(v.kilometragemFinal - v.kilometragemInicial) / SUM(a.quantidadeLitros) ELSE 0 END" +
+           ") " +
            "FROM Viagem v " +
            "LEFT JOIN v.abastecimentos a " +
            "WHERE v.status = 'CONCLUIDA' " +
            "AND v.data BETWEEN :dataInicio AND :dataFim " +
-           "GROUP BY v.veiculo.id, v.veiculo.matricula")
+           "GROUP BY v.veiculo.id, v.veiculo.matricula, v.veiculo.modelo")
     List<RelatorioPorVeiculoDTO> relatorioPorVeiculoPorPeriodo(
             @Param("dataInicio") LocalDateTime dataInicio,
             @Param("dataFim") LocalDateTime dataFim);
-    
-    // 3. Relatório diário de viagens (agrupado por dia)   (usando CAST)
+
+    // Relatório diário de viagens (agrupado por dia)
     @Query("""
-    	    SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioDiarioDTO(
-    	        FUNCTION('DATE', v.dataHoraPartida),
-    	        COUNT(v),
-    	        COALESCE(SUM(v.kilometragemFinal - v.kilometragemInicial), 0),
-    	        COALESCE(SUM(a.quantidadeLitros), 0)
-    	    )
-    	    FROM Viagem v
-    	    LEFT JOIN v.abastecimentos a 
-    	    WHERE v.status = 'CONCLUIDA'
-    	      AND v.dataHoraPartida BETWEEN :dataInicio AND :dataFim 
-    	    GROUP BY FUNCTION('DATE', v.data)
-    	    ORDER BY FUNCTION('DATE', v.data) DESC
-    	""")
-    	List<RelatorioDiarioDTO> relatorioDiarioPorPeriodo(
-    	        LocalDateTime dataInicio,
-    	        LocalDateTime dataFim);
+           SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioDiarioDTO(
+               FUNCTION('DATE', v.dataHoraPartida),
+               COUNT(v),
+               COALESCE(SUM(v.kilometragemFinal - v.kilometragemInicial), 0),
+               COALESCE(SUM(a.quantidadeLitros), 0)
+           )
+           FROM Viagem v
+           LEFT JOIN v.abastecimentos a
+           WHERE v.status = 'CONCLUIDA'
+             AND v.dataHoraPartida BETWEEN :dataInicio AND :dataFim
+           GROUP BY FUNCTION('DATE', v.dataHoraPartida)
+           ORDER BY FUNCTION('DATE', v.dataHoraPartida) DESC
+           """)
+    List<RelatorioDiarioDTO> relatorioDiarioPorPeriodo(
+            @Param("dataInicio") LocalDateTime dataInicio,
+            @Param("dataFim") LocalDateTime dataFim);
 
-
-    
-    // 4. Relatório mensal de viagens (agrupado por mês)  
+    // Relatório mensal de viagens
     @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioMensalDTO(" +
-           "YEAR(v.data), " +
-           "MONTH(v.data), " +
+           "YEAR(v.dataHoraPartida), " +
+           "MONTH(v.dataHoraPartida), " +
            "COUNT(v), " +
            "COALESCE(SUM(v.kilometragemFinal - v.kilometragemInicial), 0), " +
            "COALESCE(SUM(a.quantidadeLitros), 0)) " +
@@ -120,70 +124,47 @@ public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
            "LEFT JOIN v.abastecimentos a " +
            "WHERE v.status = 'CONCLUIDA' " +
            "AND v.dataHoraPartida BETWEEN :dataInicio AND :dataFim " +
-           "GROUP BY YEAR(v.data), MONTH(v.data) " +
-           "ORDER BY YEAR(v.data) DESC, MONTH(v.data) DESC")
+           "GROUP BY YEAR(v.dataHoraPartida), MONTH(v.dataHoraPartida) " +
+           "ORDER BY YEAR(v.dataHoraPartida) DESC, MONTH(v.dataHoraPartida) DESC")
     List<RelatorioMensalDTO> relatorioMensalPorPeriodo(
             @Param("dataInicio") LocalDateTime dataInicio,
             @Param("dataFim") LocalDateTime dataFim);
-    
-    // 5. Relatório geral (resumo) por período 
+
+    // Relatório geral (resumo) por período
     @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioGeralDTO(" +
            "COUNT(v), " +
            "COUNT(DISTINCT v.motorista.id), " +
            "COUNT(DISTINCT v.veiculo.id), " +
            "COALESCE(SUM(v.kilometragemFinal - v.kilometragemInicial), 0), " +
            "COALESCE(SUM(a.quantidadeLitros), 0), " +
-           "COALESCE(AVG(v.kilometragemFinal - v.kilometragemInicial), 0)) " +
-           "FROM Viagem v " +     
+           "CASE WHEN COUNT(v) > 0 THEN COALESCE(SUM(v.kilometragemFinal - v.kilometragemInicial), 0) / COUNT(v) ELSE 0 END" +
+           ") " +
+           "FROM Viagem v " +
            "LEFT JOIN v.abastecimentos a " +
            "WHERE v.status = 'CONCLUIDA' " +
-           "AND v.data BETWEEN :dataInicio AND :dataFim")
+           "AND v.dataHoraPartida BETWEEN :dataInicio AND :dataFim")
     RelatorioGeralDTO relatorioGeralPorPeriodo(
             @Param("dataInicio") LocalDateTime dataInicio,
             @Param("dataFim") LocalDateTime dataFim);
-    
-    // 6. Relatório por semana - CORRIGIDO (usando função do MySQL WEEK)
-    @Query(value = "SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioSemanalDTO(" +
-           "CONCAT('Semana ', WEEK(v.data_hora_partida, 1)), " +
-           "COUNT(v), " +     
-           "COALESCE(SUM(v.kilometragem_final - v.kilometragem_inicial), 0), " +
-           "COALESCE(SUM(a.quantidade_litros), 0)) " +
-           "FROM viagem v " +
-           "LEFT JOIN abastecimento a ON v.id = a.viagem_id " +
-           "WHERE v.status = 'CONCLUIDA' " +
-           "AND v.data BETWEEN :dataInicio AND :dataFim " +
-           "GROUP BY WEEK(v.data, 1) " +                 
-           "ORDER BY WEEK(v.data, 1) DESC", nativeQuery = true)
-    List<RelatorioSemanalDTO> relatorioSemanalPorPeriodo( 
-            @Param("dataInicio") LocalDateTime dataInicio,
-            @Param("dataFim") LocalDateTime dataFim);
-    
-    // 7. Viagens por período e status 
-    @Query("SELECT v FROM Viagem v WHERE v.data BETWEEN :dataInicio AND :dataFim AND v.status = :status")
-    List<Viagem> findByDataHoraPartidaBetweenAndStatus(
-            @Param("dataInicio") LocalDateTime dataInicio,
-            @Param("dataFim") LocalDateTime dataFim,
-            @Param("status") String status); 
-     
-    // 8. Top 5 motoristas com mais viagens no período 
+
+    // Top 5 motoristas com mais viagens no período
     @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioTopMotoristasDTO(" +
            "v.motorista.nome, " +
            "COUNT(v), " +
            "COALESCE(SUM(v.kilometragemFinal - v.kilometragemInicial), 0)) " +
            "FROM Viagem v " +
            "WHERE v.status = 'CONCLUIDA' " +
-           "AND v.data BETWEEN :dataInicio AND :dataFim " +
+           "AND v.dataHoraPartida BETWEEN :dataInicio AND :dataFim " +
            "GROUP BY v.motorista.id, v.motorista.nome " +
            "ORDER BY COUNT(v) DESC")
     List<RelatorioTopMotoristasDTO> findTopMotoristasPorPeriodo(
             @Param("dataInicio") LocalDateTime dataInicio,
             @Param("dataFim") LocalDateTime dataFim);
-     
-       
-    
-    // 9. Contagem de viagens por período
+
+    // Contagem de viagens por período
     Long countByDataHoraPartidaBetween(LocalDateTime inicio, LocalDateTime fim);
-    
-    // 10. Contagem de viagens por status
+
+    // Contagem de viagens por status
     Long countByStatus(String status);
+
 }

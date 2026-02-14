@@ -73,7 +73,7 @@ public class SecurityConfig {
                             "/api/auth/redefinir-senha-token",
                             "/api/auth/redefinir-senha-verificacao"                       
                           ).permitAll() 
-                    .anyRequest().authenticated()
+                    .anyRequest().permitAll()
             )  
             .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

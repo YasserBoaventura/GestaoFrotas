@@ -23,6 +23,7 @@ import java.util.*;
 
 import com.GestaoRotas.GestaoRotas.DTO.CancelarViagemRequest;
 import com.GestaoRotas.GestaoRotas.DTO.ConcluirViagemRequest;
+import com.GestaoRotas.GestaoRotas.DTO.CustoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioDiarioDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioGeralDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioMensalDTO;
@@ -159,26 +160,31 @@ public ResponseEntity<List<RelatorioMotoristaDTO>> relatorioPorMotorista() {
     }   
     @GetMapping("/findById/{id}")  
     public ResponseEntity<Viagem> findById(@PathVariable long id){
-    	try {
-    		Viagem viagem=this.serviceViagem.findById(id); 
-    		if(viagem!=null) return new ResponseEntity<>(viagem, HttpStatus.OK);
-        	}catch(Exception e) {
-    		 return new ResponseEntity<>(null , HttpStatus.BAD_REQUEST);
-    	} 
-    	 return null;
-    }  
-    
-    
-    
-    
-    
-    ///
-    ///
-    ///
-    ///
-    ///
-  
-    ///
+	try {
+		Viagem viagem=this.serviceViagem.findById(id); 
+		if(viagem!=null) return new ResponseEntity<>(viagem, HttpStatus.OK);
+    	}catch(Exception e) {
+		 return new ResponseEntity<>(null , HttpStatus.BAD_REQUEST);
+	} 
+	 return null; 
+}   
+ @GetMapping("/relatorio-periodo-por-motorista")
+// @PreAuthorize("hasAuthority('ADMIN')")     
+public ResponseEntity<List<RelatorioMotoristaDTO>> relatorioPorPeriodoMotorista(
+       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
+       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim) {
+	   System.out.println("Recebendo as datas de relatorio por motorista: "+ inicio); 
+   return ResponseEntity.ok(serviceViagem.relatorioPorMotoristaPeriodo(inicio, fim)); 
+}      
+@GetMapping("/relatorio-periodo-por-veiculo")
+//@PreAuthorize("hasAuthority('ADMIN')")     
+public ResponseEntity<List<RelatorioPorVeiculoDTO>> relatorioPorPeriodoVeiculo(
+       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
+       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim) {
+	   System.out.println("Recebendo as datas de relatorio por veiculo: "+ inicio); 
+	  return ResponseEntity.ok(serviceViagem.relatorioPorVeiculoPeriodo(inicio, fim));  // Corrigido para pas
+}
+ 
     /////ainda por implementar
      @GetMapping("/geral")
     public ResponseEntity<RelatorioGeralDTO> relatorioGeral(
@@ -196,7 +202,7 @@ public ResponseEntity<List<RelatorioMotoristaDTO>> relatorioPorMotorista() {
             return ResponseEntity.ok(new RelatorioGeralDTO(115L, 8L, 5L, 10100.5, 982.3, 87.8));
         }
     }
-
+  // Ainda por implementar
     @GetMapping("/top-motoristas")
     public ResponseEntity<List<RelatorioTopMotoristasDTO>> topMotoristas(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
@@ -228,31 +234,6 @@ public ResponseEntity<List<RelatorioMotoristaDTO>> relatorioPorMotorista() {
         }
     }
 
-    @GetMapping("/viagens")
-    public ResponseEntity<List<Viagem>> listarViagens(
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim,
-            @RequestParam(required = false) String status) {
-        
-        try {
-            if (dataInicio != null && dataFim != null) {
-                LocalDateTime inicio = dataInicio.atStartOfDay();
-                LocalDateTime fim = dataFim.atTime(LocalTime.MAX);
-                
-                if (status != null && !status.isEmpty()) {
-                    return ResponseEntity.ok(repositoryViagem.findByDataHoraPartidaBetweenAndStatus(inicio, fim, status));
-                } else {
-                    return ResponseEntity.ok(repositoryViagem.findByDataHoraPartidaBetween(inicio, fim));
-                }
-            } else if (status != null && !status.isEmpty()) {
-                return ResponseEntity.ok(repositoryViagem.findByStatus(status));
-            } else {
-                return ResponseEntity.ok(repositoryViagem.findAll());
-            }
-        } catch (Exception e) {
-            return ResponseEntity.ok(Arrays.asList());
-        }
-    }
 }
     
 
