@@ -5,11 +5,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import com.GestaoRotas.GestaoRotas.Custos.Custo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +21,7 @@ import jakarta.persistence.*;
 @Getter
 @NoArgsConstructor
 @Table(name="viagens")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Viagem {
 	
 	
@@ -42,11 +43,15 @@ public class Viagem {
 	    
 	    @Column(name = "kilometragem_final")
 	    private Double kilometragemFinal;
-	    
-	   
 	    private String observacoes;
 	    
 	    private LocalDateTime data;
+	    
+	    @Column(name = "custo_pedagios" ,nullable = true) 
+	    private Double custoPedagios;
+	      
+	    @Column(name = "valor", nullable = false) 
+	    private Double valor;
 	    
 	    // ManyToOne com Motorista 
 
@@ -73,8 +78,11 @@ public class Viagem {
 	  @OneToMany(mappedBy = "viagem", cascade = {CascadeType.PERSIST})
 	    @JsonIgnoreProperties({"viagem", "hibernateLazyInitializer", "handler"}) // ← CORREÇÃO
 	    private List<abastecimentos> abastecimentos = new ArrayList<>();
-	    
-
+	     
+	   @OneToMany(mappedBy = "viagem")	   
+	   @JsonIgnore
+	   private List<Custo> custos = new ArrayList<>();  
+	   
 	    public Viagem(Motorista motorista, Veiculo veiculo, Rotas rota, LocalDateTime dataHoraPartida) {
 	        this.motorista = motorista;
 	        this.veiculo = veiculo;
@@ -111,6 +119,11 @@ public class Viagem {
 	        abastecimentos.add(abastecimento);
 	        abastecimento.setViagem(this);
 	    }
+	    //metodo pra calcular o total por custo
+	    @Transient 
+	    public Double getValorTotal() { 
+	    	return custos.stream().mapToDouble(Custo::getValor).sum();
+	    } 
 	 
 	}
 

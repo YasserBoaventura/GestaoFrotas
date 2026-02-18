@@ -1,5 +1,7 @@
 package com.GestaoRotas.GestaoRotas.config;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InvalidClassException;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -49,7 +51,7 @@ public class GlobalExceptionHandler {
 	//TRATAMENTO DOS DEMAIS ERROS DA APLICAÇÃO E DE REGRAS DE NEGÓCIO
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<String> handle03(Exception ex) {
-		ex.printStackTrace();
+		ex.printStackTrace();  
 		return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 	//Tratamentos do Erro throw new IlegalException na aplicacao NB: nomeie com O nome da excecao
@@ -124,14 +126,47 @@ public class GlobalExceptionHandler {
 		Map<String,String> erro = new HashMap<>();
 		erro.put("erro", ex.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro); 
-	}
+	} 
 	@ExceptionHandler(UsernameNotFoundException.class) 
 	public ResponseEntity<Map<String ,String>>  handleUsernameNotFoundException(UsernameNotFoundException ex){
 		Map<String, String>  erro = new HashMap<>();
 		erro.put("erro" , ex.getMessage()); 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
-		
-	}
-} 
+		}
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<?> handleBusinessException(BusinessException ex) {
+       Map<String,String> response = new HashMap<>();
+        response.put("erro", ex.getMessage());
+           return ResponseEntity
+                .badRequest() // HTTP 400
+                .body(response);  
+    } 
+    @ExceptionHandler(NumberFormatException.class) 
+    public ResponseEntity<Map<String , String>> handleNumberFormatException(NumberFormatException ex){
+      Map<String ,String> response = new HashMap<>(); 
+      response.put("erro",ex.getMessage()); 
+    	return ResponseEntity.badRequest().body(response);   
+    }
+    @ExceptionHandler(FileNotFoundException.class)
+    public ResponseEntity<Map<String,String>> handleFileNotFoundException(FileNotFoundException ex){
+    	Map<String,String> response = new HashMap<>(); 
+    	response.put("erro", ex.getMessage()); 
+    	return ResponseEntity.badRequest().body(response); 
+    } 
+    @ExceptionHandler(IOException.class) 
+    public ResponseEntity<Map<String,String>> handleIOException(IOException ex){
+    	Map<String,String> response = new HashMap<>(); 
+    	response.put("erro", ex.getMessage()); 
+    	return ResponseEntity.badRequest().body(response); 
+    }  
+    @ExceptionHandler(ArrayIndexOutOfBoundsException.class)  
+    public ResponseEntity<Map<String,String>> handleArrayIndexBoundsException(ArrayIndexOutOfBoundsException ex){
+    	Map<String, String> response = new HashMap<>(); 
+    	response.put("erro", ex.getMessage());  
+    	return ResponseEntity.badRequest().body(response); 
+    }
+ }
+
+ 
  
 

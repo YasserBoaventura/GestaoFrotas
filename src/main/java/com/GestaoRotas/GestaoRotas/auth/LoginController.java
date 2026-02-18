@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -145,7 +146,9 @@ public ResponseEntity<Map<String, String>> bloquearConta( @PathVariable long id)
     	    }catch(Exception e) {
     		return new ResponseEntity<>("erro ao deletar usuario", HttpStatus.BAD_REQUEST);
     	}
+    	
     }
+
  
    
 }

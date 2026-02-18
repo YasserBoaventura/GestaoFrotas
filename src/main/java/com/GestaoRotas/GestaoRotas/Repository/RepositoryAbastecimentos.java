@@ -24,7 +24,13 @@ public interface RepositoryAbastecimentos extends JpaRepository<abastecimentos, 
       
     @Query("SELECT COUNT(a) FROM abastecimentos a WHERE a.statusAbastecimento = 'REALIZADA'")
     Long  contarAbastecimentosRealizados();
-             
+     
+    @Query("SELECT COUNT(a) FROM abastecimentos a WHERE a.statusAbastecimento = 'CANCELADA'")
+    Optional<Long>  contarAbastecimentosCancelados();  
+    
+    @Query("SELECT COUNT(a) FROM abastecimentos a WHERE a.statusAbastecimento = 'PLANEADA'")
+    Optional<Long> contarAbastecimentosPlaneados();
+   
     @Query("""    
             SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioCombustivelDTO(
                 v.matricula,  
@@ -60,7 +66,9 @@ public interface RepositoryAbastecimentos extends JpaRepository<abastecimentos, 
         List<RelatorioCombustivelDTO> relatorioPorVeiculo(); 
      
     //----
-  
+        @Query("SELECT a FROM abastecimentos a LEFT JOIN FETCH a.viagem WHERE a.id = :id")
+        Optional<abastecimentos> findByIdWithViagem(@Param("id") Long id);
+        
       
      
 } 

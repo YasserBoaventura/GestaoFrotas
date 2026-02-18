@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
+import com.GestaoRotas.GestaoRotas.Custos.custoService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,9 +30,10 @@ import lombok.RequiredArgsConstructor;
 public class ServiceManutencoes {
     private final RepositoryManutencao repositoryManuntencao;
 	private final RepositoryVeiculo repositoryVeiculo; 
-	private final ServiceVeiculo veiculoService;// ja que vou precisar presistir com o veiculo	
-	//pra a  utilizacao  
+	private final ServiceVeiculo veiculoService; 	
+	private final custoService custoService; 
    
+	@Transactional 
 	public String salvar(manuntecaoDTO manutencaoDTO) {
 	   Manutencao manutencao = new Manutencao();
     Veiculo veiculo = repositoryVeiculo.findById( manutencaoDTO.getVeiculo_id()).orElseThrow(()-> new RuntimeException("Veiculo nao encontrado"));
@@ -58,8 +59,9 @@ public class ServiceManutencoes {
         manutencao.setStatus(manutencaoDTO.getStatus().ATRASADA);
     } else {
         manutencao.setStatus(manutencaoDTO.getStatus().AGENDADA);
-    }
-    repositoryManuntencao.save(manutencao);
+    } 
+    Manutencao saved =  repositoryManuntencao.save(manutencao);
+    custoService.criarCustoParaManutencao(saved); 
     return "manutencao salva com sucesso";
  }
  
@@ -84,7 +86,7 @@ public class ServiceManutencoes {
 	    manutencao.setTipoManutencao(manutencaoDTO.getTipoManutencao());
 	    manutencao.setCusto(manutencaoDTO.getCusto());
 	    manutencao.setProximaManutencaoKm(manutencaoDTO.getProximaManutencaoKm());
-	  ///// repositoryManuntencao.save(manutencao);  
+  
     
        // Define o status inicial
        LocalDate hoje = LocalDate.now();
@@ -102,8 +104,12 @@ public class ServiceManutencoes {
            manutencao.setStatus(manutencaoDTO.getStatus().AGENDADA);
        }
        manutencao.setStatus(manutencaoDTO.getStatus());
-       repositoryManuntencao.save(manutencao);
-    return "manuntencao atualizada com sucesso";
+       
+     Manutencao manutencaoActualizada =  repositoryManuntencao.save(manutencao);
+     //metodo pra actualizacao de manutencao em custos
+       custoService.actualizarCustoManutencao(manutencaoActualizada);  
+      
+    return "manutencao atualizada com sucesso";
   } 
   //
   @Scheduled(cron = "0 0 0 * * *") // Executa todos os dias à meia-noite
@@ -133,14 +139,13 @@ public class ServiceManutencoes {
   try {
       // Atualiza o status da manutenção
   manutencao.setStatus(statusManutencao.AGENDADA_HOJE);
-  
-  // REMOVA UMA DAS CHAMADAS SAVE - mantenha apenas uma:
+
   repositoryManuntencao.save(manutencao);
-  // repositoryManuntencao.saveAndFlush(manutencao); 
+
   
   System.out.println("Status atualizado para AGENDADA_HOJE na manutenção ID: " + manutencao.getId());
   
-  // Atualiza o status do veículo para EM_MANUTENCAO
+
   Veiculo veiculo = manutencao.getVeiculo();
   if (veiculo != null && !veiculo.getStatus().equals("EM_MANUTENCAO")) {
   veiculo.setStatus("EM_MANUTENCAO");
@@ -182,7 +187,7 @@ public class ServiceManutencoes {
        
       for (Manutencao manutencao : manutencoesVencidas) {
           // Atualiza o status da manutenção
-    	  String status = "ATRASADA";
+    	  String status = "ATRASADA"; 
           manutencao.setStatus(statusManutencao.ATRASADA);  
            repositoryManuntencao.save(manutencao);
            repositoryManuntencao.saveAndFlush(manutencao);
@@ -217,8 +222,7 @@ public class ServiceManutencoes {
       String dataHoraFormatada = agora.format(formatter);
        
       manutencao.setDataConclusao(dataHoraFormatada);
-      //a data da manutencao so vai ser cadastrada se for inicializada
- 
+
       repositoryManuntencao.save(manutencao);
        
       // Atualiza o status do veículo
@@ -267,9 +271,7 @@ public class ServiceManutencoes {
       return response;
   }
 
-  /**
-   * Cancela uma manutenção e atualiza o veículo
-   */
+
   @Transactional
   public Map<String, String> cancelarManutencao(Long id, String motivo) {
 	  Map<String ,String> response = new HashMap<>();
@@ -370,33 +372,31 @@ public List<RelatorioManutencaoDTO> relatorioPorPeriodo(LocalDate inicio, LocalD
 repositoryManuntencao.findManutencoesVencidas()
     .forEach(m -> {
         String placa = m.getVeiculo() != null ? m.getVeiculo().getMatricula() : "Veículo não encontrado";
-        String detalhes = ""; 
-         
-        if (m.getProximaManutencaoData() != null && m.getProximaManutencaoData().isBefore(hoje) && !m.getStatus().equals(statusManutencao.CONCLUIDA) && !m.getStatus().equals(statusManutencao.EM_ANDAMENTO)) {
+        String detalhes = "";  
+           
+        if (m.getProximaManutencaoData() != null && m.getProximaManutencaoData().isBefore(hoje)) {
             long diasAtraso = ChronoUnit.DAYS.between(m.getProximaManutencaoData(), hoje);
             detalhes = "atrasada há " + diasAtraso + " dias (desde " + m.getProximaManutencaoData() + ")"; 
         } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null && 
                    m.getVeiculo().getKilometragemAtual() >= m.getProximaManutencaoKm()) {
             double kmExcedido = m.getVeiculo().getKilometragemAtual() - m.getProximaManutencaoKm();
             detalhes = "atingiu " + m.getVeiculo().getKilometragemAtual() + "km (excedeu " + kmExcedido + "km do limite)";
-        }  
-          if(!m.getStatus().equals(statusManutencao.EM_ANDAMENTO) && !m.getStatus().equals(statusManutencao.CONCLUIDA) && !m.getStatus().equals(statusManutencao.ATRASADA) ) {
+        }   
+          if( m.getDataManutencao()!= null && m.getDataInicio()== null && m.getDataConclusao()== null ) {
         alertas.add("⚠️ Revisão vencida do veículo " + placa + "  " + detalhes);
     }
-          });
+          }); 
  
 // Próximas manutenções (até 30 dias)
 List<Manutencao> proximas30dias = repositoryManuntencao.findProximasManutencoes(hoje.plusDays(30));
-
 proximas30dias.stream()
-    .filter(m -> !m.isVencida()) // Filtra apenas não vencidas
     .forEach(m -> { 
         String placa = m.getVeiculo() != null ? m.getVeiculo().getMatricula() : "Veículo não encontrado";
         String detalhes = "";
-
+ 
         if (m.getProximaManutencaoData() != null) { 
             long diasRestantes = ChronoUnit.DAYS.between(hoje, m.getProximaManutencaoData());
-            if (diasRestantes <= 30 && diasRestantes != 0) { 
+            if (diasRestantes <= 30 && diasRestantes > 0) { 
                 detalhes = "em " + diasRestantes + " dias (" + m.getProximaManutencaoData() + ")";
             }  
         } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null) {
@@ -422,7 +422,7 @@ proximas7dias.stream()
         
         if (m.getProximaManutencaoData() != null) {
             long diasRestantes = ChronoUnit.DAYS.between(hoje, m.getProximaManutencaoData());
-            if (diasRestantes <= 7 && diasRestantes !=0) {
+            if (diasRestantes <= 7 && diasRestantes > 0) { 
                 detalhes = "em " + diasRestantes + " dias"; 
             }
         } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null) {

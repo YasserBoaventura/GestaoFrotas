@@ -118,14 +118,14 @@ private boolean temManutencaoVencida(Long veiculoId) {
     LocalDate hoje = LocalDate.now(); 
      
     return manutencoes.stream() 
-            .anyMatch(m -> {
-                // Verifica por data
-        if (m.getProximaManutencaoData() != null && 
-            m.getProximaManutencaoData().isBefore(hoje)) {
-            return true;
+            .anyMatch(m -> { 
+                // Verifica por data 
+        if (m.getDataManutencao() != null && 
+            m.getDataManutencao().isBefore(hoje) && m.getDataConclusao() == null) {
+            return true; 
         }
         
-        // Verifica por quilometragem
+        // Verifica por   
         Veiculo v = m.getVeiculo();
         if (v != null && m.getProximaManutencaoKm() != null && 
             v.getKilometragemAtual() != null &&
@@ -138,26 +138,26 @@ private boolean temManutencaoVencida(Long veiculoId) {
 }
 // Verifica se o veículo tem manutenções próximas
 	     
-private static final int LIMITE_KM_MANUTENCAO = 1000;
+private static final int LIMITE_KM_MANUTENCAO = 1000000;
 
 private boolean temManutencaoProxima(Long veiculoId, int diasAntecedencia) {
 
     List<Manutencao> manutencoes =
             repositoryManutencao.findByVeiculoId(veiculoId);
 
-    LocalDate hoje = LocalDate.now();
+    LocalDate hoje = LocalDate.now(); 
     LocalDate limite = hoje.plusDays(diasAntecedencia);
-
+        
     return manutencoes.stream().anyMatch(m -> {
       
         //  Verificação por data
         LocalDate data = m.getProximaManutencaoData();
         if (data != null && !data.isBefore(hoje) && !data.isAfter(limite)) {
-            return true;
+            return true; 
         }
-
-        // 🔹 Verificação por quilometragem
-        Veiculo v = m.getVeiculo();
+ 
+        /**
+	     *  Veiculo v = m.getVeiculo();
         if (v != null && m.getProximaManutencaoKm() != null &&
             v.getKilometragemAtual() != null) {
 
@@ -167,6 +167,7 @@ private boolean temManutencaoProxima(Long veiculoId, int diasAntecedencia) {
             return kmRestantes > 0 && kmRestantes <= LIMITE_KM_MANUTENCAO;
         }
 
+	     */
         return false;
     });
 }

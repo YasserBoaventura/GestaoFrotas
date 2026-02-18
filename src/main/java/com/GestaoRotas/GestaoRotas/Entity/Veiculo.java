@@ -25,8 +25,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.GestaoRotas.GestaoRotas.Custos.Custo;
+import com.GestaoRotas.GestaoRotas.Model.StatusCusto;
 import com.GestaoRotas.GestaoRotas.Model.StatusVeiculo;
+import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Setter
@@ -43,7 +47,7 @@ public class Veiculo {
 	    @Column(nullable = false, length = 100)
 	    private String modelo;
 	    
-	    @Column(unique = true, length = 20)
+	    @Column(unique = true, length = 20)   
 	    private String matricula;
 	    
 	    @Column(name = "ano_fabricacao")
@@ -62,15 +66,45 @@ public class Veiculo {
 	    
 	    @Column(nullable = false, length = 255)
 	    private String status = "DISPONIVEL"; // DISPONIVEL, EM_VIAGEM, EM_MANUTENCAO, MANUTENCAO_VENCIDA, MANUTENCAO_PROXIMA
-	    
+	     
 	    private LocalDateTime dataAtualizacaoStatus;
+	     
 	    
+	    // novos campos pra o controle de custos
+	    
+	    @Column
+	    private Double custoTotal;
+	    
+	    @Column
+	    private Double custoMedioPorKm;  
+	    
+	    @Column(name = "ultima_atualizacao_custo")
+	    private LocalDateTime ultimaAtualizacaoCusto;
+	    
+	    @OneToMany(mappedBy = "veiculo", cascade = CascadeType.ALL)
+	    @JsonIgnore 
+	  //  @JsonIgnoreProperties({"veiculo", "hibernateLazyInitializer", "handler"})
+	    private List<Custo> custos = new ArrayList<>();
+	    
+	    @Column(name = "custo_combustivel")
+	    private Double custoCombustivel;
+	     
+	    @Column(name = "custo_manutencao")
+	    private Double custoManutencao;
+	    
+	    @Column(name = "custo_pedagios")
+	    private Double custoPedagios;
+	    
+	    @Column(name = "custo_outros")
+	    private Double custoOutros;
+	    
+	    ////////////////////////////////////////////////
 	    
 	    // OneToMany com Abastecimento
-	    @JsonIgnore
+	 @JsonIgnore
      @OneToMany(mappedBy = "veiculo", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	 private List<abastecimentos> abastecimentoss = new ArrayList<>();
-	     
+ 	     
 	    // OneToMany com Manutencao
 	    @JsonIgnore
         @OneToMany(mappedBy = "veiculo", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -83,7 +117,7 @@ public class Veiculo {
 	    @JsonIgnore
      // ManyToMany com Motorista  
 	    @ManyToMany  
-	    @JoinTable(
+	    @JoinTable(  
 	        name = "veiculo_motorista",
 	        joinColumns = @JoinColumn(name = "veiculo_id"),
 	        inverseJoinColumns = @JoinColumn(name = "motorista_id")
@@ -92,8 +126,8 @@ public class Veiculo {
 	     // Métodos auxiliares
 	    public Veiculo(String modelo, String matricula, Integer anoFabricacao,
 	               Double capacidadeTanque, Double kilometragemAtual) {
-	    this.modelo = modelo;
-	    this.matricula = matricula;
+	    this.modelo = modelo;  
+	    this.matricula = matricula; 
 	    this.anoFabricacao = anoFabricacao;
 	    this.capacidadeTanque = capacidadeTanque;
 	    this.kilometragemAtual = kilometragemAtual;
@@ -119,10 +153,10 @@ public class Veiculo {
 	    	
 	    } 
 	     // Método calculado
-	    // Método calculado
+	   
 	    public Double getMediaConsumo() {
 	        if (abastecimentoss == null || abastecimentoss.isEmpty()) return 0.0;
-	        
+	         
 	        Double totalLitros = abastecimentoss.stream()
 	            .mapToDouble(abastecimentos::getQuantidadeLitros)
 	            .sum();
@@ -133,7 +167,43 @@ public class Veiculo {
 	            
 	        return totalViagens > 0 ? totalLitros / totalViagens : 0.0;
 	    }
-	    
+	    // Método pra calcular custos depois que ele carrega o banco
+@PostLoad 
+public void calcularCustos() {  
+    if (this.custos != null && !this.custos.isEmpty()) {
+        this.custoTotal = this.custos.stream()
+            .filter(c -> c.getStatus() == StatusCusto.PAGO)
+            .mapToDouble(Custo::getValor)
+            .sum();
+        
+        // Calcular por tipo   
+        this.custoCombustivel = this.custos.stream()
+            .filter(c -> c.getStatus() == StatusCusto.PAGO && 
+                       c.getTipo() == TipoCusto.COMBUSTIVEL)
+            .mapToDouble(Custo::getValor)
+            .sum();
+        
+        this.custoManutencao = this.custos.stream()
+            .filter(c -> c.getStatus() == StatusCusto.PAGO && 
+                       (c.getTipo() == TipoCusto.MANUTENCAO_PREVENTIVA || 
+                        c.getTipo() == TipoCusto.MANUTENCAO_CORRETIVA))
+            .mapToDouble(Custo::getValor)
+            .sum(); 
+        
+        this.custoPedagios = this.custos.stream()
+            .filter(c -> c.getStatus() == StatusCusto.PAGO && 
+                       c.getTipo() == TipoCusto.PEDAGIO)
+            .mapToDouble(Custo::getValor)
+            .sum();
+        
+        this.custoOutros = this.custoTotal - 
+            (this.custoCombustivel + this.custoManutencao + this.custoPedagios);
+        
+        if (this.kilometragemAtual != null && this.kilometragemAtual > 0) {
+            this.custoMedioPorKm = this.custoTotal / this.kilometragemAtual;
+        }
+    }
+}
 	    
 	}
 	

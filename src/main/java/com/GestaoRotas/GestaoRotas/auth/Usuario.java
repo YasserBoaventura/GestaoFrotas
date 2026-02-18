@@ -36,7 +36,7 @@ public class Usuario implements UserDetails {
     
     @Column(nullable = false, unique = true, length = 50)
     private String username;
-         
+           
     @Column(nullable = false)
     private String password;
     
@@ -117,7 +117,7 @@ public class Usuario implements UserDetails {
        
     // Métodos auxiliares para segurança
     public void incrementarTentativasLogin() {
-        this.tentativasLogin++;
+        this.tentativasLogin++; 
         if (this.tentativasLogin >= 5) {
             this.contaBloqueada = true;
         }

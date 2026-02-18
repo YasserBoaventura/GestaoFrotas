@@ -27,6 +27,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Manutencao {
       //------> namuntecao
         @Id
@@ -35,23 +36,23 @@ public class Manutencao {
 	    
 	    @Column(name = "data_manutencao") //
 	    private LocalDate dataManutencao;  
-	     
+	      
 	    @Column(name = "tipo_manutencao", length = 50) 
 	    @Enumerated(EnumType.STRING)
 	    private TipoManutencao tipoManutencao; // "PREVENTIVA", "CORRETIVA", "TROCA_OLEO", "REVISAO"
 	    
 	    @Column(length = 500)
 	    private String descricao;
-	    
+	    @Column(nullable = false)
 	    private Double custo;
-	    
+	     
 	    @Column(name = "kilometragem_veiculo")
 	    private Double kilometragemVeiculo;
-	
-	    
+	 
+	     
 	    //  CAMPOS NOVOS NECESSÁRIOS
 	    @Column(name = "proxima_manutencao_km")
-	    private Integer proximaManutencaoKm; 
+	    private  Double proximaManutencaoKm; 
 	    
 	    @Column(name = "proxima_manutencao_data")
 	    private LocalDate proximaManutencaoData;
@@ -93,9 +94,9 @@ public class Manutencao {
     }
 	    
 	    // Método auxiliar para verificar se está vencida
-	    public boolean isVencida() {
-	        if (proximaManutencaoData != null && proximaManutencaoData.isBefore(LocalDate.now())) {
-	            return true;
+	    public boolean isVencida() { 
+	        if (dataManutencao != null && dataManutencao.isBefore(LocalDate.now()) && dataManutencao.isBefore(LocalDate.now()) ) {
+	            return true; 
 	        }  
 	        if (proximaManutencaoKm != null && veiculo != null && veiculo.getKilometragemAtual() != null && 
 	            veiculo.getKilometragemAtual() >= proximaManutencaoKm) {

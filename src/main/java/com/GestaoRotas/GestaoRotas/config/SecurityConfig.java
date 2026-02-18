@@ -71,10 +71,8 @@ public class SecurityConfig {
                             "/api/auto-cadastro",
                             "/api/auth/solicitar-recuperacao",
                             "/api/auth/redefinir-senha-token",
-                            "/api/auth/redefinir-senha-verificacao",
-                            "/api/manutencoes/relatorio-por-periodo",
-                            "/api/abastecimentos/abastecimentoRealizado"
-                          ).permitAll()
+                            "/api/auth/redefinir-senha-verificacao"                       
+                          ).permitAll() 
                     .anyRequest().authenticated()
             )  
             .sessionManagement(session ->
@@ -105,7 +103,8 @@ public class SecurityConfig {
                 HttpMethod.GET.name(),
                 HttpMethod.POST.name(),
                 HttpMethod.PUT.name(),
-                HttpMethod.DELETE.name()
+                HttpMethod.DELETE.name(),
+                HttpMethod.PATCH.name() 
         ));
         config.setMaxAge(3600L);
 

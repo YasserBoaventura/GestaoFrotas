@@ -3,7 +3,10 @@ package com.GestaoRotas.GestaoRotas.auth;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 import com.GestaoRotas.GestaoRotas.auth.Usuario;
 
 
@@ -27,6 +30,5 @@ public interface LoginRepository extends JpaRepository<Usuario, Long>{
     //o optional duplo pra usar na validacao  
     Optional<Usuario> findByUsernameAndResetToken(String username, String resetToken);
 
-          
-    
-}
+
+}  
