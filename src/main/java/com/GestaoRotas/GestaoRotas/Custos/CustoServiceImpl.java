@@ -56,7 +56,7 @@ public sealed interface  CustoServiceImpl permits custoService  {
    RelatorioCustosDetalhadoDTO gerarRelatorioDetalhado(RelatorioFilterDTO filtro); 
 	
    void  migrarManutencoesExistentes();
-    
+     
    void  enviarAlertaCustoAlto(abastecimentos abastecimento);
       
   void  migrarAbastecimentosExistentes();

@@ -37,7 +37,7 @@ public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
            "GROUP BY v.motorista.id, v.motorista.nome, v.motorista.telefone, v.status")
     List<RelatorioMotoristaDTO> relatorioPorMotorista();
 
-    // Relatório por veículo
+    // Relatório por veículo 
     @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioPorVeiculoDTO(" +
            "v.veiculo.matricula, " +
            "v.veiculo.modelo, " +
@@ -52,7 +52,7 @@ public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
            "GROUP BY v.veiculo.id, v.veiculo.matricula, v.veiculo.modelo")
     List<RelatorioPorVeiculoDTO> relatorioPorVeiculo();
 
-    // Consultas adicionais
+   
     List<Viagem> findByStatus(String status);
     List<Viagem> findByVeiculoId(Long veiculoId);
     List<Viagem> findByDataHoraPartidaBetween(LocalDateTime start, LocalDateTime end);

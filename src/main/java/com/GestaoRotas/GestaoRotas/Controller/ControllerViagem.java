@@ -68,7 +68,7 @@ public class ControllerViagem {
 	} 
 	   } 
  @GetMapping("/findAll")
-@PreAuthorize("hasAuthority('ADMIN')") 
+ @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
  public ResponseEntity<List<Viagem>> findAll(){
 	try {
 		return  ResponseEntity.ok(serviceViagem.findAll()); 
@@ -112,9 +112,8 @@ public class ControllerViagem {
 			return ResponseEntity.badRequest().build();
 		}
 	}  
- 
-@PutMapping("/update/{id}")
-@PreAuthorize("hasAuthority('ADMIN')") 
+ @PutMapping("/update/{id}")
+ @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
 public ResponseEntity<String> update(@RequestBody ViagensDTO viagemDTO, @PathVariable long id) {
     try{
      return ResponseEntity.ok(serviceViagem.update(viagemDTO, id));
@@ -124,25 +123,25 @@ public ResponseEntity<String> update(@RequestBody ViagensDTO viagemDTO, @PathVar
 }
 //pra concluir a a viagem 
 	@PutMapping("/concluir/{id}")
-	@PreAuthorize("hasAuthority('ADMIN')")  
+	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
 	public ResponseEntity<Map<String, String>> ConcluirViagem(
   @RequestBody ConcluirViagemRequest request, @PathVariable long id) {
 	 return ResponseEntity.ok(serviceViagem.ConcluirViagem(request, id)); 
 	} 
 	   
 @PutMapping("/cancelarViagem/{id}")
-@PreAuthorize("hasAuthority('ADMIN')") 
+@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
 public ResponseEntity<Map<String, String>> cancelarViagem(
         @RequestBody CancelarViagemRequest request, 
         @PathVariable long id) { 
 return ResponseEntity.ok(serviceViagem.cancelarViagem(request, id));
   }  
 @PutMapping("/inicializarViagem/{id}") 
-@PreAuthorize("hasAuthority('ADMIN')")     
+@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")   
 public ResponseEntity<Map<String , String>> iniciarViagem(@PathVariable Long id){
   return ResponseEntity.ok(serviceViagem.iniciarViagem(id)); 
 }  
-@GetMapping("/countByStatus/{status}")     
+@GetMapping("/countByStatus/{status}")      
 public ResponseEntity<Long> countByStatus(@PathVariable String status){
 	Long size = serviceViagem.getContByStatus(status); 
 	return ResponseEntity.ok(size);  
@@ -154,13 +153,13 @@ public ResponseEntity<List<RelatorioMotoristaDTO>> relatorioPorMotorista() {
         return ResponseEntity.ok(serviceViagem.relatorioPorMotorista());   
     } 
     //Mostra o relatorio placa do carro , totalViagens , totalEmKm e totalConbustivel usado
-    @GetMapping("/veiculos") 
+    @GetMapping("/veiculos")  
      public ResponseEntity<List<RelatorioPorVeiculoDTO>> relatorioPorVeiculo() {
         return ResponseEntity.ok(serviceViagem.gerarRelatorioPorVeiculo());
     }   
     @GetMapping("/findById/{id}")  
     public ResponseEntity<Viagem> findById(@PathVariable long id){
-	try {
+	try { 
 		Viagem viagem=this.serviceViagem.findById(id); 
 		if(viagem!=null) return new ResponseEntity<>(viagem, HttpStatus.OK);
     	}catch(Exception e) {
@@ -169,15 +168,15 @@ public ResponseEntity<List<RelatorioMotoristaDTO>> relatorioPorMotorista() {
 	 return null; 
 }   
  @GetMapping("/relatorio-periodo-por-motorista")
-// @PreAuthorize("hasAuthority('ADMIN')")     
+ @PreAuthorize("hasAuthority('ADMIN')")     
 public ResponseEntity<List<RelatorioMotoristaDTO>> relatorioPorPeriodoMotorista(
        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim) {
 	   System.out.println("Recebendo as datas de relatorio por motorista: "+ inicio); 
    return ResponseEntity.ok(serviceViagem.relatorioPorMotoristaPeriodo(inicio, fim)); 
-}      
+}       
 @GetMapping("/relatorio-periodo-por-veiculo")
-//@PreAuthorize("hasAuthority('ADMIN')")     
+@PreAuthorize("hasAuthority('ADMIN')")     
 public ResponseEntity<List<RelatorioPorVeiculoDTO>> relatorioPorPeriodoVeiculo(
        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim) {

@@ -45,6 +45,10 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
     //metodo calcular o numero de custos  apenas por periodo 
     @Query("SELECT COUNT(c) FROM Custo c WHERE c.data BETWEEN :inicio AND :fim AND c.status = 'PAGO'")
     Integer numeroTotalCustoPorPeriodo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
+    //filtro a quantidade por periodo e veiculo
+    @Query("SELECT COUNT(c) FROM Custo c WHERE c.data BETWEEN :inicio AND :fim AND c.veiculo.id = :veiculoId AND c.status = 'PAGO'")
+    Integer numeroTotalCustoPorPeriodoVeiculo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim, @Param("veiculoId") Long veiculoId); 
+   
     @Query("SELECT SUM(c.valor) FROM Custo c WHERE c.tipo = :tipo AND c.status = 'PAGO'")
     Double calcularTotalPorTipo(@Param("tipo") TipoCusto tipo);
       
@@ -210,8 +214,16 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
     List<Custo> findByPeriodo(@Param("inicio") LocalDate inicio, 
                               @Param("fim") LocalDate fim, 
                               @Param("veiculoId") Long veiculoId);
-    
-    // Totais detalhados por veículo
+    @Query("SELECT c FROM Custo c WHERE " +
+            "(:inicio IS NULL OR c.data >= :inicio) AND " +
+            "(:fim IS NULL OR c.data <= :fim) " + 
+            "ORDER BY c.data DESC") 
+     List<Custo> findByPeriodoSemVeiculo(@Param("inicio") LocalDate inicio, 
+                               @Param("fim") LocalDate fim
+                            );
+                         
+                        
+    // Totais detalhados por veículo  
     @Query("SELECT " + 
            "SUM(CASE WHEN c.status = 'PAGO' THEN c.valor ELSE 0 END) as total, " +
            "SUM(CASE WHEN c.tipo = 'COMBUSTIVEL' AND c.status = 'PAGO' THEN c.valor ELSE 0 END) as combustivel, " +
