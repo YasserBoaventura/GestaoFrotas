@@ -362,7 +362,7 @@ public class ServiceManutencoes {
 //relatorios por periodo data fim e data inicio 
 public List<RelatorioManutencaoDTO> relatorioPorPeriodo(LocalDate inicio, LocalDate fim) {
   return repositoryManuntencao.relatorioPorPeriodo(inicio, fim);  
-      
+       
 }
  public List<String> gerarAlertas() {
 	    List<String> alertas = new ArrayList<>();

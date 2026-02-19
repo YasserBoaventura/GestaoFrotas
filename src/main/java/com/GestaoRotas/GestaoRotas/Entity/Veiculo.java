@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -69,7 +70,9 @@ public class Veiculo {
 	     
 	    private LocalDateTime dataAtualizacaoStatus;
 	     
-	    
+	    //canto do email responsavel pelo email
+	    @Email
+	    private String email;
 	    // novos campos pra o controle de custos
 	    
 	    @Column

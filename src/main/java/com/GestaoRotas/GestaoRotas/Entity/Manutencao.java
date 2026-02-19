@@ -94,8 +94,9 @@ public class Manutencao {
     }
 	    
 	    // Método auxiliar para verificar se está vencida
+    
 	    public boolean isVencida() { 
-	        if (dataManutencao != null && dataManutencao.isBefore(LocalDate.now()) && dataManutencao.isBefore(LocalDate.now()) ) {
+	        if (dataManutencao != null && dataManutencao.isBefore(LocalDate.now()) && dataManutencao.isBefore(LocalDate.now()) && status != statusManutencao.CONCLUIDA) {
 	            return true; 
 	        }  
 	        if (proximaManutencaoKm != null && veiculo != null && veiculo.getKilometragemAtual() != null && 
