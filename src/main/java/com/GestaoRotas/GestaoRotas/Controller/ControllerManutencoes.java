@@ -19,6 +19,7 @@ import com.GestaoRotas.GestaoRotas.Model.statusManutencao;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryManutencao;
 import com.GestaoRotas.GestaoRotas.Service.ServiceManutencoes;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -158,12 +159,19 @@ public ResponseEntity<Map<String, String>> cancelarManutencao(@RequestBody Strin
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
         System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
         return ResponseEntity.ok(manutencaoService.relatorioPorPeriodo(inicio, fim)); 
-    }           
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+    }            
+   // @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @GetMapping("/gerarAltertas")
-    public ResponseEntity<List<String>> getAlertas() { 
-        return ResponseEntity.ok(manutencaoService.gerarAlertas());
-    }  
+   public ResponseEntity<List<String>> getAlertas() { 
+    	try {
+    		
+    		 return ResponseEntity.ok(manutencaoService.gerarAlertas());
+    	}catch(Exception e) {
+    		System.err.print("Erro ao carregar a lista: "+ e.getCause().getMessage().toString()); 
+    	    return ResponseEntity.badRequest().body(null);
+        }   
+    	}
+    
     @GetMapping("/alertas/simplificado")  //os dois geram alertas mais esse simplificado
     public ResponseEntity<List<String>> getAlertasSimplificado() {
         List<String> alertas = manutencaoService.gerarAlertasSimplificado();

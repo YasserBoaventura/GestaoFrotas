@@ -3,8 +3,9 @@ package com.GestaoRotas.GestaoRotas.Email;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+
 @Service
-@Primary
+@Primary 
 public interface EmailServiceImp {
 	//para enviar o token 
     void enviarEmailRecuperacao(String destinatario, String token);
@@ -15,5 +16,5 @@ public interface EmailServiceImp {
     void enviarAlertaManutencao(String emailDestinatario, String placa, String detalhes); 
     void enviarAlertaManutencaoVencida(String emailDestinatario, String placa, String detalhes);
 
-
+     
 }

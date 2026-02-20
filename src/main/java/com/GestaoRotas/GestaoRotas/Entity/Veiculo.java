@@ -72,7 +72,7 @@ public class Veiculo {
 	     
 	    //canto do email responsavel pelo email
 	    @Email
-	    private String email;
+	    private String  emailResponsavel;
 	    // novos campos pra o controle de custos
 	    
 	    @Column
