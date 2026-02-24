@@ -16,10 +16,10 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor 
-public class EmailService{
+public non-sealed class EmailService implements EmailServiceImp{
 	
 	private final JavaMailSender mailSender; 
-
+ 
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
     
 	
@@ -28,22 +28,22 @@ public class EmailService{
 	
 	
 public void enviarEmailRecuperacao(String destinatario, String token) {
-	
+
 }
 public void enviarEmailConfirmacao(String destinatario, String assunto, String mensagem) {}
 
 public void enviarEmailSimples(String destinatario, String assunto, String mensagem) {}
 
 
-// Cache para controlar emails já enviados (evita duplicação)
+// Cache para controlar emails já enviados evita duplicação
 private final ConcurrentHashMap<String, Long> emailsEnviados = new ConcurrentHashMap<>();
 
-
+ 
 @Async
 public void enviarAlertaManutencao(String emailDestinatario, String placa, String detalhes) {
-    // Chave única para este alerta (veículo + tipo + dia)
+    // Chave única para este alerta 
     String chaveUnica = placa + "_" + detalhes + "_" + LocalDate.now();
-    
+     
     // Verifica se já enviou nas últimas 24 horas
     Long ultimoEnvio = emailsEnviados.get(chaveUnica);
     if (ultimoEnvio != null && System.currentTimeMillis() - ultimoEnvio < 86400000) { // 24h
@@ -107,7 +107,7 @@ public void enviarAlertaManutencaoVencida(String emailDestinatario, String placa
         logger.info(" ALERTA VENCIDO enviado para {}", placa);
         
     } catch (MailException e) {
-        logger.error("❌ Falha no envio de alerta vencido: {}", e.getMessage());
+        logger.error(" Falha no envio de alerta vencido: {}", e.getMessage());
     }
 }
 }

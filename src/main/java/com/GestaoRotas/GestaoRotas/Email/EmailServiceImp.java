@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-@Primary 
-public interface EmailServiceImp {
+@Primary  
+public sealed interface EmailServiceImp permits EmailService {
 	//para enviar o token 
     void enviarEmailRecuperacao(String destinatario, String token);
     

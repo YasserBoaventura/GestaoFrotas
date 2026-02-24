@@ -42,6 +42,7 @@ public Map<String, String> solicitarRecuperacaoSenha(String username, String ema
     	return naoAtivo;  
         }
     String token = UUID.randomUUID().toString();
+    System.out.println(token.toString());  
     usuario.setResetToken(token);
    usuario.setResetTokenExpiry(LocalDateTime.now().plusHours(2));
     usuario.setTokenUtilizado(false);

@@ -371,86 +371,8 @@ public class ServiceManutencoes {
 public List<RelatorioManutencaoDTO> relatorioPorPeriodo(LocalDate inicio, LocalDate fim) {
   return repositoryManuntencao.relatorioPorPeriodo(inicio, fim);  
        
-}
-
-public List<String> gerarAlertasAntido() {
-	    List<String> alertas = new ArrayList<>();
-	    LocalDate hoje = LocalDate.now();
-	    
-	    // Manutenções vencidas 
-repositoryManuntencao.findManutencoesVencidas()
-   .forEach(m -> {
-       String placa = m.getVeiculo() != null ? m.getVeiculo().getMatricula() : "Veículo não encontrado";
-       String detalhes = "";  
-          
-       if (m.getProximaManutencaoData() != null && m.getProximaManutencaoData().isBefore(hoje)) {
-           long diasAtraso = ChronoUnit.DAYS.between(m.getProximaManutencaoData(), hoje);
-           detalhes = "atrasada há " + diasAtraso + " dias (desde " + m.getProximaManutencaoData() + ")"; 
-       } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null && 
-                  m.getVeiculo().getKilometragemAtual() >= m.getProximaManutencaoKm()) {
-           double kmExcedido = m.getVeiculo().getKilometragemAtual() - m.getProximaManutencaoKm();
-           detalhes = "atingiu " + m.getVeiculo().getKilometragemAtual() + "km (excedeu " + kmExcedido + "km do limite)";
-       }   
-         if( m.getDataManutencao()!= null && m.getDataInicio()== null && m.getDataConclusao()== null ) {
-       alertas.add("⚠️ Revisão vencida do veículo " + placa + "  " + detalhes);
-   }
-         }); 
-
-//Próximas manutenções (até 30 dias)
-List<Manutencao> proximas30dias = repositoryManuntencao.findProximasManutencoes(hoje.plusDays(30));
-proximas30dias.stream()
-   .forEach(m -> { 
-       String placa = m.getVeiculo() != null ? m.getVeiculo().getMatricula() : "Veículo não encontrado";
-       String detalhes = "";
-
-       if (m.getProximaManutencaoData() != null) { 
-           long diasRestantes = ChronoUnit.DAYS.between(hoje, m.getProximaManutencaoData());
-           if (diasRestantes <= 30 && diasRestantes > 0) { 
-               detalhes = "em " + diasRestantes + " dias (" + m.getProximaManutencaoData() + ")";
-           }  
-       } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null) {
-           double kmRestantes = m.getProximaManutencaoKm() - m.getVeiculo().getKilometragemAtual();
-           if (kmRestantes <= 1000 && kmRestantes > 0) {
-               detalhes = "faltam " + kmRestantes + "km";
-           }
-       } 
-       
-       if (!detalhes.isEmpty()) {
-           alertas.add("ℹ️ Próxima revisão do veículo " + placa + " - " + detalhes);
-       }
-   });
-
-//Manutenções muito próximas (até 7 dias)
-List<Manutencao> proximas7dias = repositoryManuntencao.findManutencoesProximas7Dias(hoje.plusDays(7));
-
-proximas7dias.stream()
-   .filter(m -> !m.isVencida()) // Filtra apenas não vencidas
-   .forEach(m -> {
-       String placa = m.getVeiculo() != null ? m.getVeiculo().getMatricula() : "Veículo não encontrado";
-       String detalhes = "";
-       
-       if (m.getProximaManutencaoData() != null) {
-           long diasRestantes = ChronoUnit.DAYS.between(hoje, m.getProximaManutencaoData());
-           if (diasRestantes <= 7 && diasRestantes > 0) { 
-               detalhes = "em " + diasRestantes + " dias"; 
-           }
-       } else if (m.getProximaManutencaoKm() != null && m.getVeiculo() != null) {
-           double kmRestantes = m.getProximaManutencaoKm() - m.getVeiculo().getKilometragemAtual();
-           if (kmRestantes <= 200 && kmRestantes > 0) {
-               detalhes = "faltam " + kmRestantes + "km";
-           }
-       }
-       
-     
-   });
-
-if (alertas.isEmpty()) {
-   alertas.add("Sem Alertas por agora");
-   } 
-   
-   return alertas; 
-}
-
+} 
+@Scheduled(cron = "0 0 0 * * *") 
 public List<String> gerarAlertas() {
 List<String> alertas = new ArrayList<>();
 LocalDate hoje = LocalDate.now();
@@ -487,7 +409,7 @@ if (m.getDataManutencao() != null &&
     
     alertas.add("⚠️ Revisão vencida do veículo " + placa + " - " + detalhes);
     
-    // ENVIA EMAIL APENAS UMA VEZ POR VEÍCULO
+    // ENVIA EMAIL APENAS UMA VEZ POR VEÍCULO 
     String chave = "VENCIDA_" + placa;
     if (deveEnviarEmail && emailResp != null && !emailsDisparados.contains(chave)) {
         emailService.enviarAlertaManutencaoVencida(emailResp, placa, detalhes);
@@ -502,118 +424,114 @@ if (m.getDataManutencao() != null &&
     
     // 2. Próximas manutenções (30 dias)
     List<Manutencao> proximas30dias = repositoryManuntencao.findProximasManutencoes(hoje.plusDays(30));
-    if (proximas30dias != null) {
-        for (Manutencao m : proximas30dias) {
-            try {
-                if (m == null || m.getVeiculo() == null) continue;
-                
-                String placa = m.getVeiculo().getMatricula();
-                String emailResp = m.getVeiculo().getEmailResponsavel();
-                String detalhes = "";
-                boolean deveEnviarEmail = false;
-                
-                if (m.getProximaManutencaoData() != null) {
-                    long diasRestantes = ChronoUnit.DAYS.between(hoje, m.getProximaManutencaoData());
-                    if (diasRestantes <= 30 && diasRestantes > 0) {
-                        detalhes = "em " + diasRestantes + " dias";
-                        
-                        // ALERTA DE 10 DIAS (APENAS UMA VEZ)
-                        if (diasRestantes == 10) {
-                            alertas.add("📅 Alerta: Veículo " + placa + " tem manutenção em 10 dias");
-                            String chave = "10DIAS_" + placa;
-                            if (emailResp != null && !emailsDisparados.contains(chave)) {
-                                deveEnviarEmail = true;
-                                emailsDisparados.add(chave);
-                            }
-                        }
-                    }
-                } else if (m.getProximaManutencaoKm() != null && 
-                           m.getVeiculo().getKilometragemAtual() != null) {
-                    double kmRestantes = m.getProximaManutencaoKm() - m.getVeiculo().getKilometragemAtual();
-                    if (kmRestantes <= 1000 && kmRestantes > 0) {
-                        detalhes = "faltam " + kmRestantes + "km";
-                        
-                        if (kmRestantes <= 200) {
-                            alertas.add("⛽ Alerta: Veículo " + placa + " - " + detalhes);
-                            String chave = "KM_" + placa;
-                            if (emailResp != null && !emailsDisparados.contains(chave)) {
-                                deveEnviarEmail = true;
-                                emailsDisparados.add(chave);
-                            }
-                        }
-                    }
+if (proximas30dias != null) {
+    for (Manutencao m : proximas30dias) {
+        try {
+            if (m == null || m.getVeiculo() == null) continue;
+            
+            String placa = m.getVeiculo().getMatricula();
+            String emailResp = m.getVeiculo().getEmailResponsavel();
+            String detalhes = "";
+    boolean deveEnviarEmail = false;
+    
+    if (m.getProximaManutencaoData() != null) {
+        long diasRestantes = ChronoUnit.DAYS.between(hoje, m.getProximaManutencaoData());
+        if (diasRestantes <= 30 && diasRestantes > 0) {
+            detalhes = "em " + diasRestantes + " dias";
+            
+            // ALERTA DE 10 DIAS apenas uma vez
+            if (diasRestantes == 10) {
+                alertas.add("📅 Alerta: Veículo " + placa + " tem manutenção em 10 dias");
+                String chave = "10DIAS_" + placa;
+                if (emailResp != null && !emailsDisparados.contains(chave)) {
+                    deveEnviarEmail = true;
+                    emailsDisparados.add(chave);
                 }
-                
-                if (!detalhes.isEmpty()) {
-                    alertas.add("ℹ️ Próxima revisão do veículo " + placa + " - " + detalhes);
-                    
-                    if (deveEnviarEmail && emailResp != null) {
-                        emailService.enviarAlertaManutencao(emailResp, placa, detalhes);
-                    }
-                }
-            } catch (Exception e) {
-                // Ignora erro
             }
+        }
+    } else if (m.getProximaManutencaoKm() != null && 
+               m.getVeiculo().getKilometragemAtual() != null) {
+        double kmRestantes = m.getProximaManutencaoKm() - m.getVeiculo().getKilometragemAtual();
+        if (kmRestantes <= 1000 && kmRestantes > 0) {
+            detalhes = "faltam " + kmRestantes + "km";
+            
+            if (kmRestantes <= 200) {
+                alertas.add("⛽ Alerta: Veículo " + placa + " - " + detalhes);
+                String chave = "KM_" + placa;
+                if (emailResp != null && !emailsDisparados.contains(chave)) {
+                    deveEnviarEmail = true;
+                    emailsDisparados.add(chave);
+                }
+            }
+        }
+    }
+
+    if (!detalhes.isEmpty()) {
+        alertas.add("ℹ️ Próxima revisão do veículo " + placa + " - " + detalhes);
+        
+        if (deveEnviarEmail && emailResp != null) {
+            emailService.enviarAlertaManutencao(emailResp, placa, detalhes);
+        }
+    }
+} catch (Exception e) {
+    // Ignora erro
+    }
         }
     }
     
     // 3. Manutenções próximas (7 dias)
-    List<Manutencao> proximas7dias = repositoryManuntencao.findManutencoesProximas7Dias(hoje.plusDays(7));
-    if (proximas7dias != null) {
-        for (Manutencao m : proximas7dias) {
-            try {
-                if (m == null || m.getVeiculo() == null || m.isVencida()) continue;
-        
-        String placa = m.getVeiculo().getMatricula();
-            String emailResp = m.getVeiculo().getEmailResponsavel();
-            String detalhes = "";
-            boolean deveEnviarEmail = false;
+List<Manutencao> proximas7dias = repositoryManuntencao.findManutencoesProximas7Dias(hoje.plusDays(7));
+if (proximas7dias != null) {
+    for (Manutencao m : proximas7dias) {
+        try {
+            if (m == null || m.getVeiculo() == null || m.isVencida()) continue;
+    
+    String placa = m.getVeiculo().getMatricula();
+        String emailResp = m.getVeiculo().getEmailResponsavel();
+        String detalhes = "";
+    boolean deveEnviarEmail = false;
+    
+    if (m.getProximaManutencaoData() != null) {
+        long diasRestantes = ChronoUnit.DAYS.between(hoje, m.getProximaManutencaoData());
+        if (diasRestantes <= 7 && diasRestantes > 0) {
+            detalhes = "em " + diasRestantes + " dias";
             
-            if (m.getProximaManutencaoData() != null) {
-                long diasRestantes = ChronoUnit.DAYS.between(hoje, m.getProximaManutencaoData());
-                if (diasRestantes <= 7 && diasRestantes > 0) {
-                    detalhes = "em " + diasRestantes + " dias";
-                    
-                    if (diasRestantes <= 3) {
-                        alertas.add("🔴 URGENTE: Veículo " + placa + " - " + detalhes);
-                    String chave = "URGENTE_" + placa;
-                    if (emailResp != null && !emailsDisparados.contains(chave)) {
-                        deveEnviarEmail = true;
-                        emailsDisparados.add(chave);
-                    }
-                }
+            if (diasRestantes <= 3) {
+                alertas.add("🔴 URGENTE: Veículo " + placa + " - " + detalhes);
+            String chave = "URGENTE_" + placa;
+            if (emailResp != null && !emailsDisparados.contains(chave)) {
+                deveEnviarEmail = true;
+                emailsDisparados.add(chave);
             }
         }
-            
-            if (!detalhes.isEmpty() && !detalhes.contains("URGENTE")) {
-                alertas.add("🔔 Revisão próxima do veículo " + placa + " - " + detalhes);
-                    }
-                    
-                    if (deveEnviarEmail && emailResp != null) {
-                        emailService.enviarAlertaManutencao(emailResp, placa, "URGENTE: " + detalhes);
-                    }
-                    
-                } catch (Exception e) {
-                    // Ignora erro
-                }
-            }
+    }
+}
+    
+   if (!detalhes.isEmpty() && !detalhes.contains("URGENTE")) {
+    alertas.add("🔔 Revisão próxima do veículo " + placa + " - " + detalhes);
+        }
+        
+        if (deveEnviarEmail && emailResp != null) {
+            emailService.enviarAlertaManutencao(emailResp, placa, "URGENTE: " + detalhes);
         }
         
     } catch (Exception e) {
-        alertas.add("Não foi possível carregar todos os alertas");
+        // Ignora erro
+            }
+        }
     }
     
-    if (alertas.isEmpty()) {
-        alertas.add("Sem Alertas por agora");
-    }
+} catch (Exception e) {
+    alertas.add("Não foi possível carregar todos os alertas");
+}
+
+if (alertas.isEmpty()) {
+    alertas.add("Sem Alertas por agora");
+}
     
     return alertas;
 }
-private void enviarEmailAlerta(String email, String placa, String mensagem) {
-    // Implementar envio de email
-    System.out.println("Enviando email para " + email + ": " + placa + " - " + mensagem);
-}
- 
+
  // Método alternativo mais simples
  public List<String> gerarAlertasSimplificado() {
      List<String> alertas = new ArrayList<>();
