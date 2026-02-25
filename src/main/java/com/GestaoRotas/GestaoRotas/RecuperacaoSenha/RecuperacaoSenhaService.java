@@ -32,8 +32,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor 
 public final class RecuperacaoSenhaService  {
 	
-	  
-	//Ja que nao possuo o usuarioRepository uso o loginRepository
+	   
+
     private final LoginRepository loginRepository;
     private final PasswordEncoder passwordEncoder;
       
@@ -43,83 +43,6 @@ public final class RecuperacaoSenhaService  {
     private static final Logger logger = LoggerFactory.getLogger(RecuperacaoSenhaService.class);
     
   
-     public Map<String, Object> verificarCodigoERedefinirSenha(VerificarCodigoDTO dto) {
-    Map<String, Object> response = new HashMap<>();
-    
-    try {  
-        // Buscar usuário pelo username
-        Optional<Usuario> usuarioOpt = loginRepository.findByUsername(dto.getUsername());
-        
-        if (!usuarioOpt.isPresent()) {
-            response.put("status", "erro");
-            response.put("mensagem", "Usuário não encontrado");
-            return response;
-        }
-        
-        Usuario usuario = usuarioOpt.get();
-        
-        // Verificar se o email corresponde
-        if (!usuario.getEmail().equalsIgnoreCase(dto.getEmail())) {
-            response.put("status", "erro");
-            response.put("mensagem", "Email não corresponde ao usuário");
-            return response;
-        }
-        
-        // Verificar se o código é válido
-        if (!usuario.isCodigoValido()) {
-            response.put("status", "erro");
-            response.put("mensagem", "Código expirado ou inválido. Solicite um novo código.");
-            return response;
-        }
-        
-        // Verificar se o código digitado está correto
-        if (!usuario.getCodigoVerificacao().equals(dto.getCodigo())) {
-            response.put("status", "erro");
-            response.put("mensagem", "Código incorreto");
-            return response;
-        }
-        
-        // Verificar pergunta de segurança
-        if (!usuario.getRespostaSeguranca().equalsIgnoreCase(dto.getRespostaSeguranca())) {
-            response.put("status", "erro");
-            response.put("mensagem", "Resposta de segurança incorreta");
-            return response;
-        }
-        
-        // Verificar NUIT
-        if (!usuario.getNuit().equals(dto.getNuit())) {
-            response.put("status", "erro");
-            response.put("mensagem", "NUIT incorreto");
-            return response;
-        }
-        
-        // TUDO OK! Redefinir senha
-        usuario.setPassword(passwordEncoder.encode(dto.getNovaSenha()));
-        usuario.setCodigoVerificado(true); // Marca como verificado
-        usuario.setCodigoVerificacao(null); // Limpa o codigo
-        usuario.setCodigoVerificacaoExpiry(null);
-        
-        // Limpar tokens antigos se existirem
-        usuario.setResetToken(null);
-        usuario.setResetTokenExpiry(null);
-        usuario.setTokenUtilizado(true);
-        
-        
-        loginRepository.save(usuario);
-        
-        response.put("status", "sucesso");
-        response.put("mensagem", "Senha redefinida com sucesso!");
-        response.put("redirect", "/login");
-        
-    } catch (Exception e) {
-        logger.error("Erro ao verificar código: {}", e.getMessage());
-        response.put("status", "erro");
-        response.put("mensagem", "Erro interno. Tente novamente.");
-    }
-    
-    return response;  
-}
-
 public Map<String, String> solicitarRecuperacaoSenha(String username, String email) {
     Optional<Usuario> usuarioOpt = loginRepository.findByUsernameAndEmail(username, email);
     Map<String, String> response = new HashMap<>();
@@ -137,7 +60,7 @@ public Map<String, String> solicitarRecuperacaoSenha(String username, String ema
    usuario.setResetTokenExpiry(LocalDateTime.now().plusHours(2));
     usuario.setTokenUtilizado(false);
     
-    //
+    
     // Gerar código de 6 dígitos
     String codigo = String.format("%06d", new Random().nextInt(999999));
     
@@ -163,10 +86,7 @@ public Map<String, String> solicitarRecuperacaoSenha(String username, String ema
     response.put("perguntaSeguranca", usuario.getPerguntaSeguranca()); // Supondo que tenha este campo
     response.put("token", token);
     response.put("status", "sucesso");
-    
-        // Enviar email com token (opcional)
-        // emailServiceImpl.enviarEmailRecuperacao(usuario.getEmail(), token);
-        
+  
     return response;
       }
     Map<String, String> errorResponse = new HashMap<>();
@@ -204,21 +124,19 @@ public boolean redefinirSenhaComVerificacao(recuperacaoSenhaDTO dto) {
     Optional<Usuario> usuarioOpt = loginRepository.findByUsername(dto.getUsername());
 
     if (usuarioOpt.isPresent()) {
-        Usuario usuario = usuarioOpt.get(); 
-        
-   
-        
+        Usuario usuario = usuarioOpt.get();  
+    
         boolean emailValido = usuario.getEmail().equalsIgnoreCase(dto.getEmail());
         boolean nuitValido = usuario.getNuit().equals(dto.getNuit());
         boolean respostaValida = usuario.getRespostaSeguranca()
             .equalsIgnoreCase(dto.getRespostaSeguranca());
         boolean codigoVerificacao = usuario.getCodigoVerificacao().equalsIgnoreCase(dto.getCodigoVerificacao()) ; 
-        
-        if (emailValido && nuitValido && respostaValida && codigoVerificacao ) {
+         
+        if (emailValido && nuitValido && respostaValida && codigoVerificacao && usuario.isTokenValido()) {
             usuario.setPassword(passwordEncoder.encode(dto.getNovaSenha()));
             loginRepository.save(usuario);
             return true; 
-        } 
+        }  
     } 
     return false;   
 
