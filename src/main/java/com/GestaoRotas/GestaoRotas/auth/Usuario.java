@@ -85,6 +85,12 @@ public class Usuario implements UserDetails {
     
     @Column(name = "conta_bloqueada")
     private Boolean contaBloqueada = false;
+     
+    // campos para a recuperacao via hash enviado por email
+    private String codigoVerificacao;
+    private LocalDateTime codigoVerificacaoExpiry;
+    private boolean codigoVerificado;
+    
        
     // Métodos de UserDetails
    
@@ -138,6 +144,14 @@ public class Usuario implements UserDetails {
     public void invalidarToken() {
         this.tokenUtilizado = true;
     } 
+    
+    public boolean isCodigoValido() {
+        return codigoVerificacao != null && 
+               codigoVerificacaoExpiry != null && 
+               codigoVerificacaoExpiry.isAfter(LocalDateTime.now()) && 
+               !codigoVerificado;
+    }
+
    //ainda por implementar
 /**
 public boolean isContaBloqueada() {
