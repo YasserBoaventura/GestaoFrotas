@@ -4,8 +4,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.GestaoRotas.GestaoRotas.CustoDTO.VerificarCodigoDTO;
-import com.GestaoRotas.GestaoRotas.DTO.SolicitarCodigoDTO;
+
 import com.GestaoRotas.GestaoRotas.DTO.recuperacaoSenhaDTO;
 
 import jakarta.persistence.*;

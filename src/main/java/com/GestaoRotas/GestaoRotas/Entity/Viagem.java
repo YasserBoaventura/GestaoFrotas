@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import com.GestaoRotas.GestaoRotas.Custos.Custo;
+import com.GestaoRotas.GestaoRotas.Model.TipoCarga;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -50,7 +51,9 @@ public class Viagem {
 	    @Column(name = "custo_pedagios" ,nullable = true) 
 	    private Double custoPedagios;
 	      
-	   
+
+        @Enumerated(EnumType.STRING)
+	    private TipoCarga tipoCarga;
 	    
 	    // ManyToOne com Motorista 
 

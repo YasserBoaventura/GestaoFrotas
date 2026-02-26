@@ -17,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.GestaoRotas.GestaoRotas.CustoDTO.VerificarCodigoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.SolicitarCodigoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.recuperacaoSenhaDTO;
 import com.GestaoRotas.GestaoRotas.Email.EmailService;
@@ -93,9 +92,7 @@ public Map<String, String> solicitarRecuperacaoSenha(String username, String ema
     errorResponse.put("status", "erro");
     errorResponse.put("mensagem", "Usuário não encontrado");
     return errorResponse;
-   
-      }
-
+   }
 public boolean verificarRespostaSeguranca(String username, String respostaSeguranca) {
   Optional<Usuario> usuarioOpt = loginRepository.findByUsername(username);
     

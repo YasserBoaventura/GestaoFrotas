@@ -166,5 +166,12 @@ public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
 
     // Contagem de viagens por status
     Long countByStatus(String status);
+    //campos pra envio dos emalis das viagens para os motoristas
+    @Query("SELECT v FROM Viagem v WHERE v.data BETWEEN :inicio AND :fim")
+    List<Viagem> findViagensEntreDatas(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
+    
+    // Ou se preferir por semana específica
+    @Query("SELECT v FROM Viagem v WHERE YEAR(v.data) = :ano AND WEEK(v.data) = :semana")
+    List<Viagem> findViagensPorSemana(@Param("ano") int ano, @Param("semana") int semana); 
 
 }
