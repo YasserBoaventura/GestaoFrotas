@@ -41,7 +41,10 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
  
     @Query("SELECT SUM(c.valor) FROM Custo c WHERE c.data BETWEEN :inicio AND :fim AND c.status = 'PAGO'")
     Double calcularTotalPorPeriodoCompleto(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
-                        
+      //por periodo e veiculo 
+    @Query("SELECT SUM(c.valor) FROM Custo c WHERE c.data BETWEEN :inicio AND :fim AND c.veiculo.id = :veiculoId AND c.status = 'PAGO'")
+    Double calcularTotalPorPeriodoVeiculo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim,  @Param("veiculoId") Long veiculoId);
+           
     //metodo calcular o numero de custos  apenas por periodo 
     @Query("SELECT COUNT(c) FROM Custo c WHERE c.data BETWEEN :inicio AND :fim AND c.status = 'PAGO'")
     Integer numeroTotalCustoPorPeriodo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
@@ -67,7 +70,11 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
    // custo medio pra a utilizacao no dashbord
    @Query("SELECT AVG(c.valor) FROM Custo c WHERE c.data BETWEEN :inicio AND :fim AND c.status = 'PAGO'")
    Double mediaCustosPeriodo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
-    // Agrupamentos     
+    
+   @Query("SELECT AVG(c.valor) FROM Custo c WHERE c.data BETWEEN :inicio AND :fim AND  c.veiculo.id = :veiculoId AND c.status = 'PAGO'")
+   Double mediaCustosPeriodoVeiculo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim, @Param("veiculoId") Long veiculoId);
+    // Agrupamentos  
+   
     @Query("SELECT c.tipo, SUM(c.valor) FROM Custo c " +
            "WHERE YEAR(c.data) = :ano AND MONTH(c.data) = :mes AND c.status = 'PAGO' " +
            "GROUP BY c.tipo")

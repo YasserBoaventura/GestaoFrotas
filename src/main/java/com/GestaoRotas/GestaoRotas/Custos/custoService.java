@@ -430,33 +430,42 @@ public void migrarAbastecimentosExistentes() {
     public List<CustoListDTO> listar() {
       return custoRepository.findAllAsDTO();  
     }  
-     public RelatorioCustosDetalhadoDTO gerarRelatorioDetalhado(RelatorioFilterDTO filtro) {
-        RelatorioCustosDetalhadoDTO relatorio = new RelatorioCustosDetalhadoDTO();
-            
-        //filtros do relatorio por localDate  
-        relatorio.setPeriodoInicio(filtro.getDataInicio());
-        relatorio.setPeriodoFim(filtro.getDataFim());
-                 
-        // Totais     
-        Double totalPeriodo = custoRepository.calcularTotalPorPeriodoCompleto(
-            filtro.getDataInicio(), filtro.getDataFim());
-           relatorio.setTotalPeriodo(totalPeriodo);
-            System.out.println("totais fim em e inicio: "+ totalPeriodo); 
+ public RelatorioCustosDetalhadoDTO gerarRelatorioDetalhado(RelatorioFilterDTO filtro) {
+    RelatorioCustosDetalhadoDTO relatorio = new RelatorioCustosDetalhadoDTO();
+        
+    //filtros do relatorio por localDate  
+    relatorio.setPeriodoInicio(filtro.getDataInicio());
+    relatorio.setPeriodoFim(filtro.getDataFim());
              
-            //quantidade custos por periodo 
-            if(filtro.getVeiculoId()== null) {
-            Integer quantidadeCusto = custoRepository.numeroTotalCustoPorPeriodo(filtro.getDataInicio(), filtro.getDataFim()); 
-            relatorio.setQuantidadeCustos(quantidadeCusto); 
-            }else{ 
-            	Integer quantidadeCustoVeiculo = custoRepository.numeroTotalCustoPorPeriodoVeiculo(filtro.getDataInicio(), filtro.getDataFim(),filtro.getVeiculoId());
-            	relatorio.setQuantidadeCustos(quantidadeCustoVeiculo); 
-            }
-           
-           // media por periodo
+    // Totais se nao estiver associado a um veiculo
+    if(filtro.getVeiculoId() == null) {
+    Double totalPeriodo = custoRepository.calcularTotalPorPeriodoCompleto(
+        filtro.getDataInicio(), filtro.getDataFim());
+       relatorio.setTotalPeriodo(totalPeriodo);
+
+     }else {
+    	Double totalPeriodoVeiculo = custoRepository.calcularTotalPorPeriodoVeiculo(filtro.getDataInicio(), filtro.getDataFim(), filtro.getVeiculoId());  
+     relatorio.setTotalPeriodo(totalPeriodoVeiculo);
+ 
+      }
+    //quantidade custos por periodo se nao estiver associado a um veiculo
+    if(filtro.getVeiculoId()== null) {
+    Integer quantidadeCusto = custoRepository.numeroTotalCustoPorPeriodo(filtro.getDataInicio(), filtro.getDataFim()); 
+    relatorio.setQuantidadeCustos(quantidadeCusto); 
+    }else{ 
+    	Integer quantidadeCustoVeiculo = custoRepository.numeroTotalCustoPorPeriodoVeiculo(filtro.getDataInicio(), filtro.getDataFim(),filtro.getVeiculoId());
+    	relatorio.setQuantidadeCustos(quantidadeCustoVeiculo);
+
+    }
+     // media por periodo se nao estiver associado a um veiculo
+         if(filtro.getVeiculoId() == null) {
            Double mediaPorPeriodo = custoRepository.mediaCustosPeriodo(filtro.getDataInicio(), filtro.getDataFim());  
            relatorio.setMediaCustoPeriodo(mediaPorPeriodo); 
- 
-        // Por veículo 
+         }else {
+        	 Double mediaPorPeriodoVeiculo = custoRepository.mediaCustosPeriodoVeiculo(filtro.getDataInicio(),  filtro.getDataFim(), filtro.getVeiculoId()); 
+         relatorio.setMediaCustoPeriodo(mediaPorPeriodoVeiculo);
+         }
+        // Por veículo  
         List<Object[]> porVeiculo = custoRepository.calcularTotalPorVeiculoPeriodo(
             filtro.getDataInicio(), filtro.getDataFim());
         
@@ -464,42 +473,39 @@ public void migrarAbastecimentosExistentes() {
         for (Object[] obj : porVeiculo) {
             mapaVeiculos.put((String) obj[0], (Double) obj[1]);
         }
-        relatorio.setTotalPorVeiculo(mapaVeiculos);
+       relatorio.setTotalPorVeiculo(mapaVeiculos);
+
+// Por tipo 
+     relatorio.setTotalPorTipo(custoRepository.calcularTotalPorTipoPeriodo(
+         filtro.getDataInicio(), filtro.getDataFim()));
         
-        // Por tipo 
-        relatorio.setTotalPorTipo(custoRepository.calcularTotalPorTipoPeriodo(
-            filtro.getDataInicio(), filtro.getDataFim()));
-        
-        // Lista detalhada 
+          List<Custo> custos = custoRepository.findByPeriodo(
+           filtro.getDataInicio(), filtro.getDataFim(), filtro.getVeiculoId());
+     
+        //pega se o filtro nao estiver associado a um veiculo
+if(filtro.getVeiculoId() == null) {
+custos  = custoRepository.findByPeriodoSemVeiculo(filtro.getDataInicio(), filtro.getDataFim());       
+  // total  porcento por custo //por implementar
+ } 
+ 
+Map<String, Double> totalPorcentoPorCusto = new HashMap<>(); 
+//-----
+     
+    LocalDate  inicio = filtro.getDataInicioTop5VeiculosMaisCarro();
+    LocalDate  fim = filtro.getDataFimTop5VeiculosMaisCarro(); 
+    List<VeiculoCustoDTO> top5VeiculosMaisCarros = custoRepository.findTop5VeiculosMaisCarosPorPeriodo(inicio,fim);
+   relatorio.setTop5VeiculosMaisCaros(top5VeiculosMaisCarros);
+    
+    //top5 os custos  mais altos
+    Pageable pageable = PageRequest.of(0, 5);
+        List<CustoDetalhadoDTO> top5CustosMaisAltos = custoRepository.findTop5CustosMaisAltos(pageable);
+    relatorio.setTop5CustosMaisAltos(top5CustosMaisAltos);
+  
+    relatorio.setCustosDetalhados(custos.stream()
+        .map(CustoDTO::fromEntity)
+        .collect(Collectors.toList()));
       
-        List<Custo> custos = custoRepository.findByPeriodo(
-            filtro.getDataInicio(), filtro.getDataFim(), filtro.getVeiculoId());
-           //<Custo> custoss = custoRepository.findByVeiculoIdAndDataBetweenOrderByDataDesc(filtro.getVeiculoId(), filtro.getDataInicio(), filtro.getDataFim());
-      
-        if(filtro.getVeiculoId() == null) {
-        	System.out.print("Entrei Aqui");
-         custos  = custoRepository.findByPeriodoSemVeiculo(filtro.getDataInicio(), filtro.getDataFim());       
-          // total  porcento por custo //por implementar
-         }
-         
-        Map<String, Double> totalPorcentoPorCusto = new HashMap<>(); 
-        //-----
-         
-        LocalDate  inicio = filtro.getDataInicioTop5VeiculosMaisCarro();
-        LocalDate  fim = filtro.getDataFimTop5VeiculosMaisCarro(); 
-        List<VeiculoCustoDTO> top5VeiculosMaisCarros = custoRepository.findTop5VeiculosMaisCarosPorPeriodo(inicio,fim);
-       relatorio.setTop5VeiculosMaisCaros(top5VeiculosMaisCarros);
-        
-        //top5 os custos  mais altos
-        Pageable pageable = PageRequest.of(0, 5);
-            List<CustoDetalhadoDTO> top5CustosMaisAltos = custoRepository.findTop5CustosMaisAltos(pageable);
-        relatorio.setTop5CustosMaisAltos(top5CustosMaisAltos);
-      
-        relatorio.setCustosDetalhados(custos.stream()
-            .map(CustoDTO::fromEntity)
-            .collect(Collectors.toList()));
-          
-        return relatorio;
+    return relatorio;
     } 
      public Integer numeroCustos () {
 	    	return custoRepository.countAll();
@@ -537,8 +543,8 @@ public void migrarAbastecimentosExistentes() {
             if (!custoRepository.existsByManutencaoId(manut.getId())) {
                 criarCustoParaManutencao(manut);
                 contador++;
-            }
-        } catch (Exception e) {
+            }         
+        } catch (ClassCastException e) {  
             System.err.println("Erro ao migrar manutenção " + manut.getId() + ": " + e.getMessage());
         }
     }  
@@ -582,8 +588,8 @@ public void migrarAbastecimentosExistentes() {
             "ALERTA: Abastecimento de alto valor - Veículo: %s, Valor: R$ %.2f",
             abastecimento.getVeiculo().getMatricula(),
             abastecimento.getValorTotal()
-        );
-          
+        ); 
+                  
         // Log ou enviar email/notificação
         System.out.println(mensagem);
     }
@@ -620,7 +626,7 @@ public void migrarAbastecimentosExistentes() {
         
         return "custo actualizado com sucesso!";
     }
-
+      @Transactional
     public String excluirCusto(Long id) { 
         Custo custo = custoRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Custo não encontrado"));

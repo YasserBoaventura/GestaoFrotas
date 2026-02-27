@@ -31,6 +31,7 @@ public class ServiceVeiculo {
 	
 
 	public String salvar(Veiculo veiculo) {
+		System.out.println("Responsavel "+veiculo.getEmailResponsavel());
 		this.repositoryVeiculo.save(veiculo);
 		 return "Veiculo Salvo com sucesso";
 	}

@@ -34,6 +34,8 @@ import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -43,12 +45,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CustoController {
 	  
-   private final custoService custoService;
+   private final custoService custoService; 
 	      
 	    // Registro manual  
 @PostMapping("/criarCusto")   
 @PreAuthorize("hasAuthority('ADMIN')") 
-public ResponseEntity<CustoDTO> criar(@RequestBody CustoRequestDTO request) {
+public ResponseEntity<CustoDTO> criar(@RequestBody @Valid CustoRequestDTO request) {
     try { 
         Custo custo = custoService.registrarCustoManual(request);
         return ResponseEntity.ok(CustoDTO.fromEntity(custo));
@@ -99,7 +101,7 @@ public ResponseEntity<CustoDTO> criar(@RequestBody CustoRequestDTO request) {
     public ResponseEntity<DashboardCustosDTO> getDashboard() {
         DashboardCustosDTO dashboard = custoService.getDashboardCustos();
         return ResponseEntity.ok(dashboard);
-    }  
+    }   
 // listar por data inicio e fim apenas
 @GetMapping("/relatorio-por-periodo")    
 @PreAuthorize("hasAuthority('ADMIN')")     
@@ -107,12 +109,12 @@ public ResponseEntity<List<CustoDTO>> relatorioPorPeriodo(
        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
    return ResponseEntity.ok(custoService.buscarPorPeriodo(inicio, fim)); 
-}   
+}    
  @PostMapping("/relatorio")         
- @PreAuthorize("hasAuthority('ADMIN')")      
-public ResponseEntity<?> relatorio(@RequestBody RelatorioFilterDTO filtro) {
+ @PreAuthorize("hasAuthority('ADMIN')")       
+public ResponseEntity<?> relatorio(@RequestBody @Valid RelatorioFilterDTO filtro) {
     try {       
-    	System.out.println(""); 
+   
        RelatorioCustosDetalhadoDTO relatorio = custoService.gerarRelatorioDetalhado(filtro);
         return ResponseEntity.ok(relatorio); 
        } catch (Exception e) {             
