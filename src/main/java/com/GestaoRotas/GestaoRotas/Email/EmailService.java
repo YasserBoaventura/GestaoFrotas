@@ -16,10 +16,10 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor 
-public class EmailService{
+public non-sealed class EmailService implements EmailServiceImp{
 	
 	private final JavaMailSender mailSender; 
-
+ 
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
     
 	
@@ -28,22 +28,45 @@ public class EmailService{
 	
 	
 public void enviarEmailRecuperacao(String destinatario, String token) {
-	
+
 }
 public void enviarEmailConfirmacao(String destinatario, String assunto, String mensagem) {}
 
-public void enviarEmailSimples(String destinatario, String assunto, String mensagem) {}
+//para o envio de codigos
+@Async
+public void enviarCodigoVerificacao(String emailDestino, String nome, String codigo) {
+    try {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(emailFrom);
+        message.setTo(emailDestino);
+        message.setSubject("🔐 Código de Verificação - Recuperação de Senha");
+        message.setText(String.format(
+            "Olá %s,\n\n" +
+            "Você solicitou a recuperação de senha.\n\n" +
+            "Seu código de verificação é: %s\n\n" + 
+            "Este código expira em 10 minutos.\n\n" +
+            "Se não foi você, ignore este email.\n\n" +
+            "Atenciosamente,\nSistema de Gestão de Frotas",
+            nome, codigo
+        ));
+         
+        mailSender.send(message);
+        logger.info("✅ Código de verificação enviado para: {}", emailDestino);
+        
+    } catch (Exception e) {
+        logger.error("❌ Erro ao enviar código: {}", e.getMessage());
+    }
+}
 
-
-// Cache para controlar emails já enviados (evita duplicação)
+// Cache para controlar emails já enviados evita duplicação
 private final ConcurrentHashMap<String, Long> emailsEnviados = new ConcurrentHashMap<>();
 
-
-@Async
+ 
+@Async 
 public void enviarAlertaManutencao(String emailDestinatario, String placa, String detalhes) {
-    // Chave única para este alerta (veículo + tipo + dia)
+    // Chave única para este alerta 
     String chaveUnica = placa + "_" + detalhes + "_" + LocalDate.now();
-    
+     
     // Verifica se já enviou nas últimas 24 horas
     Long ultimoEnvio = emailsEnviados.get(chaveUnica);
     if (ultimoEnvio != null && System.currentTimeMillis() - ultimoEnvio < 86400000) { // 24h
@@ -68,7 +91,7 @@ public void enviarAlertaManutencao(String emailDestinatario, String placa, Strin
         );
         
         mailSender.send(message);
-        
+          
         // Registra o envio bem-sucedido
         emailsEnviados.put(chaveUnica, System.currentTimeMillis());
         logger.info(" EMAIL ENVIADO com sucesso para veículo {}", placa);
@@ -107,7 +130,7 @@ public void enviarAlertaManutencaoVencida(String emailDestinatario, String placa
         logger.info(" ALERTA VENCIDO enviado para {}", placa);
         
     } catch (MailException e) {
-        logger.error("❌ Falha no envio de alerta vencido: {}", e.getMessage());
+        logger.error(" Falha no envio de alerta vencido: {}", e.getMessage());
     }
 }
 }

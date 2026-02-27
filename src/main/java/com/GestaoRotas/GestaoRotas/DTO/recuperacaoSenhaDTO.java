@@ -13,12 +13,13 @@ import lombok.Setter;
 
 public class recuperacaoSenhaDTO {
 	
-	    private String username;
+	    private String username; 
 	    private String email;
 	    private String nuit;
 	    private String respostaSeguranca;
 	    private String novaSenha;
 	    private String token;  
+	    private String codigoVerificacao;
 	   
 
     

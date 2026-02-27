@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.GestaoRotas.GestaoRotas.CustoDTO.VerificarCodigoDTO;
+import com.GestaoRotas.GestaoRotas.DTO.SolicitarCodigoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.recuperacaoSenhaDTO;
 
 import jakarta.persistence.*;
@@ -19,18 +21,18 @@ import java.util.*;
 @RequiredArgsConstructor  
 public class RecuperacaoSenhaController {
 	
-	private  final RecuperacaoSenhaService recuperacaoService;
+	private final RecuperacaoSenhaService recuperacaoService;
 	 
- 
+  
  @PostMapping("/solicitar-recuperacao")
  public ResponseEntity<Map<String, String>> solicitarRecuperacao(@RequestBody SolicitarRecuperacaoRequest dto) {
      Map<String, String> response = recuperacaoService.solicitarRecuperacaoSenha(dto.getUsername(), dto.getEmail());
-     
+      
      if ("sucesso".equals(response.get("status"))) {
          return ResponseEntity.ok(response);  //traz a pergunta e o Token do repository
      }  else if("Usuario nao pode fazer altercoes. sua conta esta inativa".equals(response.get("status"))) { 
     	 return ResponseEntity.status(201).body(response);
-     }else {
+     }else {  
     	   
          return ResponseEntity.status(404).body(response);
      }
@@ -42,13 +44,13 @@ public ResponseEntity<?> redefinirSenhaComToken(@RequestBody RedefinirSenhaToken
         request.getToken(), 
         request.getNovaSenha()
     ); 
-     if (sucesso) {
+     if (sucesso) { 
         return ResponseEntity.ok("Senha redefinida com sucesso");
     } else {
         return ResponseEntity.badRequest().body("Token inválido ou expirado");
     } 
 }    
-
+ 
 @PostMapping("/redefinir-senha-verificacao")
 public ResponseEntity<?> redefinirSenhaComVerificacao(@RequestBody recuperacaoSenhaDTO dto) {
     boolean sucesso = recuperacaoService.redefinirSenhaComVerificacao(dto);
@@ -57,6 +59,12 @@ public ResponseEntity<?> redefinirSenhaComVerificacao(@RequestBody recuperacaoSe
     } else {
         return ResponseEntity.badRequest().body("Dados de verificação inválidos");
     } 
-}
+} 
  
 }
+
+
+
+
+ 
+
