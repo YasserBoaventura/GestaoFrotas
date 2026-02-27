@@ -26,7 +26,7 @@ public interface RepositoryAbastecimentos extends JpaRepository<abastecimentos, 
     Long  contarAbastecimentosRealizados();
      
     @Query("SELECT COUNT(a) FROM abastecimentos a WHERE a.statusAbastecimento = 'CANCELADA'")
-    Optional<Long>  contarAbastecimentosCancelados();  
+    Optional<Long>  contarAbastecimentosCancelados();   
     
     @Query("SELECT COUNT(a) FROM abastecimentos a WHERE a.statusAbastecimento = 'PLANEADA'")
     Optional<Long> contarAbastecimentosPlaneados();

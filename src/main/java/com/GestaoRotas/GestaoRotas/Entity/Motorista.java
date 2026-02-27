@@ -31,7 +31,7 @@ public class Motorista {
 	private String numeroCarta;
 	 
 	@Column(unique = true, length = 100)
-	private String email; 
+	private String email;  
 	        
 	@Column(length = 20, unique = true) 
 	private String telefone;

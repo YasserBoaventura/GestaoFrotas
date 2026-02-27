@@ -32,20 +32,20 @@ public class ServiceAbastecimentos {
 	private final RepositoryVeiculo repositorioveiculos;
 	private final custoService custoService;
 	////////////
-	 @Transactional
-	    public Map<String, String> save(AbastecimentoDTO dto) {
-	        Map<String, String> response = new HashMap<>();
-	        Veiculo veiculo = repositorioveiculos.findById(dto.getVeiculoId())
-	            .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
-	      abastecimentos abastecimento = new abastecimentos();
-	        abastecimento.setVeiculo(veiculo);
-	       if (dto.getViagemId() != null) {
-	        	Viagem viagem = repositorioViagem.findById(dto.getViagemId())
-                .orElseThrow(() -> new RuntimeException("Viagem não encontrada com ID: " + dto.getViagemId()));
-                abastecimento.setViagem(viagem);
-        } else {
-            abastecimento.setViagem(null);
-        }
+ @Transactional
+    public Map<String, String> save(AbastecimentoDTO dto) {
+        Map<String, String> response = new HashMap<>();
+        Veiculo veiculo = repositorioveiculos.findById(dto.getVeiculoId())
+            .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
+  abastecimentos abastecimento = new abastecimentos();
+    abastecimento.setVeiculo(veiculo);
+   if (dto.getViagemId() != null) {
+    	Viagem viagem = repositorioViagem.findById(dto.getViagemId())
+        .orElseThrow(() -> new RuntimeException("Viagem não encontrada com ID: " + dto.getViagemId()));
+        abastecimento.setViagem(viagem);
+} else {
+    abastecimento.setViagem(null);
+}
  
     // Preencher outros campos...
     abastecimento.setDataAbastecimento(dto.getDataAbastecimento());
@@ -79,7 +79,7 @@ public class ServiceAbastecimentos {
     }  
     //Deletar por id
 public String deletar(long id) {
-	this.repositoryAbastecimentos.deleteById(id);
+	this.repositoryAbastecimentos.deleteById(id);  
     return "abastecimento  deletado com sucesso";
 	
 }  
@@ -87,6 +87,7 @@ public abastecimentos findById(long id) {
   return this.repositoryAbastecimentos.findById(id).get();
 }
     //Atualizacao de abastecimento de foreem mal escritos
+@Transactional
 public String update(AbastecimentoDTO abstecimentos, long id) {
    
     abastecimentos abastecimento = this.repositoryAbastecimentos.findById(id)
@@ -120,8 +121,7 @@ public String update(AbastecimentoDTO abstecimentos, long id) {
 // relario de de abastecimento por veiculo 
 public List<RelatorioCombustivelDTO> relatorioPorVeiculo() {   
     return repositoryAbastecimentos.relatorioPorVeiculo();  
-         
-    }
+   }
 public List<RelatorioCombustivelDTO> relatorioPorPeriodo(LocalDate inicio, LocalDate fim) {
     return repositoryAbastecimentos.relatorioPorPeriodo(inicio, fim); 
    }

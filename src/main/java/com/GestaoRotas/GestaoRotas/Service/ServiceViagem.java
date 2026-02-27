@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-
+import java.time.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -85,12 +85,12 @@ public String update(ViagensDTO viagemDTO, long id) {
 		try {
 		Viagem viagem = this.repositoryViagem.findById(id).orElseThrow(()-> new RuntimeException("viagem nao existente"));
 	   viagem.iniciarViagem(); 
-	   //para a atualizacao  do motorista 
+	 
 	     Motorista  motorista = viagem.getMotorista();
 	   
 	     motorista.setStatus(statusMotorista.EM_VIAGEM);
 	     motoristaRepository.save(motorista);
-	    //Actualiza o veiculo mara em Viagem
+	    
 	     repositoryViagem.save(viagem);
 	   //para a actualizacao do veiculo 
 	   Veiculo veiculo = viagem.getVeiculo();
@@ -220,11 +220,10 @@ public String update(ViagensDTO viagemDTO, long id) {
 	    viagem.setData(LocalDateTime.now());
 		  
 	   Viagem savedViagem = repositoryViagem.save(viagem);
-	//   custoService.criarCustoParaViagem(savedViagem, null, null, null)
+
 	    return "viagem salva com sucesso";
 	}
-	// campos para validar o estato do motorista antes de ser
-	//Associando a uma viagem
+
 	 private boolean validarMotorista(Motorista motorista) {
     // Verifica se o motorista está ativo e disponível
     if (motorista.getStatus() == null) {
@@ -240,8 +239,7 @@ public String update(ViagensDTO viagemDTO, long id) {
         "INATIVO",
         "BLOQUEADO"
     );
-	        
-	        // Verifica se o status do motorista está na lista de bloqueados
+
 	        return !statusBloqueados.contains(status);
 	    }
 	    // Método de validação do veículo CORRIGIDO
@@ -286,6 +284,12 @@ public Long getContByStatus(String status) {
 public List<RelatorioMotoristaDTO> relatorioPorMotorista() {
         return repositoryViagem.relatorioPorMotorista();
     }
+public List<RelatorioMotoristaDTO> relatorioPorMotoristaPeriodo(LocalDateTime inicio, LocalDateTime fim){
+	return repositoryViagem.relatorioPorMotoristaPorPeriodo(inicio, fim);  
+} 
+public List<RelatorioPorVeiculoDTO> relatorioPorVeiculoPeriodo( LocalDateTime incio, LocalDateTime fim){
+	return repositoryViagem.relatorioPorVeiculoPorPeriodo(incio, fim); 
+} 
    //Mostra o plca do carro , totalViagens , totalEmKm e totalConbustivel usado
    public List<RelatorioPorVeiculoDTO> gerarRelatorioPorVeiculo() {
         return repositoryViagem.relatorioPorVeiculo();  

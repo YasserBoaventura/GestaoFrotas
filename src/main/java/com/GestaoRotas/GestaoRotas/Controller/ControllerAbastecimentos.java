@@ -40,7 +40,7 @@ public class ControllerAbastecimentos {
   
      // sava o abastecimento
    @PostMapping("/save")
-   @PreAuthorize("hasAuthority('ADMIN')") 
+   @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
   public ResponseEntity<Map<String, String>> salvar(@RequestBody @Valid AbastecimentoDTO abastecimentoDTO) {
    try { 
 	   return ResponseEntity.ok(abastecimentosService.save(abastecimentoDTO)); 
@@ -51,7 +51,7 @@ public class ControllerAbastecimentos {
 	  }   
     }            
   @PutMapping("/update/{id}")
-  @PreAuthorize("hasAuthority('ADMIN')")  
+  @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')") 
   public ResponseEntity<String> update(@PathVariable long id, @RequestBody AbastecimentoDTO abastecimentoDTO) {
       try {
       String response = this.abastecimentosService.update(abastecimentoDTO, id);
@@ -80,7 +80,7 @@ public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorPeriodo(
     System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
     return ResponseEntity.ok(abastecimentosService.relatorioPorPeriodo(inicio, fim));
 }     
-@PreAuthorize("hasAuthority('ADMIN')")
+@PreAuthorize("hasAuthority('ADMIN','USER')") 
 @GetMapping("/abastecimentoRealizado") 
   public ResponseEntity<Long> abastecimentosRealizados(){
 		return ResponseEntity.status(HttpStatus.OK).body(abastecimentosService.numeroAbastecimentoRealizados()); 
@@ -95,14 +95,14 @@ public ResponseEntity<Optional<Long>> abastecimentosCancelados(){
 }
 //Busca todos os abastecimentos  
 @GetMapping("/findAll")  
-@PreAuthorize("hasAuthority('ADMIN')") 
+@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
 public ResponseEntity<List<abastecimentos>> findAll(){
  try {  
 	 return ResponseEntity.ok(abastecimentosService.findAll()); 
 	}catch(Exception e) {
 	 return ResponseEntity.badRequest().build();
   }  
-   }
+   } 
 @DeleteMapping("/delete/{id}")
 @PreAuthorize("hasAuthority('ADMIN')")  
     public ResponseEntity<String> deleteById(@PathVariable long id){
@@ -114,8 +114,7 @@ public ResponseEntity<List<abastecimentos>> findAll(){
     }
 	 
 } 
-@GetMapping("/findById/{id}")
-@PreAuthorize("hasAuthority('ADMIN')")  
+@GetMapping("/findById/{id}") 
 public ResponseEntity<abastecimentos> findById(@PathVariable long id){
 	try {
 		return ResponseEntity.ok(abastecimentosService.findById(id));

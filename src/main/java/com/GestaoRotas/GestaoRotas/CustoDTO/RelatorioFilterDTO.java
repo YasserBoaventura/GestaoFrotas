@@ -32,8 +32,7 @@ public class RelatorioFilterDTO {
         this.dataFim = LocalDate.now();
     }
     
-    // Getters e Setters normais...
-    
+  
     // SETTERS ESPECIAIS PARA JSON
     public void setDataInicio(String dataInicio) {
         if (dataInicio != null) {

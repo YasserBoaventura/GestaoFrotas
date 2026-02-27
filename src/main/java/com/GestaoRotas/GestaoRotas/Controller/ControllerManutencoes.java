@@ -35,6 +35,7 @@ public class ControllerManutencoes {
     private final ServiceManutencoes manutencaoService;
 
   @PostMapping("/save")
+  @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
 public ResponseEntity<String> cadastrar(@RequestBody manuntecaoDTO manutencaoDTO) {
    try {
      return  ResponseEntity.ok(manutencaoService.salvar(manutencaoDTO));
@@ -45,6 +46,7 @@ public ResponseEntity<String> cadastrar(@RequestBody manuntecaoDTO manutencaoDTO
 	    	
 }
   @PutMapping("/update/{id}")
+  @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
   public ResponseEntity<String>update(@PathVariable long id ,@RequestBody manuntecaoDTO manutencaoDTO ){
 	  try{
      return ResponseEntity.ok(manutencaoService.update(manutencaoDTO, id));
@@ -61,8 +63,8 @@ try {
 	    	return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 	   }
 	    } 
-
 @DeleteMapping("/delete/{id}")
+@PreAuthorize("hasAuthority('ADMIN')")  
    public ResponseEntity<String> excluir(@PathVariable Long id) {
       try {
      String frase = manutencaoService.deleteById(id);
@@ -107,7 +109,8 @@ public ResponseEntity<Map<String, String>> cancelarManutencao(@RequestBody Strin
 		}	 
 }
  @GetMapping("/findAll")
-    public ResponseEntity<List<Manutencao>>  findAll(){
+ @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+ public ResponseEntity<List<Manutencao>>  findAll(){
     	 try {
     	List<Manutencao> lista=this.manutencaoService.findAll();
     	if(lista.isEmpty()) {
@@ -156,7 +159,7 @@ public ResponseEntity<Map<String, String>> cancelarManutencao(@RequestBody Strin
         System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
         return ResponseEntity.ok(manutencaoService.relatorioPorPeriodo(inicio, fim)); 
     }           
-    @PreAuthorize("hasAuthority('ADMIN')")     
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @GetMapping("/gerarAltertas")
     public ResponseEntity<List<String>> getAlertas() { 
         return ResponseEntity.ok(manutencaoService.gerarAlertas());
@@ -172,7 +175,7 @@ public ResponseEntity<Map<String, String>> cancelarManutencao(@RequestBody Strin
     public ResponseEntity<List<Manutencao>> vencidas() {
         return ResponseEntity.ok(manutencaoService.buscarVencidas());
     } 
-
+ 
     @GetMapping("/proximas")
     public ResponseEntity<List<Manutencao>> proximas30Dias() {
         return ResponseEntity.ok(manutencaoService.buscarProximas30Dias());

@@ -165,7 +165,13 @@ public class GlobalExceptionHandler {
     	response.put("erro", ex.getMessage());  
     	return ResponseEntity.badRequest().body(response); 
     }
- }
+    @ExceptionHandler(BusinessRoles.class) 
+    public ResponseEntity<Map<String, String>> handleBusinessRoles(BusinessRoles ex){
+    	Map<String, String> response = new HashMap<>();
+    	response.put("erro", ex.getMessage());  
+    	return ResponseEntity.badRequest().body(response); 
+    }
+  }
 
  
  

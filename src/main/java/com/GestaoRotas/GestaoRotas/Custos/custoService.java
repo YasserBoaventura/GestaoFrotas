@@ -39,8 +39,8 @@ import java.time.format.TextStyle;
 
 import lombok.RequiredArgsConstructor;
 
-@Service 
-@RequiredArgsConstructor 
+@Service  
+@RequiredArgsConstructor  
 public non-sealed class custoService  implements CustoServiceImpl {
  
 	   
@@ -292,7 +292,7 @@ public DashboardCustosDTO getDashboardCustos() {
     dashboard.setMensagem("Dashboard carregado com sucesso");
     
     LocalDate hoje = LocalDate.now();
-    int ano = hoje.getYear();
+    int ano = hoje.getYear(); 
     int mes = hoje.getMonthValue();
     
    System.out.println("Dashboard para {}-{}"+ ano + mes);
@@ -432,21 +432,25 @@ public void migrarAbastecimentosExistentes() {
     }  
      public RelatorioCustosDetalhadoDTO gerarRelatorioDetalhado(RelatorioFilterDTO filtro) {
         RelatorioCustosDetalhadoDTO relatorio = new RelatorioCustosDetalhadoDTO();
-           
+            
         //filtros do relatorio por localDate  
         relatorio.setPeriodoInicio(filtro.getDataInicio());
         relatorio.setPeriodoFim(filtro.getDataFim());
-                
+                 
         // Totais     
         Double totalPeriodo = custoRepository.calcularTotalPorPeriodoCompleto(
             filtro.getDataInicio(), filtro.getDataFim());
            relatorio.setTotalPeriodo(totalPeriodo);
             System.out.println("totais fim em e inicio: "+ totalPeriodo); 
              
-            //quantidade custos por periodo
+            //quantidade custos por periodo 
+            if(filtro.getVeiculoId()== null) {
             Integer quantidadeCusto = custoRepository.numeroTotalCustoPorPeriodo(filtro.getDataInicio(), filtro.getDataFim()); 
             relatorio.setQuantidadeCustos(quantidadeCusto); 
-
+            }else{ 
+            	Integer quantidadeCustoVeiculo = custoRepository.numeroTotalCustoPorPeriodoVeiculo(filtro.getDataInicio(), filtro.getDataFim(),filtro.getVeiculoId());
+            	relatorio.setQuantidadeCustos(quantidadeCustoVeiculo); 
+            }
            
            // media por periodo
            Double mediaPorPeriodo = custoRepository.mediaCustosPeriodo(filtro.getDataInicio(), filtro.getDataFim());  
@@ -466,11 +470,18 @@ public void migrarAbastecimentosExistentes() {
         relatorio.setTotalPorTipo(custoRepository.calcularTotalPorTipoPeriodo(
             filtro.getDataInicio(), filtro.getDataFim()));
         
-        // Lista detalhada de custos
+        // Lista detalhada 
+      
         List<Custo> custos = custoRepository.findByPeriodo(
             filtro.getDataInicio(), filtro.getDataFim(), filtro.getVeiculoId());
-        
-             // total  porcento por custo //por implementar
+           //<Custo> custoss = custoRepository.findByVeiculoIdAndDataBetweenOrderByDataDesc(filtro.getVeiculoId(), filtro.getDataInicio(), filtro.getDataFim());
+      
+        if(filtro.getVeiculoId() == null) {
+        	System.out.print("Entrei Aqui");
+         custos  = custoRepository.findByPeriodoSemVeiculo(filtro.getDataInicio(), filtro.getDataFim());       
+          // total  porcento por custo //por implementar
+         }
+         
         Map<String, Double> totalPorcentoPorCusto = new HashMap<>(); 
         //-----
          
@@ -487,7 +498,7 @@ public void migrarAbastecimentosExistentes() {
         relatorio.setCustosDetalhados(custos.stream()
             .map(CustoDTO::fromEntity)
             .collect(Collectors.toList()));
-         
+          
         return relatorio;
     } 
      public Integer numeroCustos () {
@@ -609,14 +620,15 @@ public void migrarAbastecimentosExistentes() {
         
         return "custo actualizado com sucesso!";
     }
-     @Transactional
-    public String excluirCusto(Long id) {
+
+    public String excluirCusto(Long id) { 
         Custo custo = custoRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Custo não encontrado"));
         
         Long veiculoId = custo.getVeiculo() != null ? custo.getVeiculo().getId() : null;
         
-        custoRepository.delete(custo);
+        custoRepository.deleteById(id);
+        
          
         // Recalcular totais se tinha veículo 
         if (veiculoId != null) {
