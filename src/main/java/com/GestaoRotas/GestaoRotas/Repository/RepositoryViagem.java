@@ -113,7 +113,7 @@ public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
             @Param("dataInicio") LocalDateTime dataInicio,
             @Param("dataFim") LocalDateTime dataFim);
 
-    // Relatório mensal de viagens
+    // Relatório mensal de viagens 
     @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioMensalDTO(" +
            "YEAR(v.dataHoraPartida), " +
            "MONTH(v.dataHoraPartida), " +

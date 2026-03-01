@@ -73,7 +73,7 @@ public ResponseEntity<CustoDTO> criar(@RequestBody @Valid CustoRequestDTO reques
   public ResponseEntity<String> delete(@PathVariable Long id){ 
 	  try {
 		  return ResponseEntity.ok(custoService.excluirCusto(id)); 
-	  }catch(Exception e) {
+	  }catch(Exception e) { 
 		  e.getCause().getMessage(); 
 		return ResponseEntity.badRequest().body("erro ao excluir custo"); 	  
 	  }
@@ -168,7 +168,7 @@ public ResponseEntity<?> relatorio(@RequestBody @Valid RelatorioFilterDTO filtro
  @GetMapping("/custoMesalUltimos12Meses")
  @PreAuthorize("hasAuthority('ADMIN')")     
  public ResponseEntity<Map<?, ?>> getCustoMensalUltimos12Meses(){
-	 try {
+	 try { 
 		 return ResponseEntity.ok(custoService.getCustoMensalUltimos12Meses());
  }catch(Exception e) {
 	 Map<String , String> erro = new HashMap<>();

@@ -216,7 +216,7 @@ private boolean temManutencaoProxima(Long veiculoId, int diasAntecedencia) {
 	    /**
      * Agenda verificação automática de status (executa a cada hora)
      */
-    @Scheduled(cron = "0 0 * * * *") // A cada hora
+   // @Scheduled(cron = "0 0 * * * *") // A cada hora
     @Transactional  
     public void verificarStatusAgendado() {
         System.out.println("Verificando status dos veículos...");

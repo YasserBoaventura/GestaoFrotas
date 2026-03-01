@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
-@Service
+@RequiredArgsConstructor 
+@Service 
 public class AgendamentoEmailService {
 
     
@@ -111,7 +111,7 @@ public void enviarEmailsViagensSemana() {
         
         logger.info("Email enviado para motorista {} - Viagem ID {}", nomeMotorista, viagem.getId());
     }
-    
+     
     // Método para envio manual (útil para testes)
     public void enviarEmailManual(Long viagemId) {
         Viagem viagem = viagemRepository.findById(viagemId).orElse(null);
