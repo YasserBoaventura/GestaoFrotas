@@ -286,90 +286,87 @@ public String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id) 
     }
     
     // ========== CONSULTAS E RELATÓRIOS ==========
-    
-public DashboardCustosDTO getDashboardCustos() {
-    DashboardCustosDTO dashboard = new DashboardCustosDTO();
-    dashboard.setMensagem("Dashboard carregado com sucesso");
-    
-    LocalDate hoje = LocalDate.now();
-    int ano = hoje.getYear(); 
-    int mes = hoje.getMonthValue();
-    
-   System.out.println("Dashboard para {}-{}"+ ano + mes);
-    
-try {  
-
-    Double totalAtual = custoRepository.calcularTotalPorPeriodo(ano, mes);
-    Double totalAnterior = custoRepository.calcularTotalPorPeriodo(ano, mes - 1);
-    
-    dashboard.setTotalMesAtual(totalAtual != null ? totalAtual : 0.0);
-    dashboard.setTotalMesAnterior(totalAnterior != null ? totalAnterior : 0.0);
-     
-    // Calcular variação só se tiver dados anteriores
-    if (dashboard.getTotalMesAnterior() != null && 
-        dashboard.getTotalMesAnterior() > 0 && 
-        dashboard.getTotalMesAtual() != null) {
+    public DashboardCustosDTO getDashboardCustos() {
+        DashboardCustosDTO dashboard = new DashboardCustosDTO();
+        dashboard.setMensagem("Dashboard carregado com sucesso");
         
-        Double variacao = ((dashboard.getTotalMesAtual() - dashboard.getTotalMesAnterior()) / 
-                         dashboard.getTotalMesAnterior()) * 100;
-        dashboard.setVariacaoPercentual(variacao);
-    } else {
-        dashboard.setVariacaoPercentual(0.0);
+        LocalDate hoje = LocalDate.now();
+        int ano = hoje.getYear(); 
+        int mes = hoje.getMonthValue();
+        
+       System.out.println("Dashboard para {}-{}"+ ano + mes);
+        
+    try {  
+
+        Double totalAtual = custoRepository.calcularTotalPorPeriodo(ano, mes);
+        Double totalAnterior = custoRepository.calcularTotalPorPeriodo(ano, mes - 1);
+        
+        dashboard.setTotalMesAtual(totalAtual != null ? totalAtual : 0.0);
+        dashboard.setTotalMesAnterior(totalAnterior != null ? totalAnterior : 0.0);
+         
+        // Calcular variação só se tiver dados anteriores
+        if (dashboard.getTotalMesAnterior() != null && 
+            dashboard.getTotalMesAnterior() > 0 && 
+            dashboard.getTotalMesAtual() != null) {
+            
+            Double variacao = ((dashboard.getTotalMesAtual() - dashboard.getTotalMesAnterior()) / 
+                             dashboard.getTotalMesAnterior()) * 100;
+            dashboard.setVariacaoPercentual(variacao);
+        } else {
+            dashboard.setVariacaoPercentual(0.0);
+        } 
+            
+        //custo por tipo
+    Map<String, Double> custosPorTipo = new HashMap<>();
+    List<Object[]> tipoResultados = custoRepository.calcularTotalPorTipoAgrupado(ano, mes);
+
+    if (tipoResultados != null && !tipoResultados.isEmpty()) {
+        for (Object[] obj : tipoResultados) {
+            if (obj != null && obj.length >= 2) {
+                String tipo = obj[0] != null ? obj[0].toString() : "OUTROS";
+            Double valor = obj[1] != null ? ((Number) obj[1]).doubleValue() : 0.0;
+            custosPorTipo.put(tipo, valor);
+        }
     } 
-        
-    //custo por tipo
-Map<String, Double> custosPorTipo = new HashMap<>();
-List<Object[]> tipoResultados = custoRepository.calcularTotalPorTipoAgrupado(ano, mes);
 
-if (tipoResultados != null && !tipoResultados.isEmpty()) {
-    for (Object[] obj : tipoResultados) {
-        if (obj != null && obj.length >= 2) {
-            String tipo = obj[0] != null ? obj[0].toString() : "OUTROS";
-        Double valor = obj[1] != null ? ((Number) obj[1]).doubleValue() : 0.0;
-        custosPorTipo.put(tipo, valor);
     }
-} 
+    dashboard.setCustosPorTipo(custosPorTipo);
 
-}
-dashboard.setCustosPorTipo(custosPorTipo);
-
-// veiculos
-        List<VeiculoCustoDTO> veiculosMaisCaros = new ArrayList<>();
-        List<VeiculoCustoDTO> resultados = custoRepository.findTop5VeiculosMaisCaros(ano, mes);
-           
-    if (resultados != null && !resultados.isEmpty()) {
-   
-        for (VeiculoCustoDTO obj : resultados) {
-         	  
-            if (obj != null ) { 
-                String matricula = obj.getMatricula() != null ? obj.getMatricula().toString() : "N/A";
-String modelo =   obj.getModelo() != null ? obj.getModelo().toString() : "Desconhecido";
-        Double total =    obj.getTotalCusto() != null ?  obj.getTotalCusto() : 0.0;
-        
-        veiculosMaisCaros.add(new VeiculoCustoDTO(matricula, modelo, total));
+    // veiculos
+            List<VeiculoCustoDTO> veiculosMaisCaros = new ArrayList<>();
+            List<VeiculoCustoDTO> resultados = custoRepository.findTop5VeiculosMaisCaros(ano, mes);
+               
+        if (resultados != null && !resultados.isEmpty()) {
+       
+            for (VeiculoCustoDTO obj : resultados) {
+             	  
+                if (obj != null ) { 
+                    String matricula = obj.getMatricula() != null ? obj.getMatricula().toString() : "N/A";
+    String modelo =   obj.getModelo() != null ? obj.getModelo().toString() : "Desconhecido";
+            Double total =    obj.getTotalCusto() != null ?  obj.getTotalCusto() : 0.0;
+            
+            veiculosMaisCaros.add(new VeiculoCustoDTO(matricula, modelo, total));
+        }
     }
-}
-}  
-    dashboard.setVeiculosMaisCaros(veiculosMaisCaros);
-    
-    // 4. Últimos custos
-List<Custo> ultimosCustos = custoRepository.findTop10ByOrderByDataDesc();
-if (ultimosCustos != null && !ultimosCustos.isEmpty()) {
-    dashboard.setUltimosCustos(ultimosCustos.stream()
-        .map(CustoDTO::fromEntity)
-        .collect(Collectors.toList()));
-} else {
-    dashboard.setUltimosCustos(new ArrayList<>());
-}
-//buscando o numero total de custos
-  Integer  totalCustos = custoRepository.countAll(); 
-     dashboard.setTotalCustos(totalCustos); 
-} catch (Exception e) {
-	System.err.println("Erro ao gerar dashboard: {}"+ e.getMessage());      
-dashboard.setMensagem("Erro ao carregar dashboard: " + e.getMessage());
-} 
-
-        return dashboard;
+    }  
+        dashboard.setVeiculosMaisCaros(veiculosMaisCaros);
+        
+        // 4. Últimos custos
+    List<Custo> ultimosCustos = custoRepository.findTop10ByOrderByDataDesc();
+    if (ultimosCustos != null && !ultimosCustos.isEmpty()) {
+        dashboard.setUltimosCustos(ultimosCustos.stream()
+            .map(CustoDTO::fromEntity)
+            .collect(Collectors.toList()));
+    } else {
+        dashboard.setUltimosCustos(new ArrayList<>());
+    }
+    //buscando o numero total de custos
+      Integer  totalCustos = custoRepository.countAll(); 
+         dashboard.setTotalCustos(totalCustos); 
+    } catch (Exception e) {
+    	System.err.println("Erro ao gerar dashboard: {}"+ e.getMessage());      
+    dashboard.setMensagem("Erro ao carregar dashboard: " + e.getMessage());
+    }  return dashboard;
     } 
 public Double valorTotalCustos() {
 	return custoRepository.valorTotalCustos(); 
