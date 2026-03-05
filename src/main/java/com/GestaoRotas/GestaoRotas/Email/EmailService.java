@@ -115,7 +115,7 @@ public void enviarAlertaManutencaoVencida(String emailDestinatario, String placa
     try {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(emailDestinatario);
-        message.setFrom("yasserboaventura78@gmail.com");
+        message.setFrom(emailFrom);
         message.setSubject("🔴 ALERTA: Manutenção VENCIDA - Veículo " + placa);
         message.setText(
             "Prezado(a),\n\n" +
@@ -150,7 +150,7 @@ public void enviarNotificacaoDaViagemMotorista(String emailDestinatario, String 
     
     try {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("yasserboaventura78@gmail.com");
+        message.setFrom(emailFrom);
         message.setTo(emailDestinatario);
         message.setSubject("🚚 Programação de Viagens - " + viagemRef);
         message.setText(detalhes);
