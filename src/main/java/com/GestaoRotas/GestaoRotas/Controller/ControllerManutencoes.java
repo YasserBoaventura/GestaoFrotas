@@ -38,23 +38,27 @@ public class ControllerManutencoes {
   @PostMapping("/save")
   @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
 public ResponseEntity<String> cadastrar(@RequestBody manuntecaoDTO manutencaoDTO) {
-   try {
-     return  ResponseEntity.ok(manutencaoService.salvar(manutencaoDTO));
-	 }catch(Exception e) {
+	  try {  
+return ResponseEntity.ok(manutencaoService.salvar(manutencaoDTO));
+	 }catch(Exception e) { 
 		   e.printStackTrace();
 		  return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
    }
 	    	
-}
-  @PutMapping("/update/{id}")
-  @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
-  public ResponseEntity<String>update(@PathVariable long id ,@RequestBody manuntecaoDTO manutencaoDTO ){
-	  try{
-     return ResponseEntity.ok(manutencaoService.update(manutencaoDTO, id));
-	  }catch(Exception e) {
-	  return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-	}  
-  } 
+}@PutMapping("/update/{id}")
+@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+public ResponseEntity<String> update(@PathVariable long id, @RequestBody manuntecaoDTO manutencaoDTO){
+
+    try{  
+        manutencaoService.update(manutencaoDTO, id);
+        return ResponseEntity.ok("Manutenção atualizada com sucesso");
+
+    }catch(Exception e){
+        e.printStackTrace();
+        return ResponseEntity.badRequest().body("Erro ao atualizar manutenção");
+    }
+
+} 
 
 @GetMapping("/findByIdVeiculo/{veiculoId}")
 public ResponseEntity<List<Manutencao>> listarPorVeiculo(@PathVariable long veiculoId) {

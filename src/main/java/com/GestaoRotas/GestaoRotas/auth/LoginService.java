@@ -38,7 +38,7 @@ public class LoginService {
 	public String logar(Login login) {
 	    Usuario user = repository.findByUsername(login.getUsername())
 	            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-
+  
 	    // Verifica se a conta está bloqueada
 	    if (user.getTentativasLogin() == 5) {   // Supondo que tenha um método getter
 	        throw new RuntimeException("Conta bloqueada devido a múltiplas tentativas de login");

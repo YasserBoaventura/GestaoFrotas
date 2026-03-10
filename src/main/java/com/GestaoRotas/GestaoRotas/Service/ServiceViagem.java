@@ -47,7 +47,7 @@ public String update(ViagensDTO viagemDTO, long id) {
 
     Viagem viagem =  repositoryViagem.findById(id)
             .orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
-
+       
     Motorista motorista = motoristaRepository.findById(viagemDTO.getMotoristaId())
             .orElseThrow(() -> new RuntimeException("Motorista não encontrado"));
 

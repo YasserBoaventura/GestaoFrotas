@@ -40,8 +40,7 @@ public class ServiceManutencoes {
 	private final custoService custoService; 
 	private final EmailService emailService;
     
-   
-   @Transactional 
+
 	public String salvar(manuntecaoDTO manutencaoDTO) {
 	   Manutencao manutencao = new Manutencao();
     Veiculo veiculo = repositoryVeiculo.findById( manutencaoDTO.getVeiculo_id()).orElseThrow(()-> new RuntimeException("Veiculo nao encontrado"));
@@ -80,12 +79,13 @@ public class ServiceManutencoes {
    
   public List<Manutencao> findAll(){  
 	  return this.repositoryManuntencao.findAll();
-  }   
+  }    
   //atualizar a manutencao caso haja erros
-  public String update(manuntecaoDTO manutencaoDTO, long id)  { 
+  public String updateL(manuntecaoDTO manutencaoDTO, long id)  { 
 	   
 	    Manutencao manutencao = repositoryManuntencao.findById(id).orElseThrow(() -> new RuntimeException("Manutencao nao encontrada"));
 	    Veiculo veiculo = repositoryVeiculo.findById(manutencaoDTO.getVeiculo_id()).orElseThrow(()-> new RuntimeException("Veiculo nao encontrado"));
+	    System.out.println(manutencaoDTO.getVeiculo_id()); 
 	    manutencao.setVeiculo(veiculo);  
 	    manutencao.setDataManutencao(manutencaoDTO.getDataManutencao());
 	    manutencao.setDescricao(manutencaoDTO.getDescricao());
@@ -94,9 +94,9 @@ public class ServiceManutencoes {
 	    manutencao.setTipoManutencao(manutencaoDTO.getTipoManutencao());
 	    manutencao.setCusto(manutencaoDTO.getCusto());
 	    manutencao.setProximaManutencaoKm(manutencaoDTO.getProximaManutencaoKm());
-  
-    
-       // Define o status inicial
+   
+     
+       // Define o status inicial 
        LocalDate hoje = LocalDate.now();
        LocalDate dataManutencao = manutencaoDTO.getDataManutencao();
         
@@ -119,6 +119,28 @@ public class ServiceManutencoes {
       
     return "manutencao atualizada com sucesso";
   } 
+  public String update(manuntecaoDTO manutencaoDTO, long id) { 
+
+	    Manutencao manutencao = repositoryManuntencao
+	        .findById(id)
+	        .orElseThrow(() -> new RuntimeException("Manutencao nao encontrada"));
+
+	    Veiculo veiculo = manutencao.getVeiculo(); // usa o veículo existente
+
+	    manutencao.setDataManutencao(manutencaoDTO.getDataManutencao());
+	    manutencao.setDescricao(manutencaoDTO.getDescricao());
+	    manutencao.setKilometragemVeiculo(manutencaoDTO.getKilometragemVeiculo());
+	    manutencao.setProximaManutencaoData(manutencaoDTO.getProximaManutencaoData());
+	    manutencao.setTipoManutencao(manutencaoDTO.getTipoManutencao());
+	    manutencao.setCusto(manutencaoDTO.getCusto());
+	    manutencao.setProximaManutencaoKm(manutencaoDTO.getProximaManutencaoKm());
+
+	    Manutencao manutencaoActualizada = repositoryManuntencao.save(manutencao);
+
+	    custoService.actualizarCustoManutencao(manutencaoActualizada);
+
+	    return "manutencao atualizada com sucesso";
+	}
   //
   @Scheduled(cron = "0 0 0 * * *") // Executa todos os dias à meia-noite
   @Transactional

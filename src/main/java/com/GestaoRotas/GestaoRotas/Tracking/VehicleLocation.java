@@ -11,11 +11,11 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name ="vehicle_locations")
+@Table(name ="vehicle_locations") 
 @Data
 public class VehicleLocation implements Serializable{
 	
-
+ 
 	private static final long serialVersionUID = 1L;
 	 
     @Id
@@ -29,7 +29,7 @@ public class VehicleLocation implements Serializable{
     private String status;
     private LocalDateTime timestamp;
     
-    @PrePersist
+    @PrePersist  
     protected void onCreate() {
         timestamp = LocalDateTime.now();
     }

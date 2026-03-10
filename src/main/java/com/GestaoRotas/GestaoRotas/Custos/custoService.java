@@ -196,7 +196,7 @@ public non-sealed class custoService  implements CustoServiceImpl {
         custo.setObservacoes(manutencao.getDescricao());
           
         Custo saved = custoRepository.save(custo);
-        atualizarTotaisVeiculo(manutencaoExistente.getId()); 
+        atualizarTotaisVeiculo(manutencaoExistente.getVeiculo().getId()); 
            
         return saved;
         
