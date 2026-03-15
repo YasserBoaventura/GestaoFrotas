@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
+@Setter  
 @Getter
 public class SolicitarCodigoDTO {
 

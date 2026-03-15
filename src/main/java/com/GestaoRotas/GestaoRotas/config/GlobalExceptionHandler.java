@@ -10,6 +10,7 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
@@ -171,8 +172,11 @@ public class GlobalExceptionHandler {
     	response.put("erro", ex.getMessage());  
     	return ResponseEntity.badRequest().body(response); 
     }
+  @ExceptionHandler(MailException.class)
+  public ResponseEntity<Map<String,String>> handleMailException(MailException ex){
+	Map<String,String>  response = new HashMap<>();
+	response.put("erro",ex.getMessage());
+	return ResponseEntity.badRequest().body(response); 
   }
-
- 
- 
+  }
 

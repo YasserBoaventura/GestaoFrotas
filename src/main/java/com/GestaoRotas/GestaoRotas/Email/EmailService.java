@@ -133,4 +133,36 @@ public void enviarAlertaManutencaoVencida(String emailDestinatario, String placa
         logger.error(" Falha no envio de alerta vencido: {}", e.getMessage());
     }
 }
+
+@Async
+public void enviarNotificacaoDaViagemMotorista(String emailDestinatario, String viagemRef, String detalhes) {
+    // Chave única para este alerta (viagem + semana)
+    String chaveUnica = viagemRef + "_SEMANA_" + LocalDate.now();
+      
+    // Verifica se já enviou nas últimas 24 horas
+    Long ultimoEnvio = emailsEnviados.get(chaveUnica);
+    if (ultimoEnvio != null && System.currentTimeMillis() - ultimoEnvio < 86400000) {
+        logger.info("⏭️ Email já enviado para viagem {} nas últimas 24h, ignorando duplicata", viagemRef);
+        return;
+    }
+    
+    logger.info("📧 ===== ENVIANDO EMAIL DE VIAGEM PARA {} =====", emailDestinatario);
+    
+    try {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("yasserboaventura78@gmail.com");
+        message.setTo(emailDestinatario);
+        message.setSubject("🚚 Programação de Viagens - " + viagemRef);
+        message.setText(detalhes);
+        
+        mailSender.send(message);
+          
+        // Registra o envio bem-sucedido
+        emailsEnviados.put(chaveUnica, System.currentTimeMillis());
+        logger.info("✅ EMAIL DE VIAGEM enviado com sucesso para {}", emailDestinatario);
+        
+    } catch (MailException e) {
+        logger.error(" Falha no envio de email para {}: {}", emailDestinatario, e.getMessage());
+    }
+}
 }

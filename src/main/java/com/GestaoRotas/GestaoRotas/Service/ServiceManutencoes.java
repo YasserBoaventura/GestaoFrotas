@@ -373,7 +373,7 @@ public List<RelatorioManutencaoDTO> relatorioPorPeriodo(LocalDate inicio, LocalD
        
 } 
 @Scheduled(cron = "0 0 0 * * *") 
-public List<String> gerarAlertas() {
+public List<String> gerarAlertas() { 
 List<String> alertas = new ArrayList<>();
 LocalDate hoje = LocalDate.now();
 Set<String> emailsDisparados = new HashSet<>(); // Controle local

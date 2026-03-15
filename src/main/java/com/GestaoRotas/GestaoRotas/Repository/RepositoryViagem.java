@@ -113,7 +113,7 @@ public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
             @Param("dataInicio") LocalDateTime dataInicio,
             @Param("dataFim") LocalDateTime dataFim);
 
-    // Relatório mensal de viagens
+    // Relatório mensal de viagens 
     @Query("SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioMensalDTO(" +
            "YEAR(v.dataHoraPartida), " +
            "MONTH(v.dataHoraPartida), " +
@@ -166,5 +166,12 @@ public interface RepositoryViagem extends JpaRepository<Viagem, Long> {
 
     // Contagem de viagens por status
     Long countByStatus(String status);
+      
+    //campos pra envio dos emalis das viagens para os motoristas
+    @Query("SELECT v FROM Viagem v WHERE v.data BETWEEN :inicio AND :fim")
+    List<Viagem> findViagensEntreDatas(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
+     
+    @Query("SELECT v FROM Viagem v WHERE YEAR(v.data) = :ano AND WEEK(v.data) = :semana")
+    List<Viagem> findViagensPorSemana(@Param("ano") int ano, @Param("semana") int semana); 
 
 }
