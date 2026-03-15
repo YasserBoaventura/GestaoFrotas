@@ -14,7 +14,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import com.GestaoRotas.GestaoRotas.DTO.AutoCadastroDTO;
+import com.GestaoRotas.GestaoRotas.Email.EmailService;
 import com.GestaoRotas.GestaoRotas.Entity.Viagem;
 import com.GestaoRotas.GestaoRotas.config.JwtServiceGenerator;
 
@@ -33,6 +37,8 @@ public class LoginService {
 	private final AuthenticationManager authenticationManager;
 	 
 	private final PasswordEncoder passwordEncoder;
+	
+	private final EmailService emailService;  
 	
 
 	public String logar(Login login) {
@@ -75,6 +81,48 @@ public class LoginService {
 		   this.repository.save(usuario);
 				return "Usuario Salvo com sucesso"; 
 	}  
+
+   public ResponseEntity<?> autoCadastro(@RequestBody AutoCadastroDTO dto) {
+       // Verificar se username, email ou nuit já existem
+   if (repository.existsByUsername(dto.getUsername())) {
+       return ResponseEntity.badRequest().body("Username já está em uso");
+   }
+   if (repository.existsByEmail(dto.getEmail())) {
+       return ResponseEntity.badRequest().body("Email já está em uso");
+   }
+   if (repository.existsByNuit(dto.getNuit())) {
+       return ResponseEntity.badRequest().body("NUIT já está em uso");
+   }
+  
+   // Criar novo usuário com os dados do DTO   
+   Usuario usuario = new Usuario();  
+   usuario.setUsername(dto.getUsername());
+   usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
+   usuario.setEmail(dto.getEmail());
+   usuario.setPerguntaSeguranca(dto.getPerguntaSeguranca());
+   usuario.setRespostaSeguranca(dto.getRespostaSeguranca());
+   usuario.setTelefone(dto.getTelefone());
+   usuario.setNuit(dto.getNuit());
+   usuario.setDataNascimento(dto.getDataNascimento());
+   
+   // Definir valores padrão 
+       usuario.setRole("USER"); // Cargo padrão
+       usuario.setAtivo(false); // Conta desativada até ativação pelo admin
+	   usuario.setDataCriacao(LocalDateTime.now());
+	   usuario.setTentativasLogin(0);
+	   usuario.setContaBloqueada(false);
+	 //save
+	   repository.save(usuario);  
+	    // enviar boas vindas ao usuario 
+	   emailService.enviarBoasVindasAoUsuario(
+			    usuario.getEmail(),
+			    "Olá " + usuario.getUsername() +  
+			    ",\n\nSeja bem-vindo ao Sistema de Gestão de Frotas.\n" +
+			    "Sua conta foi criada com sucesso.\n\n" +
+			    "Atenciosamente, Por Favor Aguarde  ativação da conta por um administrador.,\nEquipe do Sistema"
+			);
+	   return ResponseEntity.ok("Cadastro realizado com sucesso. Aguarde ativação da conta por um administrador.");
+   } 
    //Apenas o adminstrador pode fazer alteracoes nos usuarios
 	public Usuario atualizarUsuario(Long id, Usuario usuarioAtualizado) {
 	    Usuario usuarioExistente = this.repository.findById(id)
@@ -108,7 +156,7 @@ public Map<String , String> bloquearConta(long id){
 	   contaDesbloqueada.put("sucesso", "conta desbloqueada com sucesso");
 	   return contaDesbloqueada; 
    } 
-   else {
+   else { 
 	usuario.setContaBloqueada(true);   
 	repository.save(usuario);
  response.put("sucesso", "conta bloqueada com suceso");
