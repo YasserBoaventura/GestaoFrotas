@@ -77,7 +77,7 @@ public class Veiculo {
 	    
 	    @Column
 	    private Double custoTotal;
-	    
+	     
 	    @Column
 	    private Double custoMedioPorKm;  
 	    

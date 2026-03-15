@@ -264,7 +264,7 @@ public String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id) 
     public void atualizarTotaisVeiculo(Long veiculoId) {
         Veiculo veiculo = veiculoRepository.findById(veiculoId)
             .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
-        
+         
         // Calcular totais    
         Map<String, Object> totais = custoRepository.calcularTotaisPorVeiculo(veiculoId);
         
