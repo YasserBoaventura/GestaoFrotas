@@ -119,7 +119,7 @@ public class LoginService {
 			    "Olá " + usuario.getUsername() +  
 			    ",\n\nSeja bem-vindo ao Sistema de Gestão de Frotas.\n" +
 			    "Sua conta foi criada com sucesso.\n\n" +
-			    "Atenciosamente, Por Favor Aguarde  ativação da conta por um administrador.,\nEquipe do Sistema"
+			    "Atenciosamente, Por Favor Aguarde ativação da conta por um administrador.,\nEquipe do Sistema"
 			);
 	   return ResponseEntity.ok("Cadastro realizado com sucesso. Aguarde ativação da conta por um administrador.");
    } 
