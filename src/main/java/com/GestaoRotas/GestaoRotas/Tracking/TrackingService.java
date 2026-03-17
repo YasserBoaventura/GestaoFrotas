@@ -25,8 +25,8 @@ public non-sealed class TrackingService implements TrackingServiceImpl{
     private final VehicleLocationRepository locationRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final RepositoryVeiculo veiculoRepository;
-     
-         
+    
+          
     @Transactional
     public VehicleLocation saveLocation(@Valid LocationDTO locationDTO) {
         VehicleLocation location = new VehicleLocation();
@@ -40,10 +40,10 @@ public non-sealed class TrackingService implements TrackingServiceImpl{
         
         VehicleLocation saved = locationRepository.save(location);
          
-        // Enviar via WebSocket para clientes conectados
+        // Enviar via WebSocket para clientes conectados 
         messagingTemplate.convertAndSend("/topic/locations/" + locationDTO.getVehicleId(), saved);
           
-        return saved; 
+        return saved;  
     }       
     @Transactional
     public Optional<VehicleLocation> getLastLocation(Long vehicleId) {
