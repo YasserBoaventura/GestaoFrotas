@@ -39,7 +39,7 @@ import java.time.*;
 @NoArgsConstructor 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Custo implements Serializable {
-	 
+	  
 	private static final long serialVersionUID = 1L;
 	
     @Id

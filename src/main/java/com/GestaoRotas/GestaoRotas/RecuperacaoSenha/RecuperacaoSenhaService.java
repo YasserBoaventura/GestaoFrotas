@@ -53,13 +53,12 @@ public Map<String, String> solicitarRecuperacaoSenha(String username, String ema
     	
     	return naoAtivo;  
         } 
-    String token = UUID.randomUUID().toString();
-    System.out.println(token.toString());  
+    String token = UUID.randomUUID().toString(); 
     usuario.setResetToken(token);
    usuario.setResetTokenExpiry(LocalDateTime.now().plusHours(2));
     usuario.setTokenUtilizado(false);
     
-    
+     
     // Gerar código de 6 dígitos
     String codigo = String.format("%06d", new Random().nextInt(999999));
     
@@ -79,7 +78,7 @@ public Map<String, String> solicitarRecuperacaoSenha(String username, String ema
     response.put("expiraEm", "10 minutos");
 
     loginRepository.save(usuario);  
-     
+      
     // Retorna tanto a pergunta quanto o token
 
     response.put("perguntaSeguranca", usuario.getPerguntaSeguranca()); // Supondo que tenha este campo
@@ -121,8 +120,8 @@ public boolean redefinirSenhaComVerificacao(recuperacaoSenhaDTO dto) {
     Optional<Usuario> usuarioOpt = loginRepository.findByUsername(dto.getUsername());
 
     if (usuarioOpt.isPresent()) {
-        Usuario usuario = usuarioOpt.get();  
-    
+        Usuario usuario = usuarioOpt.get();   
+     
         boolean emailValido = usuario.getEmail().equalsIgnoreCase(dto.getEmail());
         boolean nuitValido = usuario.getNuit().equals(dto.getNuit());
         boolean respostaValida = usuario.getRespostaSeguranca()
