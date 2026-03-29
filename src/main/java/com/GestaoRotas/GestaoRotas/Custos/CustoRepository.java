@@ -203,7 +203,7 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
 			       "JOIN c.veiculo v " +
 			       "WHERE c.status = 'PAGO' " +
 			       "ORDER BY c.valor DESC "+
-			       "LIMIT 5")
+			       "LIMIT 5") 
 			List<CustoDetalhadoDTO> findTop5CustosMaisAltos(org.springframework.data.domain.Pageable pageable);
 		
     @Query("SELECT v.matricula, SUM(c.valor) FROM Custo c " +

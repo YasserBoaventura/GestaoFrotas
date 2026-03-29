@@ -26,10 +26,10 @@ import com.GestaoRotas.GestaoRotas.auth.Usuario;
 import lombok.RequiredArgsConstructor;
 
 
-
+ 
 @Service
 @RequiredArgsConstructor 
-public final class RecuperacaoSenhaService  {
+public class RecuperacaoSenhaService  {
 	
 	   
 
@@ -98,9 +98,9 @@ public boolean verificarRespostaSeguranca(String username, String respostaSegura
     if (!usuarioOpt.isEmpty()) {
         Usuario usuario = usuarioOpt.get();
         return respostaSeguranca.equalsIgnoreCase(usuario.getRespostaSeguranca());
-    }
+    }  
     return false;  
-}  
+}   
 public boolean redefinirSenhaComToken(String token, String novaSenha) {
     Optional<Usuario> usuarioOpt = loginRepository.findByResetToken(token);
     
@@ -115,7 +115,7 @@ public boolean redefinirSenhaComToken(String token, String novaSenha) {
     }
     return false;
 }
-
+@Transactional 
 public boolean redefinirSenhaComVerificacao(recuperacaoSenhaDTO dto) {
     Optional<Usuario> usuarioOpt = loginRepository.findByUsername(dto.getUsername());
 

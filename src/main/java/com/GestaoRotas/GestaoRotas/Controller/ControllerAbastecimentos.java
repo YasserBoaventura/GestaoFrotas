@@ -42,7 +42,6 @@ public class ControllerAbastecimentos {
    @PostMapping("/save")
    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
   public ResponseEntity<Map<String, String>> salvar(@RequestBody @Valid AbastecimentoDTO abastecimentoDTO) {
-  System.out.println("Entrou aqui");
 	   try { 
 	   return ResponseEntity.ok(abastecimentosService.save(abastecimentoDTO)); 
 	  }catch(Exception e) { 
@@ -80,12 +79,12 @@ public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorPeriodo(
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
     System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
     return ResponseEntity.ok(abastecimentosService.relatorioPorPeriodo(inicio, fim));
-}     
+}      
 @PreAuthorize("hasAuthority('ADMIN','USER')")  
-@GetMapping("/abastecimentoRealizado")  
+@GetMapping("/abastecimentoRealizado")   
   public ResponseEntity<Long> abastecimentosRealizados(){
 		return ResponseEntity.status(HttpStatus.OK).body(abastecimentosService.numeroAbastecimentoRealizados()); 
-  }                  
+  }                   
 @GetMapping("/abastecimtosPlaneados") 
 public ResponseEntity<Optional<Long>> abastecimentosPlaneados(){
 	return ResponseEntity.status(HttpStatus.OK).body(abastecimentosService.numeroAbastecimentoPlaneado()); 

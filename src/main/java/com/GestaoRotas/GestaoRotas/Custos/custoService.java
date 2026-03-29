@@ -296,7 +296,7 @@ public String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id) 
         
        System.out.println("Dashboard para {}-{}"+ ano + mes);
         
-    try {  
+    try {     
 
         Double totalAtual = custoRepository.calcularTotalPorPeriodo(ano, mes);
         Double totalAnterior = custoRepository.calcularTotalPorPeriodo(ano, mes - 1);
