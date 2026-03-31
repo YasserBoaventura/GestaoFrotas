@@ -131,7 +131,7 @@ public boolean redefinirSenhaComVerificacao(recuperacaoSenhaDTO dto) {
         if (emailValido && nuitValido && respostaValida && codigoVerificacao && usuario.isTokenValido()) {
             usuario.setPassword(passwordEncoder.encode(dto.getNovaSenha()));
             loginRepository.save(usuario);
-            return true; 
+            return true;  
         }  
     } 
     return false;   

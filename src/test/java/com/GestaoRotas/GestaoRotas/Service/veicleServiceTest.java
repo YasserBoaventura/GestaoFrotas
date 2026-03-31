@@ -15,19 +15,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.*;
 
-// IMPORTAÇÕES ESTÁTICAS CORRETAS
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 
+@ExtendWith(MockitoExtension.class)
 public class veicleServiceTest {
-	
+	 
     @Mock
     private RepositoryVeiculo repositoryVeiculo;
 
@@ -83,7 +84,7 @@ public class veicleServiceTest {
         // Act
         String resultado = serviceVeiculo.salvar(veiculo);
 
-        // Assert - CORRIGIDO: assertEquals, não assertEqual
+       
         assertEquals("Veiculo Salvo com sucesso", resultado);
         verify(repositoryVeiculo, times(1)).save(veiculo);
     }
@@ -158,7 +159,6 @@ public class veicleServiceTest {
 	        serviceVeiculo.atualizarStatusVeiculo(1L);
  
 	        // Assert
-        System.out.println("nn:  "+veiculo.getStatus());
         assertEquals("EM_MANUTENCAO", veiculo.getStatus());
   
     verify(repositoryVeiculo, times(1)).save(veiculo);

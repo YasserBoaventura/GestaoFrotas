@@ -3,10 +3,10 @@ package com.GestaoRotas.GestaoRotas.Email;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-
+ 
 @Service
-@Primary  
-public sealed interface EmailServiceImp permits EmailService {
+@Primary   
+public sealed interface EmailServiceImp permits EmailService{ 
 	//para enviar o token 
     void enviarEmailRecuperacao(String destinatario, String token);
   void enviarCodigoVerificacao(String emailDestino, String nome, String codigo);
