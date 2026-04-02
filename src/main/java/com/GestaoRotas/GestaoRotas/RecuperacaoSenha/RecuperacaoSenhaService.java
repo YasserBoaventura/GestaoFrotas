@@ -86,7 +86,7 @@ public Map<String, String> solicitarRecuperacaoSenha(String username, String ema
     response.put("status", "sucesso");
   
     return response;
-      }
+      }   
     Map<String, String> errorResponse = new HashMap<>();
     errorResponse.put("status", "erro");
     errorResponse.put("mensagem", "Usuário não encontrado");
