@@ -35,9 +35,9 @@ public class VehicleLocation implements Serializable{
     private Double latitude;
     private Double longitude;
     private Double speed;
-    private String status;
+    private String status; 
     private LocalDateTime timestamp;
-    
+     
     @PrePersist  
     protected void onCreate() {
         timestamp = LocalDateTime.now();

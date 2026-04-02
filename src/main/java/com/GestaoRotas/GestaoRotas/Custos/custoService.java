@@ -139,7 +139,7 @@ public non-sealed class custoService  implements CustoServiceImpl {
         
         return saved; 
     }   
-    @Transactional
+    @Transactional 
     public Custo actualizarCustoParaAbastecimento(abastecimentos abastecimento) {
         // verificar se o abastecimento existe 
     	abastecimentos abastecimentoExistente = abastecimentoRepository.findById(abastecimento.getId()).orElseThrow(() -> new RuntimeException("abastecimento nao encontrado")); 
