@@ -35,6 +35,7 @@ public class LoginController {
     private final LoginService loginService;
     private final PasswordEncoder passwordEncoder;
     private final LoginRepository loginRepository;
+
  
 
     @PostMapping("/login")
@@ -52,42 +53,11 @@ public class LoginController {
     
  
 //  POST para pre registro
-
+  
    @PostMapping("/auto-cadastro")
    public ResponseEntity<?> autoCadastro(@RequestBody AutoCadastroDTO dto) {
-       // Verificar se username, email ou nuit já existem
-   if (loginRepository.existsByUsername(dto.getUsername())) {
-       return ResponseEntity.badRequest().body("Username já está em uso");
-   }
-   if (loginRepository.existsByEmail(dto.getEmail())) {
-       return ResponseEntity.badRequest().body("Email já está em uso");
-   }
-   if (loginRepository.existsByNuit(dto.getNuit())) {
-       return ResponseEntity.badRequest().body("NUIT já está em uso");
-   }
-  
-   // Criar novo usuário com os dados do DTO   
-   Usuario usuario = new Usuario();
-   usuario.setUsername(dto.getUsername());
-   usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
-   usuario.setEmail(dto.getEmail());
-   usuario.setPerguntaSeguranca(dto.getPerguntaSeguranca());
-   usuario.setRespostaSeguranca(dto.getRespostaSeguranca());
-   usuario.setTelefone(dto.getTelefone());
-   usuario.setNuit(dto.getNuit());
-   usuario.setDataNascimento(dto.getDataNascimento());
-   
-   // Definir valores padrão 
-   usuario.setRole("USER"); // Cargo padrão
-   usuario.setAtivo(false); // Conta desativada até ativação pelo admin
-   usuario.setDataCriacao(LocalDateTime.now());
-   usuario.setTentativasLogin(0);
-   usuario.setContaBloqueada(false);
-
-   loginRepository.save(usuario);
-
-   return ResponseEntity.ok("Cadastro realizado com sucesso. Aguarde ativação da conta por um administrador.");
-   } 
+      return loginService.autoCadastro(dto);  
+   }  
 		//Devo fazer aqui ate porque o Repositorio e do tipo usuario
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/findAll")
