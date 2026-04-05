@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+//import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -119,6 +120,17 @@ void save_ComVeiculoEViagem_DeveSalvarComSucesso() {
 }
 
 @Test
+void findById_QuandoAbastecimentoNaoExiste_DeveLancarExcecao() {
+    // Arrange
+    when(repositoryAbastecimentos.findById(999L)).thenReturn(Optional.empty());
+
+    // Act & Assert 
+    assertThrows(NoSuchElementException.class, () -> {
+        serviceAbastecimentos.findById(999L);
+    });  
+}
+
+@Test
 void update_ComDadosValidos_DeveAtualizarComSucesso() {
  
     when(repositoryAbastecimentos.findById(1L)).thenReturn(Optional.of(abastecimento));
@@ -127,7 +139,7 @@ void update_ComDadosValidos_DeveAtualizarComSucesso() {
     when(repositoryAbastecimentos.save(any(abastecimentos.class))).thenReturn(abastecimento);
 
     when(custoService.actualizarCustoParaAbastecimento(any(abastecimentos.class))).thenReturn(custo);
-  
+       
     String resultado = serviceAbastecimentos.update(dto, 1L);
 
   

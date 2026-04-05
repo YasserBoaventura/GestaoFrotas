@@ -185,5 +185,6 @@ public class GlobalExceptionHandler {
 	 response.put("erro", ex.getMessage());
 	 return ResponseEntity.badRequest().body(response); 
  }
+  
   }
 

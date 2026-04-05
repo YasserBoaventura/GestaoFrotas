@@ -147,7 +147,7 @@ public non-sealed class custoService  implements CustoServiceImpl {
         custo.setData(abastecimento.getDataAbastecimento());
         custo.setDescricao("Abastecimento - " + abastecimento.getTipoCombustivel());
         custo.setValor(abastecimento.getValorTotal());
-        custo.setTipo(TipoCusto.COMBUSTIVEL); 
+        custo.setTipo(TipoCusto.COMBUSTIVEL);  
         custo.setStatus(StatusCusto.PAGO);
         custo.setVeiculo(abastecimento.getVeiculo()); 
         custo.setViagem(abastecimento.getViagem()); 
@@ -158,7 +158,7 @@ public non-sealed class custoService  implements CustoServiceImpl {
         atualizarTotaisVeiculo(abastecimento.getVeiculo().getId());
         
         return saved; 
-    }  
+    }   
     
     
     @Transactional

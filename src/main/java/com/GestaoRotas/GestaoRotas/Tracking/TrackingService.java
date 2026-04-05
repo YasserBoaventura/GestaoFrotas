@@ -25,18 +25,18 @@ public non-sealed class TrackingService implements TrackingServiceImpl{
     private final VehicleLocationRepository locationRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final RepositoryVeiculo veiculoRepository;
-              
-    @Transactional   
+                                             
+    @Transactional    
     public VehicleLocation saveLocation(@Valid LocationDTO locationDTO) {
         VehicleLocation location = new VehicleLocation();
-          
+           
         Veiculo veiculo = veiculoRepository.findById(locationDTO.getVehicleId()).orElseThrow(() -> new  RuntimeException("Veiculo nao encontrado")); 
         location.setVeiculo(veiculo);
         location.setLatitude(locationDTO.getLatitude());
         location.setLongitude(locationDTO.getLongitude());
         location.setSpeed(locationDTO.getSpeed());
         location.setStatus(locationDTO.getStatus());
-        
+           
         VehicleLocation saved = locationRepository.save(location);
          
         // Enviar via WebSocket para clientes conectados 
