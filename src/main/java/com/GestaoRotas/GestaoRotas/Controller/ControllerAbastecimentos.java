@@ -42,11 +42,11 @@ public class ControllerAbastecimentos {
    @PostMapping("/save")
    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
   public ResponseEntity<Map<String, String>> salvar(@RequestBody @Valid AbastecimentoDTO abastecimentoDTO) {
-   try { 
+	   try { 
 	   return ResponseEntity.ok(abastecimentosService.save(abastecimentoDTO)); 
 	  }catch(Exception e) { 
-	   System.err.print("erro ao salvar abastecimento");
-	   e.printStackTrace();       
+
+	   e.printStackTrace();        
 	  return ResponseEntity.badRequest().build(); 
 	  }   
     }            
@@ -57,7 +57,6 @@ public class ControllerAbastecimentos {
       String response = this.abastecimentosService.update(abastecimentoDTO, id);
       return ResponseEntity.status(HttpStatus.OK).body(response);
   } catch(Exception e) { 
-      System.err.println("Erro ao atualizar abastecimento: " + e.getMessage());
       e.printStackTrace();
        String erro = "erro ao actualizar abastecimento: " + e.getMessage();
           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
@@ -79,12 +78,12 @@ public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorPeriodo(
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
     System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
     return ResponseEntity.ok(abastecimentosService.relatorioPorPeriodo(inicio, fim));
-}     
-@PreAuthorize("hasAuthority('ADMIN','USER')") 
-@GetMapping("/abastecimentoRealizado") 
+}      
+@PreAuthorize("hasAuthority('ADMIN','USER')")  
+@GetMapping("/abastecimentoRealizado")   
   public ResponseEntity<Long> abastecimentosRealizados(){
 		return ResponseEntity.status(HttpStatus.OK).body(abastecimentosService.numeroAbastecimentoRealizados()); 
-  }                 
+  }                   
 @GetMapping("/abastecimtosPlaneados") 
 public ResponseEntity<Optional<Long>> abastecimentosPlaneados(){
 	return ResponseEntity.status(HttpStatus.OK).body(abastecimentosService.numeroAbastecimentoPlaneado()); 
@@ -116,7 +115,7 @@ public ResponseEntity<List<abastecimentos>> findAll(){
 } 
 @GetMapping("/findById/{id}") 
 public ResponseEntity<abastecimentos> findById(@PathVariable long id){
-	try {
+	try { 
 		return ResponseEntity.ok(abastecimentosService.findById(id));
 	  }catch(Exception e) {
 		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
