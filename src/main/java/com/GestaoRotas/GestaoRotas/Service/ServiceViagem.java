@@ -42,7 +42,7 @@ public class ServiceViagem {
     private final RepositoryRotas rotaRepository;
     private final custoService custoService;
     
-    
+@Transactional   
 public String update(ViagensDTO viagemDTO, long id) {
 
     Viagem viagem =  repositoryViagem.findById(id)
@@ -82,73 +82,73 @@ public String update(ViagensDTO viagemDTO, long id) {
 }
 //inicializar viagem
 	public Map<String ,String> iniciarViagem(Long id){
-		Map<String,String> response = new HashMap<>();
-		try {
-		Viagem viagem = this.repositoryViagem.findById(id).orElseThrow(()-> new RuntimeException("viagem nao existente"));
-	   viagem.iniciarViagem(); 
-	 
-	     Motorista  motorista = viagem.getMotorista();
-	   
-	     motorista.setStatus(statusMotorista.EM_VIAGEM);
-	     motoristaRepository.save(motorista);
-	    
-	     repositoryViagem.save(viagem);
-	   //para a actualizacao do veiculo 
-	   Veiculo veiculo = viagem.getVeiculo();
-	   if(veiculo!= null) {
-	   veiculo.setStatus("EM_VIAGEM");
-	   veiculo.setDataAtualizacaoStatus(LocalDateTime.now());
-	   veiculoRepository.save(veiculo);
-	     
-	    //atualizacao do 
+	Map<String,String> response = new HashMap<>();
+	try {
+	Viagem viagem = this.repositoryViagem.findById(id).orElseThrow(()-> new RuntimeException("viagem nao existente"));
+   viagem.iniciarViagem(); 
+ 
+     Motorista  motorista = viagem.getMotorista();
+   
+     motorista.setStatus(statusMotorista.EM_VIAGEM);
+     motoristaRepository.save(motorista);
+    
+     repositoryViagem.save(viagem);
+   //para a actualizacao do veiculo 
+   Veiculo veiculo = viagem.getVeiculo();
+   if(veiculo!= null) {
+   veiculo.setStatus("EM_VIAGEM");
+   veiculo.setDataAtualizacaoStatus(LocalDateTime.now());
+   veiculoRepository.save(veiculo);
+     
+	
 	  }  
 	response.put("message", "viagem inicializada com sucesso");
 	   return response; 
-	 }catch(Exception e) {
-		   response.put("error", e.getMessage()); 
+	 }catch(Exception e) { 
+  response.put("error", e.getMessage()); 
 	return response; 
 	
 	}
 }
+@Transactional
+ public Map<String, String> ConcluirViagem(
+	           ConcluirViagemRequest request, long id) {
+			try { 
+	Map<String, String> sucess = new HashMap<>();
+	Viagem viagem = repositoryViagem.findById(id)
+	.orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
+
+	viagem.setKilometragemFinal(request.getKilometragemFinal());
+	viagem.setObservacoes(request.getObservacoes()); 
+	viagem.setDataHoraChegada(request.getDataHoraChegada());
 	
-     public Map<String, String> ConcluirViagem(
-		           ConcluirViagemRequest request, long id) {
-				try { 
-				Map<String, String> sucess = new HashMap<>();
-		Viagem viagem = repositoryViagem.findById(id)
-		.orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
+	// Chamar o método de negócio que já atualiza status e data
+	viagem.concluirViagem();
 	
-		viagem.setKilometragemFinal(request.getKilometragemFinal());
-		viagem.setObservacoes(request.getObservacoes()); 
-		viagem.setDataHoraChegada(request.getDataHoraChegada());
-		
-		// Chamar o método de negócio que já atualiza status e data
-		viagem.concluirViagem();
-		
-		Viagem viagemAtualizada = repositoryViagem.save(viagem);
-		//atualizacao do motorista
-		
-		Motorista motorista = viagem.getMotorista();
-		if(motorista!=null) {
-		motorista.setStatus(statusMotorista.DISPONIVEL);
-		motoristaRepository.save(motorista);
-		}
-		//  atualize o estado do veiculo quando a viage estiver concluida
-		Veiculo veiculo = viagem.getVeiculo();
-		if(veiculo != null) {
-		veiculo.setStatus("DISPONIVEL");
-		veiculoRepository.save(veiculo);
-		}
-		sucess.put("sucesso", "viagem concluirda com sucesso"); 
-		return sucess;
-	}catch(Exception e) {
-					Map<String ,String> erro = new HashMap<>();
-					erro.put("erro","erro ao tentar concluir viagem");
-					return erro;
-				}
-		
-		
-		}
+	Viagem viagemAtualizada = repositoryViagem.save(viagem);
+	//atualizacao do motorista
+	
+	Motorista motorista = viagem.getMotorista();
+	if(motorista!=null) {
+	motorista.setStatus(statusMotorista.DISPONIVEL);
+	motoristaRepository.save(motorista);
+	}
+	//  atualize o estado do veiculo quando a viage estiver concluida
+	Veiculo veiculo = viagem.getVeiculo();
+	if(veiculo != null) {
+	veiculo.setStatus("DISPONIVEL");
+	veiculoRepository.save(veiculo);
+	}
+	sucess.put("sucesso", "viagem concluirda com sucesso"); 
+	return sucess;
+}catch(Exception e) {
+				Map<String ,String> erro = new HashMap<>();
+				erro.put("erro","erro ao tentar concluir viagem");
+				return erro;
+			}
+	
+	
+	}
 	
 	//cancelar viagem
      @Transactional
@@ -277,7 +277,7 @@ public Long getContByStatus(String status) {
 }
 	public String delete(long id) {
 		this.repositoryViagem.deleteById(id);
-		return "deletado com sucesso";
+		return "deletado com sucesso"; 
 	} 
 	public List<Viagem> findByIdMotorista(long id){
 		return this.repositoryViagem.findByMotoristaId(id);
