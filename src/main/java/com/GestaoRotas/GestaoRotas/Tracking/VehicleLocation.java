@@ -16,7 +16,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-@Entity
+@Entity 
 @Table(name ="vehicle_locations") 
 @Data
 public class VehicleLocation implements Serializable{

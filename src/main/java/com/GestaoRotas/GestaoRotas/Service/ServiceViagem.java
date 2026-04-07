@@ -139,12 +139,12 @@ public String update(ViagensDTO viagemDTO, long id) {
 	veiculo.setStatus("DISPONIVEL");
 	veiculoRepository.save(veiculo);
 	}
-	sucess.put("sucesso", "viagem concluirda com sucesso"); 
+	sucess.put("sucesso", "viagem concluida com sucesso"); 
 	return sucess;
-}catch(Exception e) {
-				Map<String ,String> erro = new HashMap<>();
-				erro.put("erro","erro ao tentar concluir viagem");
-				return erro;
+    }catch(Exception e) { 
+		Map<String ,String> erro = new HashMap<>();
+		erro.put("erro","erro ao tentar concluir viagem");
+		return erro;
 			}
 	
 	
@@ -172,27 +172,27 @@ public String update(ViagensDTO viagemDTO, long id) {
 	    viagem.setObservacoes(novaObservacao); 
 	}
 
-	        viagem.cancelarViagem();
-	        Viagem viagemCancelada = this.repositoryViagem.save(viagem);
-	        
-	        //atualize o veiculo para disponivel se a  viagem for cancelada
-	        Veiculo veiculo = viagem.getVeiculo();
-	        if(veiculo!= null) {
-	        veiculo.setStatus("DISPONIVEL");
-	          }
-	        sucess.put("sucesso", "canselada com sucesso");
-	        veiculoRepository.save(veiculo); 
-	        return sucess;
-	       } catch(Exception e) { 
+    viagem.cancelarViagem();
+    Viagem viagemCancelada = this.repositoryViagem.save(viagem);
+    
+    //atualize o veiculo para disponivel se a  viagem for cancelada
+    Veiculo veiculo = viagem.getVeiculo();
+    if(veiculo!= null) {
+    veiculo.setStatus("DISPONIVEL");
+      }
+    sucess.put("sucesso", "canselada com sucesso");
+    veiculoRepository.save(veiculo); 
+    return sucess;
+   } catch(Exception e) { 
 	   Map<String ,String> erro = new HashMap<>();
 	   erro.put("erro", "erro ao cancelar viagem");
 	   return erro;
-	   
-	  }
-	} 
+	        
+	  }   
+	}                 
 	@Transactional    
-	public String salvar(ViagensDTO viagemDTO) {
-	    Viagem viagem = new Viagem();
+	public String salvar(ViagensDTO viagemDTO) { 
+	    Viagem viagem = new Viagem(); 
 	    // Buscar motorista, veiculo e rota pelos IDs  
 	    Motorista motorista = motoristaRepository.findById(viagemDTO.getMotoristaId())
 	        .orElseThrow(() -> new RuntimeException("Motorista não encontrado"));
@@ -200,11 +200,11 @@ public String update(ViagensDTO viagemDTO, long id) {
 	        .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
 	    Rotas rota = rotaRepository.findById(viagemDTO.getRotaId())
 	        .orElseThrow(() -> new RuntimeException("Rota não encontrada"));
-	    //validar o motorista 
+	    //validar o motorista  
 	    if (!validarMotorista(motorista)) {
 	    	  new RuntimeException("Motorista não está disponível para viagem (Status: " + motorista.getStatus() + ")");
 	          return "Motorista não está disponível para viagem (Status: \"" + motorista.getStatus() + ")";
-        }
+        } 
         if(validarVeiculo(veiculo)) {
         	new RuntimeException("Veiculo nao disponivel");
         	return "veiculo nao disponivel para a viagem Status: \""+ veiculo.getStatus();
@@ -239,20 +239,21 @@ public String update(ViagensDTO viagemDTO, long id) {
         "FERIAS", 
         "AFASTADO",
         "INATIVO",
-        "BLOQUEADO"
+        "BLOQUEADO",
+        "EM_VIAGEM"
     );
 
 	        return !statusBloqueados.contains(status);
 	    }
 	    // Método de validação do veículo CORRIGIDO
- private boolean validarVeiculo(Veiculo veiculo) {
+        private boolean validarVeiculo(Veiculo veiculo) {
 	    if (veiculo == null) {  
 	        throw new RuntimeException("Veículo não pode ser nulo");
 	    }
-	    
+	     
 	    if (veiculo.getStatus() == null) {
 	        return true; // não disponível
-	    }
+	    }    
 	    
 	    String status = veiculo.getStatus();
 	    
@@ -285,7 +286,7 @@ public Long getContByStatus(String status) {
 	//Mostra o motorista totalViagens , totalEmKm e totalConbustivel usado
 public List<RelatorioMotoristaDTO> relatorioPorMotorista() {
         return repositoryViagem.relatorioPorMotorista();
-    }
+    } 
 public List<RelatorioMotoristaDTO> relatorioPorMotoristaPeriodo(LocalDateTime inicio, LocalDateTime fim){
 	return repositoryViagem.relatorioPorMotoristaPorPeriodo(inicio, fim);  
 } 

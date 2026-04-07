@@ -45,7 +45,7 @@ public class TrackingController {
            return location          
              .map(ResponseEntity::ok)     
              .orElseGet(() -> ResponseEntity.notFound().build());
- }                         
+ }                          
   @GetMapping("/location/{vehicleId}/history")
   @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')") 
     public ResponseEntity<List<VehicleLocation>> getLocationHistory(
@@ -56,7 +56,7 @@ public class TrackingController {
         }               
     List<VehicleLocation> history = trackingService.getLocationHistory(vehicleId, since);
         return ResponseEntity.ok(history);
-    }     
+    }       
      @GetMapping("/findAll")  
      public ResponseEntity<List<VehicleLocation>> findAll(){
     	 return ResponseEntity.ok(trackingService.findAll()); 
