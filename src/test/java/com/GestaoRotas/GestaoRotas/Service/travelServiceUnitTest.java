@@ -32,7 +32,7 @@ import com.GestaoRotas.GestaoRotas.Repository.RepositoryViagem;
 
 @ExtendWith(MockitoExtension.class)
 public class travelServiceUnitTest {
-	 
+	  
 	    @Mock
 	    private RepositoryViagem repositoryViagem;
 

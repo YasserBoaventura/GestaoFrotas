@@ -23,6 +23,7 @@ import com.GestaoRotas.GestaoRotas.Email.EmailService;
 import com.GestaoRotas.GestaoRotas.Email.EmailServiceImp;
 import com.GestaoRotas.GestaoRotas.Entity.Manutencao;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
+import com.GestaoRotas.GestaoRotas.Model.TipoManutencao;
 import com.GestaoRotas.GestaoRotas.Model.statusManutencao;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryManutencao;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
@@ -40,7 +41,7 @@ public class ServiceManutencoes {
 	private final custoService custoService; 
 	private final EmailService emailService;
     
-
+ 
 	public String salvar(manuntecaoDTO manutencaoDTO) {
 	   Manutencao manutencao = new Manutencao();
     Veiculo veiculo = repositoryVeiculo.findById( manutencaoDTO.getVeiculo_id()).orElseThrow(()-> new RuntimeException("Veiculo nao encontrado"));
@@ -94,7 +95,7 @@ public class ServiceManutencoes {
 	    manutencao.setTipoManutencao(manutencaoDTO.getTipoManutencao());
 	    manutencao.setCusto(manutencaoDTO.getCusto());
 	    manutencao.setProximaManutencaoKm(manutencaoDTO.getProximaManutencaoKm());
-   
+    
      
        // Define o status inicial 
        LocalDate hoje = LocalDate.now();
@@ -243,7 +244,7 @@ public class ServiceManutencoes {
           .orElseThrow(() -> new RuntimeException("Manutenção não encontrada"));
       manutencao.setDescricao(observacoes);
       // Atualiza o status da manutenção
-       
+        
       manutencao.setStatus(statusManutencao.CONCLUIDA);
       LocalDateTime agora = LocalDateTime.now();
       DateTimeFormatter formatter =
@@ -323,7 +324,7 @@ public class ServiceManutencoes {
       response.put("sucesso", "Manutencao cancelada com sucesso");
       return response;
   }
-
+ 
   /**
    * Verifica se um veículo tem manutenção para hoje
    */ 
@@ -356,7 +357,7 @@ public class ServiceManutencoes {
   /**
    * Notifica sobre manutenções do dia seguinte
    * Executa todos os dias às 8h da manhã
-   */
+   */ 
   @Scheduled(cron = "0 0 8 * * *") // Todos os dias às 8h
   @Transactional
   public void notificarManutencoesAmanha() {
@@ -379,10 +380,11 @@ public class ServiceManutencoes {
 	}
    
  public List<Manutencao>  listarPorVeiculo(long veiculoId){
- return repositoryManuntencao.findByVeiculoId(veiculoId);  
- } 
- public List<Manutencao> listarPorTipo(String tipo) {
-     return repositoryManuntencao.findBytipoManutencao(tipo);
+ return repositoryManuntencao.findByVeiculoId(veiculoId);   
+ }  
+ public List<Manutencao> listarPorTipo(String tipo) {   
+	  TipoManutencao tipoEnum = TipoManutencao.valueOf(tipo.toUpperCase());
+     return repositoryManuntencao.findBytipoManutencao(tipoEnum);
  }  
  //relatorio de manuntencoes feitas por cada veiculo
  public List<RelatorioManutencaoDTO> gerarRelatorioPorVeiculo() {
@@ -405,7 +407,7 @@ try {
     List<Manutencao> manutencoesVencidas = repositoryManuntencao.findManutencoesVencidas();
 if (manutencoesVencidas != null) {
     for (Manutencao m : manutencoesVencidas) {
-        try {
+        try {  
             if (m == null || m.getVeiculo() == null) continue;
             
             String placa = m.getVeiculo().getMatricula();
@@ -450,7 +452,7 @@ if (proximas30dias != null) {
     for (Manutencao m : proximas30dias) {
         try {
             if (m == null || m.getVeiculo() == null) continue;
-            
+             
             String placa = m.getVeiculo().getMatricula();
             String emailResp = m.getVeiculo().getEmailResponsavel();
             String detalhes = "";

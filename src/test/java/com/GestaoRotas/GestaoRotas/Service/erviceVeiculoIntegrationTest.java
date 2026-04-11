@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 
 import jakarta.transaction.Transactional;
 
-@SpringBootTest
+@SpringBootTest 
 @ActiveProfiles("test")
 @Transactional
 public class erviceVeiculoIntegrationTest {
@@ -248,9 +248,7 @@ void atualizarStatusTodosVeiculos_DeveAtualizarStatusDeTodos() {
     // Vamos verificar o comportamento correto
     for (Veiculo v : veiculos) {
         if (v.getStatus().equals("DISPONIVEL")) {
-            // Se o status não mudou, a data pode continuar null
-            // OU o método pode ter atualizado mesmo assim?
-            // Isso depende da implementação
+         
             System.out.println("Veículo " + v.getId() + " status: " + v.getStatus() + 
                              ", data atualização: " + v.getDataAtualizacaoStatus());
         }

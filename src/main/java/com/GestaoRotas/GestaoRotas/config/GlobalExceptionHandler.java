@@ -123,7 +123,7 @@ public class GlobalExceptionHandler {
 		Map<String ,String> erro = new HashMap<>();
 		erro.put("erro", ex.getMessage()); 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro); 
-	} 
+	}  
 	@ExceptionHandler(InvalidClassException.class) 
 	public ResponseEntity<Map<String , String>> handleIvalidClassException(InvalidClassException ex){
 		Map<String,String> erro = new HashMap<>();
@@ -192,5 +192,6 @@ public class GlobalExceptionHandler {
 	  response.put("erro", ex.getMessage()); 
 	  return ResponseEntity.badRequest().body(response); 
   }
+  
   }
 

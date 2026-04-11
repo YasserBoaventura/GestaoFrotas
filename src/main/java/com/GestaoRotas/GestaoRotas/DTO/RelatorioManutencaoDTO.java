@@ -14,6 +14,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
+@NoArgsConstructor
 public class RelatorioManutencaoDTO {
     private String veiculo;
     private Long totalManutencoes;

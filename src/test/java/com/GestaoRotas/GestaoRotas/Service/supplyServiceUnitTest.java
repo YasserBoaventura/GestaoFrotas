@@ -42,7 +42,7 @@ public class supplyServiceUnitTest {
     @Mock
     private RepositoryAbastecimentos repositoryAbastecimentos;
 
-    @Mock
+    @Mock 
     private RepositoryViagem repositorioViagem;
 
     @Mock

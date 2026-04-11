@@ -199,7 +199,7 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
 		@Query("SELECT new com.GestaoRotas.GestaoRotas.CustoDTO.CustoDetalhadoDTO(" +
 			       "c.id, c.descricao, c.valor, c.data, c.tipo, c.status, " +
 			       "v.matricula, v.modelo) " + 
-			       "FROM Custo c " +
+			       "FROM Custo c " + 
 			       "JOIN c.veiculo v " +
 			       "WHERE c.status = 'PAGO' " +
 			       "ORDER BY c.valor DESC "+

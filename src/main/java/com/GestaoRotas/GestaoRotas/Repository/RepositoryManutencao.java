@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Manutencao;
+import com.GestaoRotas.GestaoRotas.Model.TipoManutencao;
 import com.GestaoRotas.GestaoRotas.Model.statusManutencao;
 
 @Repository
@@ -19,7 +20,7 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
 
       
     //Busca pelo tipo da manutencao
-    List<Manutencao>  findBytipoManutencao (String tipoManutencao);
+    
    
  // RepositoryManutencao.java
     @Query("""
@@ -52,9 +53,8 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
         GROUP BY m.veiculo.matricula , m.status 
         """)
     List<RelatorioManutencaoDTO> relatorioPorVeiculo();
+ 
 
-    	//lo tipo da manutencao
-     List<Manutencao> findByTipoManutencao(String tipoManutencao);
      
   // Manutenções vencidas  
      @Query("SELECT m FROM Manutencao m WHERE " +
@@ -114,6 +114,8 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
        List<Manutencao> findByDataManutencaoAndStatus(LocalDate amanha, statusManutencao status); 
      
      // conta por status
-      Long countByStatus(String status); 
+      Long countByStatus(String status);
+
+	  List<Manutencao> findBytipoManutencao(TipoManutencao tipoEnum); 
  }
  
