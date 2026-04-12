@@ -406,7 +406,7 @@ try {
     // 1. Manutenções vencidas
     List<Manutencao> manutencoesVencidas = repositoryManuntencao.findManutencoesVencidas();
 if (manutencoesVencidas != null) {
-    for (Manutencao m : manutencoesVencidas) {
+    for (Manutencao m : manutencoesVencidas) {  
         try {  
             if (m == null || m.getVeiculo() == null) continue;
             

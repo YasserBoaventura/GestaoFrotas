@@ -35,7 +35,7 @@ public void enviarEmailsViagensSemana() {
     LocalDate fimSemana = hoje.plusDays(7);    // Próximo sábado
     
     logger.info("Período: {} a {}", inicioSemana, fimSemana);
-    
+     
     try {
         // Busca todas as viagens da próxima semana
         List<Viagem> viagensSemana = viagemRepository.findViagensEntreDatas(inicioSemana, fimSemana);

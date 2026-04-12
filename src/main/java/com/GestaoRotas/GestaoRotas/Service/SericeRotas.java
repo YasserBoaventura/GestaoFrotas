@@ -5,6 +5,8 @@ import java.util.*;
 import com.GestaoRotas.GestaoRotas.Entity.Rotas;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryRotas;
 
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -14,20 +16,21 @@ public class SericeRotas {
 	  
 	private final RepositoryRotas repositoryRotas;
 
-	
-	public String save(Rotas rotas ) {
-	 repositoryRotas.save(rotas);
+	@Transactional
+	public String save(@Valid Rotas rotas ) {
+	 repositoryRotas.save(rotas); 
 	  return "salvo com sucesso";
 	}
 	public String deleteById(long id) {
 		repositoryRotas.deleteById(id);
 		return "Excluído!', 'A rota foi excluída.', 'success";
 	}
-	public String update(Rotas rotas, Long id) {
+	@Transactional 
+	public String update(@Valid Rotas rotas, Long id) {
         // Busca a rota existente
         Rotas rotaExistente =  repositoryRotas.findById(id)
             .orElseThrow(() -> new RuntimeException("Rota não encontrada com id: " + id));
-            
+             
         // Atualiza apenas os campos permitidos
         rotaExistente.setOrigem(rotas.getOrigem());
         rotaExistente.setDestino(rotas.getDestino());

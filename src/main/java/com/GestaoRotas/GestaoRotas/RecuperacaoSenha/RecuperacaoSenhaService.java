@@ -69,7 +69,7 @@ public Map<String, String> solicitarRecuperacaoSenha(String username, String ema
    
     // Enviar código por email de uma forma ASSÍNCRONO
     emailService.enviarCodigoVerificacao(usuario.getEmail(), usuario.getUsername(), codigo);
-     
+      
     // Retornar resposta NÃO retorna o código por segurança! 
     response.put("status", "sucesso");
     response.put("mensagem", "Código de verificação enviado para seu email");
@@ -90,7 +90,7 @@ public Map<String, String> solicitarRecuperacaoSenha(String username, String ema
     Map<String, String> errorResponse = new HashMap<>();
     errorResponse.put("status", "erro");
     errorResponse.put("mensagem", "Usuário não encontrado");
-    return errorResponse;
+    return errorResponse; 
    }
 public boolean verificarRespostaSeguranca(String username, String respostaSeguranca) {
   Optional<Usuario> usuarioOpt = loginRepository.findByUsername(username);

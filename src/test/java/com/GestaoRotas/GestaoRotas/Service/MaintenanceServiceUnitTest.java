@@ -52,7 +52,7 @@ public class MaintenanceServiceUnitTest {
     private Manutencao manutencao;
     private manuntecaoDTO manutencaoDTO;
 
-    @BeforeEach
+    @BeforeEach 
     void setUp() { 
     veiculo = new Veiculo();
     veiculo.setId(1L);
