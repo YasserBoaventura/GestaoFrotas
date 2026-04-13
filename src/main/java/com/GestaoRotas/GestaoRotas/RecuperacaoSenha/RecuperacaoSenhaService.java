@@ -41,7 +41,7 @@ public class RecuperacaoSenhaService  {
      
     private static final Logger logger = LoggerFactory.getLogger(RecuperacaoSenhaService.class);
     
-  
+@Transactional 
 public Map<String, String> solicitarRecuperacaoSenha(String username, String email) {
     Optional<Usuario> usuarioOpt = loginRepository.findByUsernameAndEmail(username, email);
     Map<String, String> response = new HashMap<>();
@@ -118,12 +118,12 @@ public boolean redefinirSenhaComToken(String token, String novaSenha) {
 @Transactional 
 public boolean redefinirSenhaComVerificacao(recuperacaoSenhaDTO dto) {
     Optional<Usuario> usuarioOpt = loginRepository.findByUsername(dto.getUsername());
-
-    if (usuarioOpt.isPresent()) {
+   
+    if (usuarioOpt.isPresent()) { 
         Usuario usuario = usuarioOpt.get();   
-     
+        
         boolean emailValido = usuario.getEmail().equalsIgnoreCase(dto.getEmail());
-        boolean nuitValido = usuario.getNuit().equals(dto.getNuit());
+        boolean nuitValido = usuario.getNuit().equalsIgnoreCase(dto.getNuit());
         boolean respostaValida = usuario.getRespostaSeguranca()
             .equalsIgnoreCase(dto.getRespostaSeguranca());
         boolean codigoVerificacao = usuario.getCodigoVerificacao().equalsIgnoreCase(dto.getCodigoVerificacao()) ; 

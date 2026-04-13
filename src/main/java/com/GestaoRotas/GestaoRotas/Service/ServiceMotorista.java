@@ -31,6 +31,9 @@ public class ServiceMotorista {
 		return sucesso;
 		} 
 	  public String deleteById(long id) {
+		   if (!repositoryMotorista.existsById(id)) {
+		        throw new NoSuchElementException("Motorista não encontrado");
+		    }
 		  this.repositoryMotorista.deleteById(id); 
 		  return "deletado com sucesso"; 
 	  }

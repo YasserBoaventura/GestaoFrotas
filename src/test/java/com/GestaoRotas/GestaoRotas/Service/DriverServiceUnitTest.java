@@ -65,7 +65,7 @@ public class DriverServiceUnitTest {
 	    });
 	    verify(repositoryMotorista, never()).save(any());
 	}
-	
+	 
 	@Test
 	void salvar_ComEmailDuplicado_DeveLancarExcecao() {
 	    // Arrange
@@ -237,21 +237,20 @@ public class DriverServiceUnitTest {
 	
 	@Test
 	void findByNome_ComNomeInexistente_DeveRetornarListaVazia() {
-	    // Arrange
+	
 	    when(repositoryMotorista.findByNomeContainingIgnoreCase("Inexistente"))
 	        .thenReturn(Collections.emptyList());
 	
-	    // Act
-	    List<Motorista> resultado = serviceMotorista.findByNome("Inexistente");
 	
-	    // Assert
+	    List<Motorista> resultado = serviceMotorista.findByNome("Inexistente");
+
 	    assertTrue(resultado.isEmpty());
 	    verify(repositoryMotorista, times(1)).findByNomeContainingIgnoreCase("Inexistente");
 	}
 	
 	@Test
 	void findByNome_ComNomeNull_DeveLancarExcecao() {
-	    // Act & Assert
+
 	    assertThrows(Exception.class, () -> {
 	        serviceMotorista.findByNome(null);
 	    });
@@ -260,44 +259,36 @@ public class DriverServiceUnitTest {
 	
 	@Test
 	void findByNome_ComNomeVazio_DeveRetornarTodosMotoristas() {
-	    // Arrange
+	
 	    List<Motorista> motoristas = Arrays.asList(motorista);
 	    when(repositoryMotorista.findByNomeContainingIgnoreCase("")).thenReturn(motoristas);
 	
-	    // Act
 	    List<Motorista> resultado = serviceMotorista.findByNome("");
 	
 	    // Assert
 	    assertEquals(1, resultado.size());
 	    verify(repositoryMotorista, times(1)).findByNomeContainingIgnoreCase("");
-	}
+	} 
 	
 	@Test
 	void salvar_DeveRetornarMapComSucesso() {
-	    // Arrange
-	    when(repositoryMotorista.save(any(Motorista.class))).thenReturn(motorista);
-	
-	    // Act
+     
+		when(repositoryMotorista.save(any(Motorista.class))).thenReturn(motorista);
+
 	    Map<String, String> response = serviceMotorista.salvar(motorista);
-	
-	    // Assert
+
 	    assertTrue(response.containsKey("sucesso"));
 	    assertEquals("Motorista salvo com sucesso", response.get("sucesso"));
 	    assertTrue(response.size() == 1);
 	}
-	
+	   
 	@Test
 	void update_DeveManterTotalViagens() {
 	    // Arrange
-	  
 	    when(repositoryMotorista.save(any(Motorista.class))).thenReturn(motorista);
-	
-	    // Act
 	    String resultado = serviceMotorista.update(motorista, 1L);
-	
-	    // Assert
 	    assertEquals("Motorista actualizado com sucesso", resultado);
-	    // O método getTotalViagens() é chamado durante o update
+	  
 	        verify(repositoryMotorista, times(1)).save(motorista);
 	}
 	}

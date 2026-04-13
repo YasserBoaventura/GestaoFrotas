@@ -108,7 +108,6 @@ public ResponseEntity<List<abastecimentos>> findAll(){
      try { 
      return ResponseEntity.ok(abastecimentosService.deletar(id)); 
    }catch(Exception e) {
-	   e.getStackTrace ();
     	 return ResponseEntity .badRequest().build(); 
     }
 	 

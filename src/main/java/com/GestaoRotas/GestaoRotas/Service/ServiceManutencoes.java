@@ -545,9 +545,10 @@ if (proximas7dias != null) {
         }
     }
     
-} catch (Exception e) {
+} catch (Exception e) { 	
     alertas.add("Não foi possível carregar todos os alertas");
-}
+   System.out.println(e.getCause() != null ? e.getCause() : null); 
+} 
 
 if (alertas.isEmpty()) {
     alertas.add("Sem Alertas por agora");
