@@ -31,7 +31,7 @@ public class Motorista {
 	@Column(nullable = false, length = 100)
     @Size(min = 3, max = 100, message = "Nome deve ter entre 3 e 100 caracteres")
 	private String nome;
-	  
+	   
 	@Column(name = "numero_carta", unique = true, length = 20)
 	@NotBlank(message = "numero de carta é obrigatorio")
 	private String numeroCarta;
@@ -52,7 +52,7 @@ public class Motorista {
     @Pattern(regexp = "A|B|C|D|E", message = "Categoria deve ser A, B, C, D ou E")
 	private String  categoriaHabilitacao;
 	 
-	@Enumerated(EnumType.STRING)
+	@Enumerated(EnumType.STRING)  
     @JsonProperty("statusMotorista") // This maps JSON "statusMotorista" to Java "status"
     @Column(name="statusMotorista" , nullable = false)
 	private statusMotorista status;

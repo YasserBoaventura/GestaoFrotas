@@ -30,7 +30,7 @@ import java.util.Map;
 @RestController 
 @RequestMapping("/api/manutencoes") 
 @RequiredArgsConstructor
-@CrossOrigin("*")
+@CrossOrigin("*") 
 public class ControllerManutencoes {
 
     private final ServiceManutencoes manutencaoService;
@@ -38,13 +38,13 @@ public class ControllerManutencoes {
   @PostMapping("/save")
   @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
 public ResponseEntity<String> cadastrar(@RequestBody manuntecaoDTO manutencaoDTO) {
-	  try {  
+	  try {   
 return ResponseEntity.ok(manutencaoService.salvar(manutencaoDTO));
 	 }catch(Exception e) { 
 		   e.printStackTrace();
 		  return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
    }
-	    	
+	     	 
 }@PutMapping("/update/{id}")
 @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
 public ResponseEntity<String> update(@PathVariable long id, @RequestBody manuntecaoDTO manutencaoDTO){

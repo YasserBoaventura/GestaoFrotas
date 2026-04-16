@@ -121,14 +121,14 @@ public non-sealed class custoService  implements CustoServiceImpl {
         // Verificar se já existe custo para este abastecimento
         if (custoRepository.existsByAbastecimentoId(abastecimento.getId())) {
             throw new RuntimeException("Custo já existe para este abastecimento");
-        }  
+        }   
         
          Custo custo = new Custo();
         custo.setData(abastecimento.getDataAbastecimento());
         custo.setDescricao("Abastecimento - " + abastecimento.getTipoCombustivel());
         custo.setValor(abastecimento.getValorTotal());
         custo.setTipo(TipoCusto.COMBUSTIVEL); 
-        custo.setStatus(StatusCusto.PAGO);
+        custo.setStatus(StatusCusto.PAGO); 
         custo.setVeiculo(abastecimento.getVeiculo()); 
         custo.setViagem(abastecimento.getViagem()); 
         custo.setAbastecimento(abastecimento);
@@ -209,9 +209,9 @@ public non-sealed class custoService  implements CustoServiceImpl {
     } 
  @Transactional  
 public Custo criarCustoParaViagem(CustoViagemDTO custoViagemDTO) {
-	try {
+	
     Custo custo = new Custo();
-    custo.setData(LocalDate.now()); 
+    custo.setData(LocalDate.now());  
     custo.setDescricao(custoViagemDTO.getDescricao());
     custo.setValor(custoViagemDTO.getValor());  
     custo.setTipo(custoViagemDTO.getTipo());    
@@ -228,14 +228,10 @@ public Custo criarCustoParaViagem(CustoViagemDTO custoViagemDTO) {
     atualizarTotaisVeiculo(viagem.getVeiculo().getId());
      
     return saved; 
-	}catch(Exception e) {
-		System.err.println("erro ao criar custo pra: " +e.getCause().getMessage().toString());
-    	return null;
-    	}
-  }
+ }
 @Transactional 
 public String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id) {
- 	try {
+ 	
  		Custo custoActualizado =  custoRepository.findById(id).orElseThrow(() -> new RuntimeException("Custo pra viagem nao encontrada")); 
  		 custoActualizado.setData(LocalDate.now());
  		 custoActualizado.setDescricao(custoViagemDTO.getDescricao());
@@ -244,7 +240,7 @@ public String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id) 
  		 custoActualizado.setStatus(StatusCusto.PAGO); 
  		 custoActualizado.setObservacoes(custoViagemDTO.getObservacoes()); 
  	     custoActualizado.setDataActualizacao(LocalDateTime.now());
-  	    //pegando o veiculo
+  	    //pegando o veiculo 
  	    Veiculo veiculo = veiculoRepository.findById(custoViagemDTO.getVeiculoId()).orElseThrow(() -> new RuntimeException("Veiculo nao encontrado")); 
  	    // pegando a viagem
  	    Viagem viagem = repositoryViagem.findById(custoViagemDTO.getViagemId()).orElseThrow(() -> new RuntimeException("Viagem nao encontrada")); 
@@ -254,10 +250,8 @@ public String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id) 
  	    Custo saved = custoRepository.save(custoActualizado);
  	    atualizarTotaisVeiculo(viagem.getVeiculo().getId());
  	     return "custo pra viagem actualizado com sucesso"; 
- 	}catch(Exception e) {
- 	System.err.println("erro actualizar custo para viagem : "+ e.getCause().getMessage().toString()); 
- 		 String err =(String) e.getCause().getMessage().toString();
- 	 return  err;  } 
+ 	
+   
  }  // ========== ATUALIZAÇÃO DE TOTAIS ==========
     
     @Transactional
@@ -267,14 +261,17 @@ public String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id) 
          
         // Calcular totais    
         Map<String, Object> totais = custoRepository.calcularTotaisPorVeiculo(veiculoId);
+       
         
-        veiculo.setCustoTotal((Double) totais.get("total"));
-        veiculo.setCustoCombustivel((Double) totais.get("combustivel"));
-        veiculo.setCustoManutencao((Double) totais.get("manutencao"));
-         
+        veiculo.setCustoTotal((Double) totais.getOrDefault("total",0.0));
+        veiculo.setCustoCombustivel((Double) totais.getOrDefault("combustivel",0.0));
+        veiculo.setCustoManutencao((Double) totais.getOrDefault("manutencao",0.0));
+        veiculo.setCustoViagem((Double) totais.getOrDefault("viagem", 0.0)); 
+        double total = (Double) totais.getOrDefault("total", 0.0);
+
         if (veiculo.getKilometragemAtual() != null && veiculo.getKilometragemAtual() > 0) {
-            veiculo.setCustoMedioPorKm((Double) totais.get("total") / veiculo.getKilometragemAtual());
-        }         
+            veiculo.setCustoMedioPorKm(total / veiculo.getKilometragemAtual());
+        }       
         veiculo.setUltimaAtualizacaoCusto(LocalDateTime.now());
         veiculoRepository.save(veiculo);
     } 
@@ -321,8 +318,8 @@ public String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id) 
     List<Object[]> tipoResultados = custoRepository.calcularTotalPorTipoAgrupado(ano, mes);
 
     if (tipoResultados != null && !tipoResultados.isEmpty()) {
-        for (Object[] obj : tipoResultados) {
-            if (obj != null && obj.length >= 2) {
+        for (Object[] obj : tipoResultados) { 
+            if (obj != null && obj.length >= 2) { 
                 String tipo = obj[0] != null ? obj[0].toString() : "OUTROS";
             Double valor = obj[1] != null ? ((Number) obj[1]).doubleValue() : 0.0;
             custosPorTipo.put(tipo, valor);
