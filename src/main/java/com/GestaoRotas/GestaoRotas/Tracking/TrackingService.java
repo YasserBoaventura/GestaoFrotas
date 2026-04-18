@@ -1,6 +1,6 @@
 package com.GestaoRotas.GestaoRotas.Tracking;
 
-import java.lang.foreign.Linker.Option;
+import java.lang.foreign.Linker.Option; 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -18,10 +18,10 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Service 
+@Service  
 @RequiredArgsConstructor 
 public non-sealed class TrackingService implements TrackingServiceImpl{
-	  
+	    
     private final VehicleLocationRepository locationRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final RepositoryVeiculo veiculoRepository;
@@ -48,7 +48,7 @@ public non-sealed class TrackingService implements TrackingServiceImpl{
     public Optional<VehicleLocation> getLastLocation(Long vehicleId) {
         return locationRepository.findLastLocation(vehicleId);
     }
-    @Transactional
+    @Transactional  
     public List<VehicleLocation> getLocationHistory(Long vehicleId, LocalDateTime since) {
         return locationRepository.findRecentLocations(vehicleId, since);
     }

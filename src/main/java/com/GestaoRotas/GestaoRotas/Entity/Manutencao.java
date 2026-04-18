@@ -30,7 +30,7 @@ import lombok.Setter;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Manutencao {
       //------> namuntecao
-        @Id
+        @Id 
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
 	    

@@ -45,10 +45,10 @@ import java.util.List;
 
 @ExtendWith(MockitoExtension.class) 
 public class CostsServiceTestUnit {
-	 @Mock
-	    private CustoRepository custoRepository;
-
 	    @Mock
+	    private CustoRepository custoRepository;
+           
+	    @Mock     
 	    private RepositoryVeiculo veiculoRepository;
 
 	    @Mock
@@ -73,8 +73,8 @@ public class CostsServiceTestUnit {
 
 	    @BeforeEach
 	    void setUp() {
-	        veiculo = new Veiculo();
-	        veiculo.setId(1L);  // Alterado de 2L para 1L para consistência
+	     veiculo = new Veiculo();
+        veiculo.setId(1L); 
         veiculo.setMatricula("ABC-1234");
         veiculo.setModelo("Fusion");
         veiculo.setKilometragemAtual(15000.0);
@@ -515,7 +515,7 @@ public class CostsServiceTestUnit {
         when(custoRepository.findByPeriodo(any(), any(), any())).thenReturn(new ArrayList<>()); 
         when(custoRepository.findTop5VeiculosMaisCarosPorPeriodo(any(), any())).thenReturn(new ArrayList<>());
         when(custoRepository.findTop5CustosMaisAltos(any(PageRequest.class))).thenReturn(new ArrayList<>());
-
+ 
         // Act
         RelatorioCustosDetalhadoDTO relatorio = custoService.gerarRelatorioDetalhado(filtro);
 
@@ -523,7 +523,7 @@ public class CostsServiceTestUnit {
         assertNotNull(relatorio);
     }
 
-    @Test
+    @Test 
     void numeroCustos_DeveRetornarQuantidade() {
         // Arrange
         when(custoRepository.countAll()).thenReturn(10);
@@ -602,7 +602,7 @@ public class CostsServiceTestUnit {
         when(custoRepository.calcularTotaisPorVeiculo(1L)).thenReturn(new HashMap<>());
         when(veiculoRepository.findById(1L)).thenReturn(Optional.of(veiculo));
         when(veiculoRepository.save(any(Veiculo.class))).thenReturn(veiculo);
-
+ 
         // Act
         String resultado = custoService.excluirCusto(1L);
 

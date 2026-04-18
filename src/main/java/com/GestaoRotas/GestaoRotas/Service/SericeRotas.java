@@ -19,7 +19,7 @@ public class SericeRotas {
 	@Transactional
 	public String save(@Valid Rotas rotas ) {
 	 repositoryRotas.save(rotas); 
-	  return "salvo com sucesso";
+	  return "salvo com sucesso"; 
 	}
 	public String deleteById(long id) {
 		repositoryRotas.deleteById(id);

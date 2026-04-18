@@ -18,7 +18,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
         config.setApplicationDestinationPrefixes("/app"); 
     } 
             
-    @Override
+    @Override      
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-tracking")
                .setAllowedOriginPatterns("*")

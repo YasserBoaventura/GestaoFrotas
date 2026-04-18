@@ -43,7 +43,7 @@ public class ServiceViagem {
     private final custoService custoService;
     
 @Transactional   
-public String update(ViagensDTO viagemDTO, long id) {
+public String update(ViagensDTO viagemDTO, long id) {  
 
     Viagem viagem =  repositoryViagem.findById(id)
             .orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
