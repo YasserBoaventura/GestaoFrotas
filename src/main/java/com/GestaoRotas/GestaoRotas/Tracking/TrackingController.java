@@ -38,8 +38,9 @@ public class TrackingController {
      VehicleLocation saved = trackingService.saveLocation(locationDTO);
      return ResponseEntity.ok(saved);          
  }        
- @GetMapping("/location/{vehicleId}/last")
- @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+                  
+   @GetMapping("/location/{vehicleId}/last")
+   @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
    public ResponseEntity<VehicleLocation> getLastLocation(@PathVariable Long vehicleId) {
     Optional<VehicleLocation> location = trackingService.getLastLocation(vehicleId);
            return location          

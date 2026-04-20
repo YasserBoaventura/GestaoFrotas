@@ -32,6 +32,26 @@ public void enviarEmailRecuperacao(String destinatario, String token) {
 }
 public void enviarEmailConfirmacao(String destinatario, String assunto, String mensagem) {}
 
+
+@Async
+public void enviarBoasVindasAoUsuario(String emailDestinatario, String mensagem) {
+    try {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(emailFrom);
+        message.setTo(emailDestinatario);
+        message.setSubject("🎉 Bem-vindo ao Sistema");
+
+        message.setText(mensagem);
+
+        mailSender.send(message);
+
+        logger.info("✅ Email de boas-vindas enviado para: {}", emailDestinatario);
+
+    } catch (Exception e) {
+        logger.error("❌ Erro ao enviar email: {}", e.getMessage());
+    }
+
+}
 //para o envio de codigos
 @Async
 public void enviarCodigoVerificacao(String emailDestino, String nome, String codigo) {

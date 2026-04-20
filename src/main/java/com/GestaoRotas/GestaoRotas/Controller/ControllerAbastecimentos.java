@@ -45,7 +45,7 @@ public class ControllerAbastecimentos {
 	   try { 
 	   return ResponseEntity.ok(abastecimentosService.save(abastecimentoDTO)); 
 	  }catch(Exception e) { 
-	   System.err.print("erro ao salvar abastecimento");
+
 	   e.printStackTrace();        
 	  return ResponseEntity.badRequest().build(); 
 	  }   
@@ -57,7 +57,6 @@ public class ControllerAbastecimentos {
       String response = this.abastecimentosService.update(abastecimentoDTO, id);
       return ResponseEntity.status(HttpStatus.OK).body(response);
   } catch(Exception e) { 
-      System.err.println("Erro ao atualizar abastecimento: " + e.getMessage());
       e.printStackTrace();
        String erro = "erro ao actualizar abastecimento: " + e.getMessage();
           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
