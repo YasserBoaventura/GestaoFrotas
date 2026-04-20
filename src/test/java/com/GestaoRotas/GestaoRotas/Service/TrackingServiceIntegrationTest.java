@@ -39,7 +39,6 @@ public class TrackingServiceIntegrationTest {
     @BeforeEach
     void setUp() { 
 
-        // ✔️ Criar veículo (NUNCA pode ser null)
         veiculo = new Veiculo();
         veiculo.setModelo("Toyota");
         veiculo.setMatricula("ABC-123");
@@ -49,11 +48,11 @@ public class TrackingServiceIntegrationTest {
         veiculo.setStatus("DISPONIVEL");
         veiculo.setEmailResponsavel("teste@teste.com");
 
-        veiculo = veiculoRepository.save(veiculo); // ✔️ agora ok
+        veiculo = veiculoRepository.save(veiculo); 
 
-        // ✔️ Criar DTO de localização
+      
         locationDTO = new LocationDTO();
-        locationDTO.setVehicleId(veiculo.getId()); // ⚠️ precisa existir
+        locationDTO.setVehicleId(veiculo.getId()); 
         locationDTO.setLatitude(-25.9692);
         locationDTO.setLongitude(32.5732);
         locationDTO.setSpeed(50.0);
@@ -164,8 +163,6 @@ public class TrackingServiceIntegrationTest {
         assertNotNull(historico);
         assertTrue(historico.size() >= 3);
         
-        // Verificar ordem cronológica (mais recentes primeiro ou mais antigos?)
-        // Depende da implementação do repository
     }
 
     @Test
@@ -179,7 +176,7 @@ public class TrackingServiceIntegrationTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        
+         
         LocalDateTime marco = LocalDateTime.now();
         
         try {

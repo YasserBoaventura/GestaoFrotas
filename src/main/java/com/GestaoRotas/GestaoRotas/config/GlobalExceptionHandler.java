@@ -192,6 +192,12 @@ public class GlobalExceptionHandler {
 	  response.put("erro", ex.getMessage()); 
 	  return ResponseEntity.badRequest().body(response); 
   }
+  @ExceptionHandler(InterruptedException.class) 
+  public ResponseEntity<Map<String, String>> handleInterruptedException(InterruptedException ex){
+	  Map<String,String> response = new HashMap<>(); 
+	  response.put("erro", ex.getMessage()); 
+	  return ResponseEntity.badRequest().body(response); 
+  }
   
   }
 
