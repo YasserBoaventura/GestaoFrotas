@@ -73,9 +73,10 @@ public String update(ViagensDTO viagemDTO, long id) {
     viagem.setStatus(viagemDTO.getStatus());
     viagem.setKilometragemInicial(viagemDTO.getKilometragemInicial());
     viagem.setKilometragemFinal(viagemDTO.getKilometragemFinal());
+    viagem.setTipoCarga(viagemDTO.getTipoCarga());
     viagem.setObservacoes(viagemDTO.getObservacoes());
 
-
+ 
     repositoryViagem.save(viagem);
     return  "viagem atualizada com sucesso!";
 }
@@ -213,6 +214,7 @@ public String update(ViagensDTO viagemDTO, long id) {
 	    viagem.setRota(rota);  
 	    viagem.setDataHoraPartida(viagemDTO.getDataHoraPartida());
 	    viagem.setDataHoraChegada(viagemDTO.getDataHoraChegada());
+	    viagem.setTipoCarga(viagemDTO.getTipoCarga());
 	    viagem.setStatus(viagemDTO.getStatus());
 	    viagem.setKilometragemInicial(viagemDTO.getKilometragemInicial());
 	    viagem.setKilometragemFinal(viagemDTO.getKilometragemFinal());

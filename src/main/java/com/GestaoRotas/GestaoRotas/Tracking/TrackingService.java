@@ -25,13 +25,12 @@ public non-sealed class TrackingService implements TrackingServiceImpl{
     private final VehicleLocationRepository locationRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final RepositoryVeiculo veiculoRepository;
-    
-          
-    @Transactional
+              
+    @Transactional   
     public VehicleLocation saveLocation(@Valid LocationDTO locationDTO) {
         VehicleLocation location = new VehicleLocation();
           
-        Veiculo veiculo = veiculoRepository.findById(locationDTO.getVehicleId()).orElseThrow(() -> new RuntimeException("Veiculo nao encontrado")); 
+        Veiculo veiculo = veiculoRepository.findById(locationDTO.getVehicleId()).orElseThrow(() -> new  RuntimeException("Veiculo nao encontrado")); 
         location.setVeiculo(veiculo);
         location.setLatitude(locationDTO.getLatitude());
         location.setLongitude(locationDTO.getLongitude());
@@ -53,9 +52,10 @@ public non-sealed class TrackingService implements TrackingServiceImpl{
     public List<VehicleLocation> getLocationHistory(Long vehicleId, LocalDateTime since) {
         return locationRepository.findRecentLocations(vehicleId, since);
     }
+ 
     public List<VehicleLocation> findAll(){
-    	return locationRepository.findAll(); 
-    	} 
+        return locationRepository.findAll(); 
+    }
     public Long count() {
     	return locationRepository.count(); 
     }
