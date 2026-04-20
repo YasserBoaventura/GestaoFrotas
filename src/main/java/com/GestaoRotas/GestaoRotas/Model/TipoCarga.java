@@ -4,6 +4,7 @@ public enum TipoCarga {
 	
 	PESSOAS,
 	MERCADORIA,
-	GERAL
+	GERAL,
+	FRÁGIL
 
 }

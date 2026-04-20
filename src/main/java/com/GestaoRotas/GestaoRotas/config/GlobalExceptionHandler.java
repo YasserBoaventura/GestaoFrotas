@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -185,6 +186,11 @@ public class GlobalExceptionHandler {
 	 response.put("erro", ex.getMessage());
 	 return ResponseEntity.badRequest().body(response); 
  }
-  
+  @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+  public ResponseEntity<Map<String, String>> handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException ex){
+	  Map<String,String> response = new HashMap<>(); 
+	  response.put("erro", ex.getMessage()); 
+	  return ResponseEntity.badRequest().body(response); 
+  }
   }
 

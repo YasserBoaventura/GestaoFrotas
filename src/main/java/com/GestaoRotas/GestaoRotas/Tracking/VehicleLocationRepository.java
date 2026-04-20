@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VehicleLocationRepository extends JpaRepository<VehicleLocation, Long>{
  
-	  
+	    
     List<VehicleLocation> findByVeiculoIdOrderByTimestampDesc(Long veiculoId);
 
     @Query("SELECT v FROM VehicleLocation v WHERE v.veiculo.id = :vehicleId AND v.timestamp >= :since")
