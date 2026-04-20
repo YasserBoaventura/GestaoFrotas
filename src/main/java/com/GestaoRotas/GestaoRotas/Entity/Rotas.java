@@ -43,8 +43,8 @@ public class Rotas {
     private Double tempoEstimadoHoras;
     
     private String descricao;
-    
-    // OneToMany com Viagem 
+     
+    // OneToMany com Viagem       
     @JsonIgnore
     @OneToMany(mappedBy = "rota", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Viagem> viagens = new ArrayList<>();

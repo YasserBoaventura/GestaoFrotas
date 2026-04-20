@@ -6,6 +6,7 @@ import java.io.InvalidClassException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -178,5 +179,12 @@ public class GlobalExceptionHandler {
 	response.put("erro",ex.getMessage());
 	return ResponseEntity.badRequest().body(response); 
   }
+  @ExceptionHandler(NoSuchElementException.class) 
+ public ResponseEntity<Map<String, String>> handleNoSuchElementException(NoSuchElementException ex){
+	 Map<String,String> response = new HashMap<>();
+	 response.put("erro", ex.getMessage());
+	 return ResponseEntity.badRequest().body(response); 
+ }
+  
   }
 

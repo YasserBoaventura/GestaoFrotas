@@ -204,7 +204,7 @@ public Map<String, String > desativarConta(long id){
 	            new UsernamePasswordAuthenticationToken(
 	                login.getUsername(),
 	                login.getPassword()
-	            )
+	            )    
 	        );
 	        
 	        // 2. Buscar usuário com tratamento de Optional
