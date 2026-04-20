@@ -564,7 +564,7 @@ void actualizarCustoParaViagem_DeveAtualizarCusto() {
 
 @Test
 void atualizarTotaisTodosVeiculos_DeveAtualizarTodos() {
-    // Arrange
+    // Arrange 
     custoService.criarCustoParaAbastecimento(abastecimento);
 
     // Act   

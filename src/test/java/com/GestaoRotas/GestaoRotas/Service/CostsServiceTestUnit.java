@@ -598,17 +598,14 @@ public class CostsServiceTestUnit {
     void excluirCusto_ComSucesso_DeveExcluir() {
         // Arrange
         when(custoRepository.findById(1L)).thenReturn(Optional.of(custo));
-        doNothing().when(custoRepository).deleteById(1L);
         when(custoRepository.calcularTotaisPorVeiculo(1L)).thenReturn(new HashMap<>());
         when(veiculoRepository.findById(1L)).thenReturn(Optional.of(veiculo));
         when(veiculoRepository.save(any(Veiculo.class))).thenReturn(veiculo);
- 
-        // Act
+
         String resultado = custoService.excluirCusto(1L);
 
-        // Assert
         assertEquals("custo excluido com sucesso", resultado);
-        verify(custoRepository, times(1)).deleteById(1L);
+        verify(custoRepository, times(1)).delete(custo);
     }
 
     @Test

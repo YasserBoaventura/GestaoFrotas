@@ -62,7 +62,7 @@ public void enviarCodigoVerificacao(String emailDestino, String nome, String cod
 private final ConcurrentHashMap<String, Long> emailsEnviados = new ConcurrentHashMap<>();
 
  
-@Async 
+@Async   
 public void enviarAlertaManutencao(String emailDestinatario, String placa, String detalhes) {
     // Chave única para este alerta 
     String chaveUnica = placa + "_" + detalhes + "_" + LocalDate.now();

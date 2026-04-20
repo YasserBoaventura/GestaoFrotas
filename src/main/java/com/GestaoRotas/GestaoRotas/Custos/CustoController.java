@@ -71,9 +71,9 @@ public ResponseEntity<CustoDTO> criar(@RequestBody @Valid CustoRequestDTO reques
  @DeleteMapping("/delete/{id}") 
  @PreAuthorize("hasAuthority('ADMIN')")     
   public ResponseEntity<String> delete(@PathVariable Long id){ 
-	  try {
+	  try {  
 		  return ResponseEntity.ok(custoService.excluirCusto(id)); 
-	  }catch(Exception e) { 
+		}catch(Exception e) { 
 		  e.getCause().getMessage(); 
 		return ResponseEntity.badRequest().body("erro ao excluir custo"); 	  
 	  }
@@ -82,7 +82,7 @@ public ResponseEntity<CustoDTO> criar(@RequestBody @Valid CustoRequestDTO reques
    @PreAuthorize("hasAuthority('ADMIN')")     
     public ResponseEntity<Custo> criarCustoParaViagem(@RequestBody @Valid CustoViagemDTO custoViagemDTO){
     	try { 
-    return ResponseEntity.ok(custoService.criarCustoParaViagem(custoViagemDTO)); 
+      return ResponseEntity.ok(custoService.criarCustoParaViagem(custoViagemDTO)); 
     	}catch(Exception e) {     
     	return ResponseEntity.badRequest().build(); 
     	} 

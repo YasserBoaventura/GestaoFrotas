@@ -244,7 +244,7 @@ void concluirViagem_ComSucesso_DeveAtualizarStatus() {
     Map<String, String> response = serviceViagem.ConcluirViagem(concluirRequest, 1L);
 
     // Assert
-    assertEquals("viagem concluirda com sucesso", response.get("sucesso"));
+    assertEquals("viagem concluida com sucesso", response.get("sucesso"));
     assertEquals(statusMotorista.DISPONIVEL, motorista.getStatus());
     assertEquals("DISPONIVEL", veiculo.getStatus());
     verify(repositoryViagem, times(1)).save(any(Viagem.class));

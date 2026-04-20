@@ -80,31 +80,29 @@ public class DriverServiceUnitTest {
 	    assertEquals("Email já cadastrado", exception.getMessage());
 	    verify(repositoryMotorista, times(1)).save(any(Motorista.class));
 	}
-	
 	@Test
 	void deleteById_DeveDeletarMotorista() {
-	    // Arrange
+	 
+	    when(repositoryMotorista.existsById(1L)).thenReturn(true);
 	    doNothing().when(repositoryMotorista).deleteById(1L);
 	
-	    // Act
+	   
 	    String resultado = serviceMotorista.deleteById(1L);
 	
-	    // Assert
+	 
 	    assertEquals("deletado com sucesso", resultado);
 	    verify(repositoryMotorista, times(1)).deleteById(1L);
 	}
-	
+		
 	@Test
 	void deleteById_ComIdInexistente_DeveLancarExcecao() {
 	    // Arrange
-	    doThrow(new RuntimeException("Motorista não encontrado"))
-	        .when(repositoryMotorista).deleteById(999L);
-	
+	    when(repositoryMotorista.existsById(999L)).thenReturn(false);
+
 	    // Act & Assert
-	    RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+	    NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
 	        serviceMotorista.deleteById(999L);
 	    });
-	    
 	    assertEquals("Motorista não encontrado", exception.getMessage());
 	}
 	

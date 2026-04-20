@@ -265,9 +265,7 @@ public void atualizarTotaisVeiculo(Long veiculoId) {
     // Verificar se o Map não é null
     if (totais == null) {
         totais = new HashMap<>();
-    }
-    
-    // Usar getOrDefault com valores padrão seguros
+    } 
     Double total = totais.get("total") != null ? ((Number) totais.get("total")).doubleValue() : 0.0;
     Double combustivel = totais.get("combustivel") != null ? ((Number) totais.get("combustivel")).doubleValue() : 0.0;
     Double manutencao = totais.get("manutencao") != null ? ((Number) totais.get("manutencao")).doubleValue() : 0.0;
@@ -632,20 +630,20 @@ Map<String, Double> totalPorcentoPorCusto = new HashMap<>();
         
         return "custo actualizado com sucesso!";
     }
-      @Transactional
+    @Transactional
     public String excluirCusto(Long id) { 
         Custo custo = custoRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Custo não encontrado"));
         
         Long veiculoId = custo.getVeiculo() != null ? custo.getVeiculo().getId() : null;
         
-        custoRepository.deleteById(id);
-        
-         
-        // Recalcular totais se tinha veículo 
+        custoRepository.delete(custo);
+        custoRepository.flush();
+
         if (veiculoId != null) {
             atualizarTotaisVeiculo(veiculoId);
         }
+
         return "custo excluido com sucesso"; 
     }
 }
