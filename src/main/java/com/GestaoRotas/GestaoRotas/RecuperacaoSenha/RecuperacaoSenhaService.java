@@ -66,7 +66,7 @@ public Map<String, String> solicitarRecuperacaoSenha(String username, String ema
     usuario.setCodigoVerificacao(codigo);
     usuario.setCodigoVerificacaoExpiry(LocalDateTime.now().plusMinutes(10)); // Expira em 10 minutos
     usuario.setCodigoVerificado(false);
-   
+              
     // Enviar código por email de uma forma ASSÍNCRONO
     emailService.enviarCodigoVerificacao(usuario.getEmail(), usuario.getUsername(), codigo);
       
@@ -127,7 +127,7 @@ public boolean redefinirSenhaComVerificacao(recuperacaoSenhaDTO dto) {
         boolean respostaValida = usuario.getRespostaSeguranca()
             .equalsIgnoreCase(dto.getRespostaSeguranca());
         boolean codigoVerificacao = usuario.getCodigoVerificacao().equalsIgnoreCase(dto.getCodigoVerificacao()) ; 
-         
+           
         if (emailValido && nuitValido && respostaValida && codigoVerificacao && usuario.isTokenValido()) {
             usuario.setPassword(passwordEncoder.encode(dto.getNovaSenha()));
             loginRepository.save(usuario);

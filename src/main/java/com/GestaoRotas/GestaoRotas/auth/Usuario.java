@@ -91,8 +91,8 @@ public class Usuario implements UserDetails {
     private String codigoVerificacao;
     private LocalDateTime codigoVerificacaoExpiry;
     private boolean codigoVerificado;
-    
        
+        
     // Métodos de UserDetails
    
     @JsonIgnore

@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Service  
 @RequiredArgsConstructor 
 public non-sealed class TrackingService implements TrackingServiceImpl{
-	    
+	     
     private final VehicleLocationRepository locationRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final RepositoryVeiculo veiculoRepository;
