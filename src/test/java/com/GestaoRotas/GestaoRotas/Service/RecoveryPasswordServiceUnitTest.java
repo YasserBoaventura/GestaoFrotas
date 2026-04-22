@@ -19,7 +19,7 @@ import com.GestaoRotas.GestaoRotas.auth.Usuario;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-
+ 
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -67,31 +67,31 @@ public class RecoveryPasswordServiceUnitTest {
         dto.setCodigoVerificacao("123456");
         dto.setNovaSenha("novaSenha123");
     }
-
+ 
     @Test
-    void solicitarRecuperacaoSenha_ComUsuarioValido_DeveEnviarCodigo() {
-        // Arrange
-        when(loginRepository.findByUsernameAndEmail("joaosilva", "joao@email.com"))
-            .thenReturn(Optional.of(usuario));
-        when(loginRepository.save(any(Usuario.class))).thenReturn(usuario);
-        doNothing().when(emailService).enviarCodigoVerificacao(anyString(), anyString(), anyString());
+void solicitarRecuperacaoSenha_ComUsuarioValido_DeveEnviarCodigo() {
+    // Arrange
+    when(loginRepository.findByUsernameAndEmail("joaosilva", "joao@email.com"))
+        .thenReturn(Optional.of(usuario));
+    when(loginRepository.save(any(Usuario.class))).thenReturn(usuario);
+    doNothing().when(emailService).enviarCodigoVerificacao(anyString(), anyString(), anyString());
 
-        // Act
-        Map<String, String> response = recuperacaoSenhaService.solicitarRecuperacaoSenha("joaosilva", "joao@email.com");
+    // Act
+    Map<String, String> response = recuperacaoSenhaService.solicitarRecuperacaoSenha("joaosilva", "joao@email.com");
 
-        // Assert
-        assertNotNull(response);
-        assertEquals("sucesso", response.get("status"));
-        assertEquals("Código de verificação enviado para seu email", response.get("mensagem"));
-        assertEquals("joaosilva", response.get("username"));
-        assertEquals("joao@email.com", response.get("email"));
-        assertEquals("10 minutos", response.get("expiraEm"));
-        assertNotNull(response.get("token"));
-        assertNotNull(response.get("perguntaSeguranca"));
-        
-        verify(emailService, times(1)).enviarCodigoVerificacao(anyString(), anyString(), anyString());
-        verify(loginRepository, times(1)).save(any(Usuario.class));
-    }
+    // Assert
+    assertNotNull(response);
+    assertEquals("sucesso", response.get("status"));
+    assertEquals("Código de verificação enviado para seu email", response.get("mensagem"));
+    assertEquals("joaosilva", response.get("username"));
+    assertEquals("joao@email.com", response.get("email"));
+    assertEquals("10 minutos", response.get("expiraEm"));
+    assertNotNull(response.get("token"));
+    assertNotNull(response.get("perguntaSeguranca"));
+    
+    verify(emailService, times(1)).enviarCodigoVerificacao(anyString(), anyString(), anyString());
+    verify(loginRepository, times(1)).save(any(Usuario.class));
+}
 
     @Test
     void solicitarRecuperacaoSenha_ComUsuarioInativo_DeveRetornarErro() {
@@ -167,12 +167,12 @@ public class RecoveryPasswordServiceUnitTest {
 
         // Act
         boolean resultado = recuperacaoSenhaService.verificarRespostaSeguranca("joaosilva", "Ana");
-
+ 
         // Assert
         assertFalse(resultado);
-    }
+    }   
 
-    @Test
+    @Test 
     void verificarRespostaSeguranca_UsuarioNaoEncontrado_DeveRetornarFalse() {
         // Arrange
         when(loginRepository.findByUsername("joaosilva")).thenReturn(Optional.empty());
@@ -191,10 +191,9 @@ public class RecoveryPasswordServiceUnitTest {
         when(passwordEncoder.encode("novaSenha123")).thenReturn("senhaEncoded");
         when(loginRepository.save(any(Usuario.class))).thenReturn(usuario);
 
-        // Act
+    
         boolean resultado = recuperacaoSenhaService.redefinirSenhaComToken("token-123", "novaSenha123");
 
-        // Assert
         assertTrue(resultado);
         assertTrue(usuario.getTokenUtilizado());
         assertEquals("senhaEncoded", usuario.getPassword());
@@ -210,7 +209,6 @@ public class RecoveryPasswordServiceUnitTest {
         // Act
         boolean resultado = recuperacaoSenhaService.redefinirSenhaComToken("token-123", "novaSenha123");
 
-        // Assert
         assertFalse(resultado);
         verify(loginRepository, never()).save(any(Usuario.class));
     }
@@ -299,7 +297,7 @@ public class RecoveryPasswordServiceUnitTest {
         assertFalse(resultado);
         verify(loginRepository, never()).save(any(Usuario.class));
     }
-
+    
     @Test
     void redefinirSenhaComVerificacao_UsuarioNaoEncontrado_DeveRetornarFalse() {
         // Arrange

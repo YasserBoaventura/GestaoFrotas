@@ -23,6 +23,7 @@ import com.GestaoRotas.GestaoRotas.Email.EmailService;
 import com.GestaoRotas.GestaoRotas.auth.LoginRepository;
 import com.GestaoRotas.GestaoRotas.auth.Usuario;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 
@@ -92,6 +93,7 @@ public Map<String, String> solicitarRecuperacaoSenha(String username, String ema
     errorResponse.put("mensagem", "Usuário não encontrado");
     return errorResponse; 
    }
+@Transactional
 public boolean verificarRespostaSeguranca(String username, String respostaSeguranca) {
   Optional<Usuario> usuarioOpt = loginRepository.findByUsername(username);
     
@@ -101,6 +103,7 @@ public boolean verificarRespostaSeguranca(String username, String respostaSegura
     }  
     return false;  
 }   
+@Transactional
 public boolean redefinirSenhaComToken(String token, String novaSenha) {
     Optional<Usuario> usuarioOpt = loginRepository.findByResetToken(token);
     
@@ -116,7 +119,7 @@ public boolean redefinirSenhaComToken(String token, String novaSenha) {
     return false;
 }
 @Transactional 
-public boolean redefinirSenhaComVerificacao(recuperacaoSenhaDTO dto) {
+public boolean redefinirSenhaComVerificacao(@Valid recuperacaoSenhaDTO dto) {
     Optional<Usuario> usuarioOpt = loginRepository.findByUsername(dto.getUsername());
    
     if (usuarioOpt.isPresent()) { 
