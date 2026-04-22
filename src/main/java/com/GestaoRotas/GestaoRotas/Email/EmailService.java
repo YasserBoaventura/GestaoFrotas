@@ -99,8 +99,7 @@ public void enviarAlertaManutencao(String emailDestinatario, String placa, Strin
     try {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(emailFrom); 
-        message.setTo(emailDestinatario);
-        message.setFrom("yasserboaventura78@gmail.com");
+        message.setTo(emailDestinatario); 
         message.setSubject("🔧 Alerta de Manutenção - Veículo " + placa);
         message.setText(
             "Prezado(a),\n\n" +

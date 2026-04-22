@@ -15,13 +15,14 @@ import com.GestaoRotas.GestaoRotas.Entity.Marca;
 import com.GestaoRotas.GestaoRotas.Entity.Motorista;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Entity.Viagem;
+import com.GestaoRotas.GestaoRotas.Model.statusManutencao;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryManutencao;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryViagem;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@Service 
 @RequiredArgsConstructor  
 public class ServiceVeiculo {
 
@@ -106,11 +107,11 @@ public class ServiceVeiculo {
 	     */ 
 	    private boolean estaEmManutencaoAtiva(Long veiculoId) {
 	        List<Manutencao> manutencoes = repositoryManutencao.findByVeiculoId(veiculoId);
+	        
 	        return manutencoes.stream()
-	                .anyMatch(m -> m.getStatus() != null && 
-	                              m.getStatus().equals("EM_ANDAMENTO"));
-	    } 
- 
+	                .anyMatch(m -> m.getStatus() != null && m.getStatus() == statusManutencao.EM_ANDAMENTO);
+	    }
+  
 	    /**
 	     * Verifica se o veículo tem manutenções vencidas
 	     */
@@ -173,11 +174,7 @@ private boolean temManutencaoProxima(Long veiculoId, int diasAntecedencia) {
     });
 }
 
-
-	    /**
-	     * Atualiza status de todos os veículos
-	     * Pode ser chamado via API ou agendado
-	     */
+	
     @Transactional 
     public void atualizarStatusTodosVeiculos() {
         List<Veiculo> todosVeiculos =  repositoryVeiculo.findAll();
