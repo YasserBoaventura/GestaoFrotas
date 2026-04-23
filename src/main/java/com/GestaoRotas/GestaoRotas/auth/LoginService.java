@@ -49,7 +49,7 @@ public class LoginService {
 	    // Verifica se a conta está bloqueada
 	    if (user.getTentativasLogin() == 5) {   // Supondo que tenha um método getter
 	        throw new RuntimeException("Conta bloqueada devido a múltiplas tentativas de login");
-	    }
+	    }  
 	    if(!user.isAccountNonLocked()) {
 	    	  throw new RuntimeException("Conta bloqueada");
 	    }
