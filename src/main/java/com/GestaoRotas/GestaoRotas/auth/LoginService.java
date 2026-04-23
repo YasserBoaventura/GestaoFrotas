@@ -14,11 +14,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import com.GestaoRotas.GestaoRotas.DTO.AutoCadastroDTO;
+import com.GestaoRotas.GestaoRotas.DTO.UserSaveDTO;
+import com.GestaoRotas.GestaoRotas.Email.EmailService;
 import com.GestaoRotas.GestaoRotas.Entity.Viagem;
 import com.GestaoRotas.GestaoRotas.config.JwtServiceGenerator;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -33,6 +38,8 @@ public class LoginService {
 	private final AuthenticationManager authenticationManager;
 	 
 	private final PasswordEncoder passwordEncoder;
+	
+	private final EmailService emailService; 
 	
 
 	public String logar(Login login) {
@@ -69,31 +76,93 @@ public class LoginService {
 	    }
 	} 
 // Como pegar os dados do usuario a se cadastrar
-	public String registar(Usuario usuario) { 
-   String passwordEncoderStrings = passwordEncoder.encode(usuario.getPassword());
-		usuario.setPassword(passwordEncoderStrings);
-		   this.repository.save(usuario);
-				return "Usuario Salvo com sucesso"; 
+	public String registar(Usuario userSave) {
+	    if (userSave.getEmail() == null || userSave.getEmail().isBlank()) {
+	        throw new RuntimeException("Email não pode ser vazio");
+	    }
+
+	    Usuario usuario = new Usuario();
+      
+	    usuario.setUsername(userSave.getUsername());
+	    usuario.setEmail(userSave.getEmail());       
+	    usuario.setNuit(userSave.getNuit());
+	    usuario.setContaBloqueada(userSave.getContaBloqueada()); 
+	    usuario.setTelefone(userSave.getTelefone());
+	    usuario.setDataNascimento(null);  
+	    usuario.setRole(userSave.getRole()); 
+        usuario.setDataCriacao(LocalDateTime.now());
+        usuario.setTentativasLogin(0);
+		usuario.setContaBloqueada(false);
+		usuario.setPassword(passwordEncoder.encode("0000")); 
+	    repository.save(usuario);
+
+	    emailService.enviarBoasVindasAoUsuario(
+	        usuario.getEmail(),
+	        "Olá " + usuario.getUsername() +
+	        ",\n\nSeja bem-vindo ao Sistema de Gestão de Frotas.\n" +
+	        "Sua conta foi criada com sucesso.\n\n" +
+	        "  Com o Password 0000, Por Favor Faca suas alteracoes .\nEquipe do Sistema"
+	    );
+
+	    return "Usuário salvo com sucesso!";
 	}  
+	
+	   public ResponseEntity<?> autoCadastro(@Valid AutoCadastroDTO dto) {
+	       // Verificar se username, email ou nuit já existem
+	   if (repository.existsByUsername(dto.getUsername())) {
+	       return ResponseEntity.badRequest().body("Username já está em uso");
+	   }
+	   if (repository.existsByEmail(dto.getEmail())) {
+	       return ResponseEntity.badRequest().body("Email já está em uso");
+	   }
+	   if (repository.existsByNuit(dto.getNuit())) {
+	       return ResponseEntity.badRequest().body("NUIT já está em uso");
+	   }
+	  
+	   // Criar novo usuário com os dados do DTO   
+	   Usuario usuario = new Usuario();  
+	   usuario.setUsername(dto.getUsername());
+	   usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
+	   usuario.setEmail(dto.getEmail());
+	   usuario.setPerguntaSeguranca(dto.getPerguntaSeguranca());
+	   usuario.setRespostaSeguranca(dto.getRespostaSeguranca());
+	   usuario.setTelefone(dto.getTelefone());
+	   usuario.setNuit(dto.getNuit());
+	   usuario.setDataNascimento(dto.getDataNascimento());
+	   
+	   // Definir valores padrão 
+	       usuario.setRole("USER"); // Cargo padrão
+	       usuario.setAtivo(false); // Conta desativada até ativação pelo admin
+		   usuario.setDataCriacao(LocalDateTime.now());
+		   usuario.setTentativasLogin(0);
+		   usuario.setContaBloqueada(false);
+		 //save
+		   repository.save(usuario);  
+		    // enviar boas vindas ao usuario 
+		   emailService.enviarBoasVindasAoUsuario(
+				    usuario.getEmail(),
+				    "Olá " + usuario.getUsername() +  
+				    ",\n\nSeja bem-vindo ao Sistema de Gestão de Frotas.\n" +
+				    "Sua conta foi criada com sucesso.\n\n" +
+				    "Atenciosamente, Por Favor Aguarde ativação da conta por um administrador.,\nEquipe do Sistema"
+				);
+		   return ResponseEntity.ok("Cadastro realizado com sucesso. Aguarde ativação da conta por um administrador.");
+	   } 
    //Apenas o adminstrador pode fazer alteracoes nos usuarios
-	public Usuario atualizarUsuario(Long id, Usuario usuarioAtualizado) {
+	public Usuario atualizarUsuario(Long id, @Valid Usuario usuarioAtualizado) {
 	    Usuario usuarioExistente = this.repository.findById(id)
 	        .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
 	    
 	    // Atualizar apenas campos permitidos
 	    usuarioExistente.setUsername(usuarioAtualizado.getUsername());
-	    usuarioExistente.setEmail(usuarioAtualizado.getEmail());
+	    usuarioExistente.setEmail(usuarioAtualizado.getEmail()); 
 	    usuarioExistente.setRole(usuarioAtualizado.getRole());
 	    usuarioExistente.setTelefone(usuarioAtualizado.getTelefone());
 	    usuarioExistente.setNuit(usuarioAtualizado.getNuit());
 	    usuarioExistente.setAtivo(usuarioAtualizado.isEnabled());
 	    usuarioExistente.setContaBloqueada(usuarioAtualizado.getContaBloqueada());
-	    
-	    // NÃO atualizar campos sensíveis
-	    // usuarioExistente.setPassword(usuarioAtualizado.getPassword()); // REMOVER
-	    // usuarioExistente.setDataCriacao(usuarioAtualizado.getDataCriacao()); // REMOVER
-	    // outros campos como reset_token, etc.
-	    
+	     
+	     
 	    return repository.save(usuarioExistente);
 	}
 	//Bloquear/Desbloquar
@@ -149,46 +218,45 @@ public Map<String, String > desativarConta(long id){
 	
 	
 	//Metodo para gerar token
-	public String gerarToken(Login login) {
-	    try {
-	        // 1. Autenticação com tratamento de erro
-	        Authentication authentication = authenticationManager.authenticate(
-	            new UsernamePasswordAuthenticationToken(
-	                login.getUsername(),
-	                login.getPassword()
-	            )    
-	        );
-	        
-	        // 2. Buscar usuário com tratamento de Optional
-	        Usuario user = repository.findByUsername(login.getUsername())
-	            .orElseThrow(() -> new UsernameNotFoundException(
-	                "Usuário não encontrado: " + login.getUsername()));
-	        
-	        // 3. Validar se o usuário está ativo
-	        if (!user.isEnabled()) {
-	            throw new DisabledException("Usuário desativado: " + login.getUsername());
-	        }
-	        //validar se o usuario esta bloqueada
-	        else if(user.getContaBloqueada()==true) {
-	         throw new DisabledException("Conta bloqueada porfavor entre em Contato com o administrador: "+login.getUsername());	
-	        } 
-	         
-	        // 4. Gerar token JWT
-	        String jwtToken = jwtService.generateToken(user);
-	        
-	        // 5. Registrar login bem-sucedido (opcional)
-	        
-	        
-	        return jwtToken;
-	        
-	    } catch (BadCredentialsException e) {
-	       
-	        throw new BadCredentialsException("Credenciais inválidas para usuário: " + login.getUsername());
-	    } catch (DisabledException e) {
-	        throw new DisabledException("Conta desativada: " + login.getUsername());
-	    } catch (LockedException e) {
-	        throw new LockedException("Conta bloqueada: " + login.getUsername());
-	    }
+public String gerarToken(Login login) {
+    try {
+        // 1. Autenticação com tratamento de erro
+    Authentication authentication = authenticationManager.authenticate(
+        new UsernamePasswordAuthenticationToken(
+            login.getUsername(),
+            login.getPassword()
+        )    
+    );
+    
+    // 2. Buscar usuário com tratamento de Optional
+    Usuario user = repository.findByUsername(login.getUsername())
+        .orElseThrow(() -> new UsernameNotFoundException(
+            "Usuário não encontrado: " + login.getUsername()));
+    
+    // 3. Validar se o usuário está ativo
+    if (!user.isEnabled()) {
+        throw new DisabledException("Usuário desativado: " + login.getUsername());
+    }
+    //validar se o usuario esta bloqueada
+    else if(user.getContaBloqueada()==true) {
+     throw new DisabledException("Conta bloqueada porfavor entre em Contato com o administrador: "+login.getUsername());	
+    } 
+     
+    // 4. Gerar token JWT
+    String jwtToken = jwtService.generateToken(user);
+ 
+    
+    
+    return jwtToken;
+    
+} catch (BadCredentialsException e) {
+   
+    throw new BadCredentialsException("Credenciais inválidas para usuário: " + login.getUsername());
+} catch (DisabledException e) {
+    throw new DisabledException("Conta desativada: " + login.getUsername());
+} catch (LockedException e) {
+    throw new LockedException("Conta bloqueada: " + login.getUsername());
+}
 	}
 
 	

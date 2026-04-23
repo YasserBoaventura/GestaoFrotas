@@ -25,8 +25,8 @@ public non-sealed class TrackingService implements TrackingServiceImpl{
     private final VehicleLocationRepository locationRepository;
     private final SimpMessagingTemplate messagingTemplate;
     private final RepositoryVeiculo veiculoRepository;
-                                                       
-    @Transactional                 
+                                                        
+    @Transactional                   
     public VehicleLocation saveLocation(@Valid LocationDTO locationDTO) {
         VehicleLocation location = new VehicleLocation();
              

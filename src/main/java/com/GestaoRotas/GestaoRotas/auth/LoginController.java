@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.GestaoRotas.GestaoRotas.DTO.AutoCadastroDTO;
-
+import com.GestaoRotas.GestaoRotas.DTO.UserSaveDTO;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -50,44 +50,24 @@ public class LoginController {
         }
     }
     
- 
-//  POST para pre registro
-
-   @PostMapping("/auto-cadastro")
-   public ResponseEntity<?> autoCadastro(@RequestBody AutoCadastroDTO dto) {
-       // Verificar se username, email ou nuit já existem
-   if (loginRepository.existsByUsername(dto.getUsername())) {
-       return ResponseEntity.badRequest().body("Username já está em uso");
-   }
-   if (loginRepository.existsByEmail(dto.getEmail())) {
-       return ResponseEntity.badRequest().body("Email já está em uso");
-   }
-   if (loginRepository.existsByNuit(dto.getNuit())) {
-       return ResponseEntity.badRequest().body("NUIT já está em uso");
-   }
-  
-   // Criar novo usuário com os dados do DTO   
-   Usuario usuario = new Usuario();
-   usuario.setUsername(dto.getUsername());
-   usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
-   usuario.setEmail(dto.getEmail());
-   usuario.setPerguntaSeguranca(dto.getPerguntaSeguranca());
-   usuario.setRespostaSeguranca(dto.getRespostaSeguranca());
-   usuario.setTelefone(dto.getTelefone());
-   usuario.setNuit(dto.getNuit());
-   usuario.setDataNascimento(dto.getDataNascimento());
+    @PostMapping("/auto-cadastro")
+    public ResponseEntity<?> autoCadastro(@RequestBody AutoCadastroDTO dto) {
+       return loginService.autoCadastro(dto);  
+    }  
    
-   // Definir valores padrão 
-   usuario.setRole("USER"); // Cargo padrão
-   usuario.setAtivo(false); // Conta desativada até ativação pelo admin
-   usuario.setDataCriacao(LocalDateTime.now());
-   usuario.setTentativasLogin(0);
-   usuario.setContaBloqueada(false);
-
-   loginRepository.save(usuario);
-
-   return ResponseEntity.ok("Cadastro realizado com sucesso. Aguarde ativação da conta por um administrador.");
-   } 
+@PostMapping("/save")
+public ResponseEntity<?> save(@RequestBody Usuario userSave){
+	System.out.println(userSave.getEmail()+""+ userSave.getNuit());
+	try {      
+		return ResponseEntity.ok(loginService.registar(userSave)); 
+		
+	}catch (Exception e) {
+		Map<String,String> erroResponse = new HashMap<>();
+		erroResponse.put("Erro Ao Cadastrar User", e.getMessage()); 
+	return ResponseEntity.badRequest().body(erroResponse); 
+	}
+}
+ 
 		//Devo fazer aqui ate porque o Repositorio e do tipo usuario
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/findAll")
