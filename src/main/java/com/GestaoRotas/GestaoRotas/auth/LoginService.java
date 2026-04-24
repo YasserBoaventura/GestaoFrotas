@@ -1,5 +1,6 @@
 //AuthenticationService.java
 package com.GestaoRotas.GestaoRotas.auth;
+import java.beans.Transient;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -18,11 +19,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.GestaoRotas.GestaoRotas.DTO.AutoCadastroDTO;
 import com.GestaoRotas.GestaoRotas.DTO.UserSaveDTO;
+import com.GestaoRotas.GestaoRotas.DTO.trocarSenhaDTO;
 import com.GestaoRotas.GestaoRotas.Email.EmailService;
 import com.GestaoRotas.GestaoRotas.Entity.Viagem;
 import com.GestaoRotas.GestaoRotas.config.JwtServiceGenerator;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -42,14 +45,17 @@ public class LoginService {
 	private final EmailService emailService; 
 	
 
-	public String logar(Login login) {
+	public String logar(@Valid Login login) {
 	    Usuario user = repository.findByUsername(login.getUsername())
 	            .orElseThrow(() ->  new RuntimeException("Usuário não encontrado"));
-  
+        if(user.getPrimeiroLogin()) {
+        	throw new RuntimeException("PRIMEIRO_LOGIN!");  
+        }
+	  
 	    // Verifica se a conta está bloqueada
 	    if (user.getTentativasLogin() == 5) {   // Supondo que tenha um método getter
 	        throw new RuntimeException("Conta bloqueada devido a múltiplas tentativas de login");
-	    }  
+	    }   
 	    if(!user.isAccountNonLocked()) {
 	    	  throw new RuntimeException("Conta bloqueada");
 	    }
@@ -75,28 +81,51 @@ public class LoginService {
 	        throw new RuntimeException("Credenciais inválidas");
 	    }
 	} 
-// Como pegar os dados do usuario a se cadastrar
-	public String registar(Usuario userSave) {
-	    if (userSave.getEmail() == null || userSave.getEmail().isBlank()) {
-	        throw new RuntimeException("Email não pode ser vazio");
+	//funcao pra trocar a senha se  for o primerio login
+	@Transactional  
+	public String trocarSenha(@Valid trocarSenhaDTO dto) {
+	    Usuario user = repository.findByUsername(dto.getUsername())
+	            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+            // validar senha atual
+	    if (!passwordEncoder.matches(dto.getSenhaAtual(), user.getPassword())) {
+	        throw new RuntimeException("Senha atual inválida");
+	    }// validar nova senha
+	    if (dto.getNovaSenha().length() < 6) {
+	        throw new RuntimeException("Senha deve ter no mínimo 6 caracteres");
 	    }
-
-	    Usuario usuario = new Usuario();
-      
-	    usuario.setUsername(userSave.getUsername());
+    if(!dto.getNovaSenha().equalsIgnoreCase(dto.getConfirmarSenha())) {
+	    throw new RuntimeException("Senhas não coincidem");   
+ }
+	    // atualizar senha
+	    user.setPassword(passwordEncoder.encode(dto.getNovaSenha()));
+       // remover flag de primeiro login
+	    user.setPrimeiroLogin(false);
+          repository.save(user);
+       return "Senha alterada com sucesso";
+	}
+	
+	
+// Como pegar os dados do usuario a se cadastrar
+	@Transactional 
+	public String registar(@Valid Usuario userSave) { 
+	    Usuario usuario = new Usuario(); 
+        usuario.setUsername(userSave.getUsername());
 	    usuario.setEmail(userSave.getEmail());       
 	    usuario.setNuit(userSave.getNuit());
 	    usuario.setContaBloqueada(userSave.getContaBloqueada()); 
 	    usuario.setTelefone(userSave.getTelefone());
-	    usuario.setDataNascimento(null);  
+	    usuario.setDataNascimento(userSave.getDataNascimento());   
 	    usuario.setRole(userSave.getRole()); 
         usuario.setDataCriacao(LocalDateTime.now());
-        usuario.setTentativasLogin(0);
+        usuario.setTentativasLogin(0);  
+        usuario.setPerguntaSeguranca(userSave.getPerguntaSeguranca());
+        usuario.setRespostaSeguranca(userSave.getRespostaSeguranca());
 		usuario.setContaBloqueada(false);
+		usuario.setPrimeiroLogin(true); 
 		usuario.setPassword(passwordEncoder.encode("0000")); 
 	    repository.save(usuario);
 
-	    emailService.enviarBoasVindasAoUsuario(
+       emailService.enviarBoasVindasAoUsuario(
 	        usuario.getEmail(),
 	        "Olá " + usuario.getUsername() +
 	        ",\n\nSeja bem-vindo ao Sistema de Gestão de Frotas.\n" +
@@ -106,7 +135,7 @@ public class LoginService {
 
 	    return "Usuário salvo com sucesso!";
 	}  
-	
+	@Transactional
 	   public ResponseEntity<?> autoCadastro(@Valid AutoCadastroDTO dto) {
 	       // Verificar se username, email ou nuit já existem
 	   if (repository.existsByUsername(dto.getUsername())) {
@@ -149,19 +178,21 @@ public class LoginService {
 		   return ResponseEntity.ok("Cadastro realizado com sucesso. Aguarde ativação da conta por um administrador.");
 	   } 
    //Apenas o adminstrador pode fazer alteracoes nos usuarios
+	@Transactional 
 	public Usuario atualizarUsuario(Long id, @Valid Usuario usuarioAtualizado) {
 	    Usuario usuarioExistente = this.repository.findById(id)
 	        .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
 	    
-	    // Atualizar apenas campos permitidos
+	    // Atualizar apenas campos permitidos        
 	    usuarioExistente.setUsername(usuarioAtualizado.getUsername());
 	    usuarioExistente.setEmail(usuarioAtualizado.getEmail()); 
 	    usuarioExistente.setRole(usuarioAtualizado.getRole());
 	    usuarioExistente.setTelefone(usuarioAtualizado.getTelefone());
 	    usuarioExistente.setNuit(usuarioAtualizado.getNuit());
 	    usuarioExistente.setAtivo(usuarioAtualizado.isEnabled());
+	    usuarioExistente.setDataNascimento(usuarioAtualizado.getDataNascimento()); 
 	    usuarioExistente.setContaBloqueada(usuarioAtualizado.getContaBloqueada());
-	     
+	         
 	     
 	    return repository.save(usuarioExistente);
 	}
@@ -206,8 +237,7 @@ public Map<String, String > desativarConta(long id){
 	
 	//metodo para listar
 	public List<Usuario> findAll(){
-		List<Usuario> lista= new  ArrayList<>();
-		return  lista= repository.findAll();
+		return repository.findAll();
 	}
 	//Metodo pra iliminar usuario
 	public String delete(long id) {

@@ -1,5 +1,6 @@
 package com.GestaoRotas.GestaoRotas.DTO;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
@@ -21,5 +22,5 @@ public class AutoCadastroDTO {
 	    private String respostaSeguranca;
 	    private String telefone;
 	    private String nuit;
-	    private LocalDateTime dataNascimento;
+	    private LocalDate dataNascimento;
 }

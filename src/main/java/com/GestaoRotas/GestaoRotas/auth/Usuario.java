@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -70,7 +71,7 @@ public class Usuario implements UserDetails {
     private String nuit;
     
     @Column(name = "data_nascimento")
-    private LocalDateTime dataNascimento;
+    private LocalDate  dataNascimento;
     
     @Column(name = "ativo", nullable = false)
     private Boolean ativo = true;
@@ -86,13 +87,16 @@ public class Usuario implements UserDetails {
     
     @Column(name = "conta_bloqueada")
     private Boolean contaBloqueada = false;
-     
+         
     // campos para a recuperacao via hash enviado por email
     private String codigoVerificacao;
     private LocalDateTime codigoVerificacaoExpiry;
     private boolean codigoVerificado;
        
-        
+    //metodos pra controlar o primeiro login
+    @Column(name = "primeiro_login") 
+    private Boolean primeiroLogin = true;
+     
     // Métodos de UserDetails
    
     @JsonIgnore
@@ -129,7 +133,7 @@ public class Usuario implements UserDetails {
             this.contaBloqueada = true;
         }
     }  
-    
+   
     public void resetarTentativasLogin() {
         this.tentativasLogin = 0;
         this.contaBloqueada = false;

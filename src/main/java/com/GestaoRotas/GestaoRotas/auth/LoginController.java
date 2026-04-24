@@ -20,6 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.GestaoRotas.GestaoRotas.DTO.AutoCadastroDTO;
 import com.GestaoRotas.GestaoRotas.DTO.UserSaveDTO;
+import com.GestaoRotas.GestaoRotas.DTO.trocarSenhaDTO;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -53,11 +54,13 @@ public class LoginController {
     @PostMapping("/auto-cadastro")
     public ResponseEntity<?> autoCadastro(@RequestBody AutoCadastroDTO dto) {
        return loginService.autoCadastro(dto);  
-    }  
-   
+    }   
+    @PostMapping("/trocar-senha")  
+    public ResponseEntity<String> alterSenhaNoPrimeiroLogin(@RequestBody trocarSenhaDTO dto){ 
+    	return ResponseEntity.ok(loginService.trocarSenha(dto));  
+    }
 @PostMapping("/save")
-public ResponseEntity<?> save(@RequestBody Usuario userSave){
-	System.out.println(userSave.getEmail()+""+ userSave.getNuit());
+public ResponseEntity<?> save(@RequestBody Usuario userSave){ 
 	try {      
 		return ResponseEntity.ok(loginService.registar(userSave)); 
 		
@@ -67,8 +70,7 @@ public ResponseEntity<?> save(@RequestBody Usuario userSave){
 	return ResponseEntity.badRequest().body(erroResponse); 
 	}
 }
- 
-		//Devo fazer aqui ate porque o Repositorio e do tipo usuario
+   //Devo fazer aqui ate porque o Repositorio e do tipo usuario
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/findAll")
     public ResponseEntity<List<Usuario>> findAll(){
