@@ -40,15 +40,15 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<?> logar(@RequestBody Login login) {
-        try {
-            String token = loginService.logar(login);
-             return ResponseEntity.ok(token); 
+    try { 
+        String token = loginService.logar(login);
+         return ResponseEntity.ok(token); 
 
-        } catch (Exception e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.badRequest().body(error);
-        }
+    } catch (Exception e) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", e.getMessage());
+        return ResponseEntity.badRequest().body(error);
+    }
     }
     
     @PostMapping("/auto-cadastro")
@@ -62,8 +62,7 @@ public class LoginController {
 @PostMapping("/save")
 public ResponseEntity<?> save(@RequestBody Usuario userSave){ 
 	try {      
-		return ResponseEntity.ok(loginService.registar(userSave)); 
-		
+		return ResponseEntity.ok(loginService.registar(userSave)); 	
 	}catch (Exception e) {
 		Map<String,String> erroResponse = new HashMap<>();
 		erroResponse.put("Erro Ao Cadastrar User", e.getMessage()); 
@@ -74,7 +73,7 @@ public ResponseEntity<?> save(@RequestBody Usuario userSave){
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/findAll")
     public ResponseEntity<List<Usuario>> findAll(){
-	  try { 
+	  try {  
 	 	List<Usuario> lista=this.loginService.findAll();
 		return new ResponseEntity<>(lista, HttpStatus.OK);
 	    }catch(Exception e) {

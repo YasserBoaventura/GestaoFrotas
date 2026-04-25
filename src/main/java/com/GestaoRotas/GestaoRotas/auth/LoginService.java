@@ -106,12 +106,12 @@ public class LoginService {
 	
 	
 // Como pegar os dados do usuario a se cadastrar
-	@Transactional 
+	@Transactional  
 	public String registar(@Valid Usuario userSave) { 
 	    Usuario usuario = new Usuario(); 
         usuario.setUsername(userSave.getUsername());
 	    usuario.setEmail(userSave.getEmail());       
-	    usuario.setNuit(userSave.getNuit());
+	    usuario.setNuit(userSave.getNuit());  
 	    usuario.setContaBloqueada(userSave.getContaBloqueada()); 
 	    usuario.setTelefone(userSave.getTelefone());
 	    usuario.setDataNascimento(userSave.getDataNascimento());   
@@ -192,8 +192,8 @@ public class LoginService {
 	    usuarioExistente.setAtivo(usuarioAtualizado.isEnabled());
 	    usuarioExistente.setDataNascimento(usuarioAtualizado.getDataNascimento()); 
 	    usuarioExistente.setContaBloqueada(usuarioAtualizado.getContaBloqueada());
-	         
-	     
+	    usuarioExistente.setTentativasLogin(0);       
+		usuarioExistente.setContaBloqueada(false);    
 	    return repository.save(usuarioExistente);
 	}
 	//Bloquear/Desbloquar
