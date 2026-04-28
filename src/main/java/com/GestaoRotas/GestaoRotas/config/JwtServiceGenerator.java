@@ -96,5 +96,5 @@ public class JwtServiceGenerator {
 		final Claims claims = extractAllClaims(token);
 		return claimsResolver.apply(claims); 
 	}
-
+  
 }

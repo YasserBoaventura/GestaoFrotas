@@ -191,7 +191,7 @@ void trocarSenha_ComDadosValidos_DeveAlterarSenha() {
     assertEquals("novaSenhaEncoded", usuario.getPassword());
     assertFalse(usuario.getPrimeiroLogin());
     verify(repository, times(1)).save(usuario);
-}
+} 
 
 @Test
 void trocarSenha_ComSenhaAtualInvalida_DeveLancarExcecao() {
@@ -336,7 +336,7 @@ void atualizarUsuario_ComIdValido_DeveAtualizarCampos() {
     // Act
     Usuario resultado = loginService.atualizarUsuario(1L, usuarioAtualizado);
 
-    // Assert
+
     assertNotNull(resultado);
     assertEquals("joaosilva_novo", usuario.getUsername());
     assertEquals("joao_novo@email.com", usuario.getEmail());
@@ -353,10 +353,10 @@ void bloquearConta_QuandoContaAtiva_DeveBloquear() {
     when(repository.findById(1L)).thenReturn(Optional.of(usuario));
     when(repository.save(any(Usuario.class))).thenReturn(usuario);
 
-    // Act
+  
     Map<String, String> response = loginService.bloquearConta(1L);
 
-    // Assert
+   
     assertEquals("conta bloqueada com suceso", response.get("sucesso"));
     assertTrue(usuario.getContaBloqueada());
 }
@@ -368,10 +368,8 @@ void bloquearConta_QuandoContaBloqueada_DeveDesbloquear() {
     when(repository.findById(1L)).thenReturn(Optional.of(usuario));
     when(repository.save(any(Usuario.class))).thenReturn(usuario);
 
-    // Act
     Map<String, String> response = loginService.bloquearConta(1L);
 
-    // Assert
     assertEquals("conta desbloqueada com sucesso", response.get("sucesso"));
     assertFalse(usuario.getContaBloqueada());
 }
@@ -383,22 +381,18 @@ void desativarConta_QuandoContaAtiva_DeveDesativar() {
     when(repository.findById(1L)).thenReturn(Optional.of(usuario));
     when(repository.save(any(Usuario.class))).thenReturn(usuario);
 
-    // Act
     Map<String, String> response = loginService.desativarConta(1L);
 
-    // Assert
     assertEquals("conta desativada com sucesso", response.get("sucesso"));
     assertFalse(usuario.getAtivo());
 }
 
 @Test
 void desativarConta_QuandoContaDesativada_DeveAtivar() {
-    // Arrange
     usuario.setAtivo(false);
     when(repository.findById(1L)).thenReturn(Optional.of(usuario));
     when(repository.save(any(Usuario.class))).thenReturn(usuario);
 
-    // Act
     Map<String, String> response = loginService.desativarConta(1L);
 
     // Assert
@@ -412,38 +406,34 @@ void findAll_DeveRetornarListaDeUsuarios() {
     List<Usuario> usuarios = Arrays.asList(usuario, new Usuario());
     when(repository.findAll()).thenReturn(usuarios);
 
-    // Act
     List<Usuario> resultado = loginService.findAll();
 
-    // Assert
+
     assertEquals(2, resultado.size());
 }
 
 @Test
 void delete_DeveDeletarUsuario() {
-    // Arrange
+
     doNothing().when(repository).deleteById(1L);
 
-    // Act
     String resultado = loginService.delete(1L);
 
-    // Assert
+ 
     assertEquals("Usuario deletado com sucesso", resultado);
     verify(repository, times(1)).deleteById(1L);
 }
 
 @Test
 void gerarToken_ComCredenciaisValidas_DeveRetornarToken() {
-    // Arrange
+
     when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
         .thenReturn(mock(Authentication.class));
     when(repository.findByUsername("joaosilva")).thenReturn(Optional.of(usuario));
     when(jwtService.generateToken(usuario)).thenReturn("jwt-token-123");
-
-    // Act
+  
     String token = loginService.gerarToken(login);
 
-    // Assert
     assertEquals("jwt-token-123", token);
 }
 } 

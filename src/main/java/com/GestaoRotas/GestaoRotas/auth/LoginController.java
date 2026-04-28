@@ -49,7 +49,7 @@ public class LoginController {
         error.put("error", e.getMessage());
         return ResponseEntity.badRequest().body(error);
     }
-    }
+    }   
     
     @PostMapping("/auto-cadastro")
     public ResponseEntity<?> autoCadastro(@RequestBody AutoCadastroDTO dto) {
@@ -100,7 +100,7 @@ public ResponseEntity<Map<String, String>> bloquearConta( @PathVariable long id)
     	try {
     		Map<String, String> response = this.loginService.desativarConta(id);
     		return ResponseEntity.status(HttpStatus.OK).body(response);
-    	}catch(ClassCastException e) { 
+    	}catch(ClassCastException e) {   
     		Map<String , String> erro =  new HashMap<>();
     		erro.put("erro", "erro ao tentar fazer altercoes");
     		e.printStackTrace();
