@@ -48,7 +48,7 @@ public class LoginController {
         Map<String, String> error = new HashMap<>();
         error.put("error", e.getMessage());
         return ResponseEntity.badRequest().body(error);
-    }
+    }        
     }   
     
     @PostMapping("/auto-cadastro")

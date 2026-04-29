@@ -6,6 +6,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -53,6 +54,7 @@ public class JwtServiceGenerator {
 				.builder()
 				.setClaims(payloadData)
 				.setSubject(usuario.getUsername())
+			   .setId(UUID.randomUUID().toString())
 				.setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(new Date().getTime() + 3600000 * this.HORAS_EXPIRACAO_TOKEN))
 				.signWith(getSigningKey(), this.ALGORITMO_ASSINATURA)
