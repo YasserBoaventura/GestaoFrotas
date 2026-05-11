@@ -20,6 +20,7 @@ import com.GestaoRotas.GestaoRotas.Repository.RepositoryManutencao;
 import com.GestaoRotas.GestaoRotas.Service.ServiceManutencoes;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -29,7 +30,7 @@ import java.util.Map;
 
 @RestController 
 @RequestMapping("/api/manutencoes") 
-@RequiredArgsConstructor
+@RequiredArgsConstructor 
 @CrossOrigin("*") 
 public class ControllerManutencoes {
 
@@ -38,28 +39,19 @@ public class ControllerManutencoes {
   @PostMapping("/save")
   @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
 public ResponseEntity<String> cadastrar(@RequestBody manuntecaoDTO manutencaoDTO) {
-	  try {   
+	  try {       
 return ResponseEntity.ok(manutencaoService.salvar(manutencaoDTO));
-	 }catch(Exception e) { 
+	 }catch(Exception e) {    
 		   e.printStackTrace();
 		  return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
    }
-	     	 
+	     	  
 }@PutMapping("/update/{id}")
 @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
-public ResponseEntity<String> update(@PathVariable long id, @RequestBody manuntecaoDTO manutencaoDTO){
-
-    try{  
-        manutencaoService.update(manutencaoDTO, id);
-        return ResponseEntity.ok("Manutenção atualizada com sucesso");
-
-    }catch(Exception e){
-        e.printStackTrace();
-        return ResponseEntity.badRequest().body("Erro ao atualizar manutenção");
-    }
-
-} 
-
+public ResponseEntity<String> update(@PathVariable Long id,
+                                     @RequestBody manuntecaoDTO dto) {
+    return ResponseEntity.ok(manutencaoService.update(dto, id));
+}
 @GetMapping("/findByIdVeiculo/{veiculoId}")
 public ResponseEntity<List<Manutencao>> listarPorVeiculo(@PathVariable long veiculoId) {
 try {
@@ -133,8 +125,8 @@ public ResponseEntity<Map<String, String>> cancelarManutencao(@RequestBody Strin
     public ResponseEntity<List<Manutencao>> listarPorTipo(@PathVariable String tipoManutencao) {
     try {
         List<Manutencao> lista = manutencaoService.listarPorTipo(tipoManutencao);
-         if (lista.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+         if (lista.isEmpty()) {             
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
         } else {
             return new ResponseEntity<>(lista, HttpStatus.OK);
         }
@@ -155,27 +147,26 @@ public ResponseEntity<Map<String, String>> cancelarManutencao(@RequestBody Strin
     @GetMapping("/por-veiculo") 
     public ResponseEntity<List<RelatorioManutencaoDTO>> relatorioPorVeiculo() {
         return ResponseEntity.ok(manutencaoService.gerarRelatorioPorVeiculo());
-    }                       
-    @GetMapping("/relatorio-por-periodo") 
-    @PreAuthorize("hasAuthority('ADMIN')")  
+    }                        
+    @GetMapping("/relatorio-por-periodo")  
+    @PreAuthorize("hasAuthority('ADMIN')")   
    public ResponseEntity<List<RelatorioManutencaoDTO>> relatorioPorPeriodo(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
         System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
         return ResponseEntity.ok(manutencaoService.relatorioPorPeriodo(inicio, fim)); 
-    }            
-   // @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+    }             
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @GetMapping("/gerarAltertas")
-   public ResponseEntity<List<String>> getAlertas() { 
+   public ResponseEntity<List<String>> getAlertas() {  
     	try {
-    		
-    		 return ResponseEntity.ok(manutencaoService.gerarAlertas());
+    	return ResponseEntity.ok(manutencaoService.gerarAlertas());
     	}catch(Exception e) {
-    		System.err.print("Erro ao carregar a lista: "+ e.getCause().getMessage().toString()); 
+    		System.err.print("Erro ao carregar a lista: "+ e.getMessage().toString()); 
     	    return ResponseEntity.badRequest().body(null);
         }   
-    	}
-    
+    	} 
+       
     @GetMapping("/alertas/simplificado")  //os dois geram alertas mais esse simplificado
     public ResponseEntity<List<String>> getAlertasSimplificado() {
         List<String> alertas = manutencaoService.gerarAlertasSimplificado();

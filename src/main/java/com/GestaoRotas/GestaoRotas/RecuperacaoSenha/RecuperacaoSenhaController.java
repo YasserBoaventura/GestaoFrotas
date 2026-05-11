@@ -12,12 +12,14 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import java.util.*;
 
 @RestController
 @RequestMapping("api/auth")
 @RequiredArgsConstructor  
+@CrossOrigin("*")
 public class RecuperacaoSenhaController {
 	
 	private final RecuperacaoSenhaService recuperacaoService;

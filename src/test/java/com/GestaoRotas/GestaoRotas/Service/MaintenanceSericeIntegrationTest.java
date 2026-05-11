@@ -53,7 +53,7 @@ public class MaintenanceSericeIntegrationTest {
 
         // Setup DTO
         manutencaoDTO = new manuntecaoDTO();
-        manutencaoDTO.setVeiculo_id(veiculo.getId());
+        manutencaoDTO.setVeiculoId(veiculo.getId());
         manutencaoDTO.setDataManutencao(LocalDate.now().plusDays(5));
         manutencaoDTO.setDescricao("Troca de óleo");
         manutencaoDTO.setTipoManutencao(TipoManutencao.PREVENTIVA);
@@ -104,7 +104,7 @@ public class MaintenanceSericeIntegrationTest {
         Long manutencaoId = manutencoes.get(manutencoes.size() - 1).getId();
         
         manuntecaoDTO updateDTO = new manuntecaoDTO();
-        updateDTO.setVeiculo_id(veiculo.getId());
+        updateDTO.setVeiculoId(veiculo.getId());
         updateDTO.setDataManutencao(LocalDate.now().plusDays(10));
         updateDTO.setDescricao("Troca de filtros");
         updateDTO.setTipoManutencao(TipoManutencao.CORRETIVA);
@@ -194,7 +194,7 @@ public class MaintenanceSericeIntegrationTest {
         serviceManutencoes.salvar(manutencaoDTO);
         
         manuntecaoDTO dto2 = new manuntecaoDTO();
-        dto2.setVeiculo_id(veiculo.getId());
+        dto2.setVeiculoId(veiculo.getId());
         dto2.setDataManutencao(LocalDate.now().plusDays(10));
         dto2.setDescricao("Alinhamento");
         dto2.setTipoManutencao(TipoManutencao.PREVENTIVA);
@@ -264,7 +264,7 @@ public class MaintenanceSericeIntegrationTest {
         serviceManutencoes.salvar(manutencaoDTO);
         
         manuntecaoDTO dto2 = new manuntecaoDTO();
-        dto2.setVeiculo_id(veiculo.getId());
+        dto2.setVeiculoId(veiculo.getId());
         dto2.setDataManutencao(LocalDate.now().plusDays(10));
         dto2.setDescricao("Troca de pastilhas");
         dto2.setTipoManutencao(TipoManutencao.PREVENTIVA);
@@ -332,7 +332,7 @@ public class MaintenanceSericeIntegrationTest {
         serviceManutencoes.salvar(manutencaoDTO);
         
         manuntecaoDTO dto2 = new manuntecaoDTO();
-        dto2.setVeiculo_id(veiculo.getId());
+        dto2.setVeiculoId(veiculo.getId()); 
         dto2.setDataManutencao(LocalDate.now().minusDays(10));
         dto2.setDescricao("Manutenção anterior");
         dto2.setTipoManutencao(TipoManutencao.PREVENTIVA);

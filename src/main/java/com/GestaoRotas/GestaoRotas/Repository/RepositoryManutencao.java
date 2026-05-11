@@ -37,8 +37,8 @@ public interface RepositoryManutencao  extends JpaRepository<Manutencao, Long>{
         """)
     List<RelatorioManutencaoDTO> relatorioPorPeriodo(
         @Param("inicio") LocalDate inicio,
-        @Param("fim") LocalDate fim
-    );
+        @Param("fim") LocalDate fim 
+    ); 
 
     @Query(""" 
         SELECT new com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO(

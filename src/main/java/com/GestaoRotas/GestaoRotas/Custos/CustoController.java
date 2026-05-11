@@ -103,18 +103,18 @@ public ResponseEntity<CustoDTO> criar(@RequestBody @Valid CustoRequestDTO reques
         return ResponseEntity.ok(dashboard);
     }   
 // listar por data inicio e fim apenas
-@GetMapping("/relatorio-por-periodo")    
+@GetMapping("/relatorio-por-periodo")      
 @PreAuthorize("hasAuthority('ADMIN')")     
 public ResponseEntity<List<CustoDTO>> relatorioPorPeriodo( 
        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
    return ResponseEntity.ok(custoService.buscarPorPeriodo(inicio, fim)); 
 }    
- @PostMapping("/relatorio")         
+ @PostMapping("/relatorio")                         
  @PreAuthorize("hasAuthority('ADMIN')")       
 public ResponseEntity<?> relatorio(@RequestBody @Valid RelatorioFilterDTO filtro) {
-    try {       
-   
+    try {        
+     
        RelatorioCustosDetalhadoDTO relatorio = custoService.gerarRelatorioDetalhado(filtro);
         return ResponseEntity.ok(relatorio); 
        } catch (Exception e) {             

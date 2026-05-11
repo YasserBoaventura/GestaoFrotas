@@ -30,9 +30,10 @@ import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
 
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Service
+@Service      
 @RequiredArgsConstructor 
 public class ServiceManutencoes {
     private final RepositoryManutencao repositoryManuntencao;
@@ -41,10 +42,11 @@ public class ServiceManutencoes {
 	private final custoService custoService; 
 	private final EmailService emailService;
     
- 
-	public String salvar(manuntecaoDTO manutencaoDTO) {
-	   Manutencao manutencao = new Manutencao();
-    Veiculo veiculo = repositoryVeiculo.findById( manutencaoDTO.getVeiculo_id()).orElseThrow(()-> new RuntimeException("Veiculo nao encontrado"));
+  @Transactional  
+	public String salvar(@Valid manuntecaoDTO manutencaoDTO) {
+	   Manutencao manutencao = new Manutencao(); 
+
+    Veiculo veiculo = repositoryVeiculo.findById(manutencaoDTO.getVeiculoId()).orElseThrow(()-> new RuntimeException("Veiculo nao encontrado"));
     manutencao.setVeiculo(veiculo);
     manutencao.setDataManutencao(manutencaoDTO.getDataManutencao());
     manutencao.setDescricao(manutencaoDTO.getDescricao());
@@ -82,11 +84,11 @@ public class ServiceManutencoes {
 	  return this.repositoryManuntencao.findAll();
   }    
   //atualizar a manutencao caso haja erros
-  public String updateL(manuntecaoDTO manutencaoDTO, long id)  { 
+  public String update(manuntecaoDTO manutencaoDTO, long id)  { 
 	   
 	    Manutencao manutencao = repositoryManuntencao.findById(id).orElseThrow(() -> new RuntimeException("Manutencao nao encontrada"));
-	    Veiculo veiculo = repositoryVeiculo.findById(manutencaoDTO.getVeiculo_id()).orElseThrow(()-> new RuntimeException("Veiculo nao encontrado"));
-	    System.out.println(manutencaoDTO.getVeiculo_id()); 
+	    Veiculo veiculo = repositoryVeiculo.findById(manutencaoDTO.getVeiculoId()).orElseThrow(()-> new RuntimeException("Veiculo nao encontrado"));
+	    System.out.println(manutencaoDTO.getVeiculoId()); 
 	    manutencao.setVeiculo(veiculo);  
 	    manutencao.setDataManutencao(manutencaoDTO.getDataManutencao());
 	    manutencao.setDescricao(manutencaoDTO.getDescricao());
@@ -120,28 +122,7 @@ public class ServiceManutencoes {
       
     return "manutencao atualizada com sucesso";
   } 
-  public String update(manuntecaoDTO manutencaoDTO, long id) { 
-
-	    Manutencao manutencao = repositoryManuntencao
-	        .findById(id)
-	        .orElseThrow(() -> new RuntimeException("Manutencao nao encontrada"));
-
-	    Veiculo veiculo = manutencao.getVeiculo(); // usa o veículo existente
-
-	    manutencao.setDataManutencao(manutencaoDTO.getDataManutencao());
-	    manutencao.setDescricao(manutencaoDTO.getDescricao());
-	    manutencao.setKilometragemVeiculo(manutencaoDTO.getKilometragemVeiculo());
-	    manutencao.setProximaManutencaoData(manutencaoDTO.getProximaManutencaoData());
-	    manutencao.setTipoManutencao(manutencaoDTO.getTipoManutencao());
-	    manutencao.setCusto(manutencaoDTO.getCusto());
-	    manutencao.setProximaManutencaoKm(manutencaoDTO.getProximaManutencaoKm());
-
-	    Manutencao manutencaoActualizada = repositoryManuntencao.save(manutencao);
-
-	    custoService.actualizarCustoManutencao(manutencaoActualizada);
-
-	    return "manutencao atualizada com sucesso";
-	}
+ 
   //
   @Scheduled(cron = "0 0 0 * * *") // Executa todos os dias à meia-noite
   @Transactional
@@ -151,7 +132,7 @@ public class ServiceManutencoes {
   
   // Busca todas as manutenções agendadas para hoje
   List<Manutencao> manutencoesHoje = repositoryManuntencao
-          .findByDataManutencaoAndStatusNotIn(
+          .findByDataManutencaoAndStatusNotIn( 
               hoje,
               List.of(     
                   statusManutencao.CONCLUIDA,
@@ -394,7 +375,7 @@ public class ServiceManutencoes {
 //relatorios por periodo data fim e data inicio 
 public List<RelatorioManutencaoDTO> relatorioPorPeriodo(LocalDate inicio, LocalDate fim) {
   return repositoryManuntencao.relatorioPorPeriodo(inicio, fim);  
-       
+        
 } 
 @Scheduled(cron = "0 0 0 * * *") 
 public List<String> gerarAlertas() { 

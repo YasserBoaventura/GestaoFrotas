@@ -56,11 +56,11 @@ public Map<String, String> solicitarRecuperacaoSenha(String username, String ema
         } 
     String token = UUID.randomUUID().toString(); 
     usuario.setResetToken(token);
-   usuario.setResetTokenExpiry(LocalDateTime.now().plusHours(2));
+    usuario.setResetTokenExpiry(LocalDateTime.now().plusHours(2));
     usuario.setTokenUtilizado(false);
     
      
-    // Gerar código de 6 dígitos
+    // Gerar código de 6 dígitos 
     String codigo = String.format("%06d", new Random().nextInt(999999));
     
     // Salvar código no banco

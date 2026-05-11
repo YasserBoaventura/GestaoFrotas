@@ -21,7 +21,7 @@ public class RelatorioManutencaoDTO {
     private Double custoTotal;
     private Double custoMedio;
     private statusManutencao status;
-	
+	 
 	    public RelatorioManutencaoDTO(String veiculo, Long totalManutencoes, 
                 Double custoTotal, Double custoMedio, 
                 statusManutencao status) {
