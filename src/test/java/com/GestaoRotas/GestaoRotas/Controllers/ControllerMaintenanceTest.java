@@ -154,8 +154,7 @@ public class ControllerMaintenanceTest {
         cancelarResponse.put("sucesso", "Manutencao cancelada com sucesso");
         when(serviceManutencoes.cancelarManutencao(eq(1L), anyString())).thenReturn(cancelarResponse);
     }
-
-    // ==================== TESTES DE CADASTRO ====================
+      //Teste Cadastro 
     
     @Test
     @WithMockUser(authorities = {"ADMIN"})
@@ -273,7 +272,7 @@ public class ControllerMaintenanceTest {
         verify(serviceManutencoes, atLeastOnce()).findAll();
     }
      
-    @Test
+    @Test 
     @WithMockUser(authorities = {"ADMIN"})
     void testFindAll_QuandoServiceLancaExcecao_RetornaBadRequest() {
         when(serviceManutencoes.findAll())

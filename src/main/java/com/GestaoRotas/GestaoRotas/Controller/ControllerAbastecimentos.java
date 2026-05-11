@@ -79,7 +79,7 @@ public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorPeriodo(
     System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
     return ResponseEntity.ok(abastecimentosService.relatorioPorPeriodo(inicio, fim));
 }      
-@PreAuthorize("hasAuthority('ADMIN','USER')")  
+@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')") 
 @GetMapping("/abastecimentoRealizado")   
   public ResponseEntity<Long> abastecimentosRealizados(){
 		return ResponseEntity.status(HttpStatus.OK).body(abastecimentosService.numeroAbastecimentoRealizados()); 

@@ -1,4 +1,4 @@
-package com.GestaoRotas.GestaoRotas.RecuperacaoSenha;
+ package com.GestaoRotas.GestaoRotas.RecuperacaoSenha;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +37,7 @@ public class RecuperacaoSenhaController {
     	   
          return ResponseEntity.status(404).body(response);
      }
- }
+ }  
     
 @PostMapping("/redefinir-senha-token")
 public ResponseEntity<?> redefinirSenhaComToken(@RequestBody RedefinirSenhaTokenRequest request) {
