@@ -49,9 +49,9 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin("*")
 @JsonIgnoreProperties(ignoreUnknown = true) 
 @RequiredArgsConstructor
-public class ControllerViagem {
+public class ControllerViagem {  
 
-      
+       
 	private final ServiceViagem serviceViagem;
 	private final RepositoryViagem repositoryViagem;
 	private final RepositoryVeiculo repositoryVeiculo;
@@ -136,7 +136,7 @@ public ResponseEntity<Map<String, String>> cancelarViagem(
         @PathVariable long id) { 
 return ResponseEntity.ok(serviceViagem.cancelarViagem(request, id));
   }  
-@PutMapping("/inicializarViagem/{id}") 
+@PutMapping("/inicializarViagem/{id}")  
 @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")   
 public ResponseEntity<Map<String , String>> iniciarViagem(@PathVariable Long id){
   return ResponseEntity.ok(serviceViagem.iniciarViagem(id)); 
@@ -212,7 +212,7 @@ public ResponseEntity<List<RelatorioPorVeiculoDTO>> relatorioPorPeriodoVeiculo(
             LocalDateTime fim = dataFim.atTime(LocalTime.MAX);
             
             List<RelatorioTopMotoristasDTO> dados = repositoryViagem.findTopMotoristasPorPeriodo(inicio, fim);
-            
+            //moque pra mostrar something.
             if (dados.isEmpty()) {
                 dados = Arrays.asList(
                     new RelatorioTopMotoristasDTO("Ana Oliveira", 20L, 1560.2),

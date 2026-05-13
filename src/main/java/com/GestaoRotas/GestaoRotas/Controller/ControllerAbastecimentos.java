@@ -37,7 +37,7 @@ public class ControllerAbastecimentos {
 	
   private final ServiceAbastecimentos abastecimentosService;
   
-  
+                      
      // sava o abastecimento
    @PostMapping("/save")
    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
