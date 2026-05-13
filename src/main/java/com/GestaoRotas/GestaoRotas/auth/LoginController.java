@@ -127,7 +127,7 @@ public ResponseEntity<Map<String, String>> bloquearConta( @PathVariable long id)
     	    }catch(Exception e) {
     		return new ResponseEntity<>("erro ao deletar usuario", HttpStatus.BAD_REQUEST);
     	}
-    	
+    	 
     }
 
  

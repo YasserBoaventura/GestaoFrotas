@@ -23,4 +23,5 @@ public class AutoCadastroDTO {
 	    private String telefone;
 	    private String nuit;
 	    private LocalDate dataNascimento;
+
 }
