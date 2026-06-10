@@ -37,7 +37,7 @@ public class ControllerAbastecimentos {
 	
   private final ServiceAbastecimentos abastecimentosService;
   
-  
+                      
      // sava o abastecimento
    @PostMapping("/save")
    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
@@ -78,7 +78,7 @@ public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorPeriodo(
     System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
     return ResponseEntity.ok(abastecimentosService.relatorioPorPeriodo(inicio, fim));
 }      
-@PreAuthorize("hasAuthority('ADMIN','USER')")  
+@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')") 
 @GetMapping("/abastecimentoRealizado")   
   public ResponseEntity<Long> abastecimentosRealizados(){
 		return ResponseEntity.status(HttpStatus.OK).body(abastecimentosService.numeroAbastecimentoRealizados()); 
@@ -107,7 +107,6 @@ public ResponseEntity<List<abastecimentos>> findAll(){
      try { 
      return ResponseEntity.ok(abastecimentosService.deletar(id)); 
    }catch(Exception e) {
-	   e.getStackTrace ();
     	 return ResponseEntity .badRequest().build(); 
     }
 	 

@@ -2,6 +2,7 @@ package com.GestaoRotas.GestaoRotas.Entity;
 import java.time.Duration;
 import java.util.*;
 
+import com.GestaoRotas.GestaoRotas.Model.statusRota;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -13,6 +14,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,8 +46,12 @@ public class Rotas {
     private Double tempoEstimadoHoras;
     
     private String descricao;
-     
-    // OneToMany com Viagem       
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name= "statusRota") 
+    private statusRota statusRota;
+      
+    // OneToMany com Viagem        
     @JsonIgnore
     @OneToMany(mappedBy = "rota", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Viagem> viagens = new ArrayList<>();
@@ -61,6 +68,7 @@ public class Rotas {
     public Long getTotalViagens() { 
         return (long) viagens.size();
          
-    } 
-    
+    }
+
+	
 }

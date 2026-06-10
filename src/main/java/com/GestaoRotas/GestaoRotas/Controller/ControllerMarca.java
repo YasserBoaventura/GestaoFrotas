@@ -61,7 +61,7 @@ public class ControllerMarca {
 	  List<Marca> lista=this.serviceMarca.findAll();
 	  if(lista.isEmpty()) {
 		  return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	  }
+	  } 
 	  return new ResponseEntity<>(lista, HttpStatus.OK);
     }catch(Exception e) {
 	 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

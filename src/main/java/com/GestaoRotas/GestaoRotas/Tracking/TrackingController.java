@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/tracking")
 @CrossOrigin("*")
-@RequiredArgsConstructor  
+@RequiredArgsConstructor   
 public class TrackingController {
  
  private final TrackingService trackingService;
@@ -45,6 +45,9 @@ public class TrackingController {
            return location          
              .map(ResponseEntity::ok)     
              .orElseGet(() -> ResponseEntity.notFound().build());
+
+ }                            
+
  }                          
  
                   

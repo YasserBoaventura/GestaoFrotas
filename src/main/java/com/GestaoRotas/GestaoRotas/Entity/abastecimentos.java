@@ -24,7 +24,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class abastecimentos {
-        @Id
+        @Id 
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id; 
 	    
@@ -97,7 +97,7 @@ public class abastecimentos {
 	        }
 	        return 0.0; 
 	    } 
-	      
+	                
 	    // Método auxiliar
 	    @PrePersist
 	    public void prePersist() {

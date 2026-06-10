@@ -30,7 +30,7 @@ import lombok.Setter;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Manutencao {
       //------> namuntecao
-        @Id
+        @Id 
 	    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    private Long id;
 	    
@@ -50,7 +50,7 @@ public class Manutencao {
 	    private Double kilometragemVeiculo;
 	 
 	     
-	    //  CAMPOS NOVOS NECESSÁRIOS
+	
 	    @Column(name = "proxima_manutencao_km")
 	    private  Double proximaManutencaoKm; 
 	    

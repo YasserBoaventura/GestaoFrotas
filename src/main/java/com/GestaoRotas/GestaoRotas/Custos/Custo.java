@@ -33,15 +33,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.*;
 @Entity
-@Getter
-@Setter
-@AllArgsConstructor
+@Getter  
+@Setter   
+@AllArgsConstructor 
 @NoArgsConstructor 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Custo implements Serializable {
-	  
+	   
 	private static final long serialVersionUID = 1L;
-	
+	 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

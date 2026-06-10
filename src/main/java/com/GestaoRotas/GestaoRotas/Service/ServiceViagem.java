@@ -43,7 +43,7 @@ public class ServiceViagem {
     private final custoService custoService;
     
 @Transactional   
-public String update(ViagensDTO viagemDTO, long id) {
+public String update(ViagensDTO viagemDTO, long id) {  
 
     Viagem viagem =  repositoryViagem.findById(id)
             .orElseThrow(() -> new RuntimeException("Viagem não encontrada"));
@@ -86,7 +86,7 @@ public String update(ViagensDTO viagemDTO, long id) {
 	try {
 	Viagem viagem = this.repositoryViagem.findById(id).orElseThrow(()-> new RuntimeException("viagem nao existente"));
    viagem.iniciarViagem(); 
- 
+  
      Motorista  motorista = viagem.getMotorista();
    
      motorista.setStatus(statusMotorista.EM_VIAGEM);

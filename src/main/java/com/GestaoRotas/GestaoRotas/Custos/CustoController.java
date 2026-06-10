@@ -42,8 +42,8 @@ import java.util.stream.Collectors;
 @RestController 
 @RequestMapping("api/custo")
 @CrossOrigin("*")  
-@RequiredArgsConstructor
-public class CustoController {
+@RequiredArgsConstructor 
+public class CustoController { 
 	  
    private final custoService custoService; 
 	      
@@ -71,9 +71,9 @@ public ResponseEntity<CustoDTO> criar(@RequestBody @Valid CustoRequestDTO reques
  @DeleteMapping("/delete/{id}") 
  @PreAuthorize("hasAuthority('ADMIN')")     
   public ResponseEntity<String> delete(@PathVariable Long id){ 
-	  try {
+	  try {  
 		  return ResponseEntity.ok(custoService.excluirCusto(id)); 
-	  }catch(Exception e) { 
+		}catch(Exception e) { 
 		  e.getCause().getMessage(); 
 		return ResponseEntity.badRequest().body("erro ao excluir custo"); 	  
 	  }
@@ -82,7 +82,7 @@ public ResponseEntity<CustoDTO> criar(@RequestBody @Valid CustoRequestDTO reques
    @PreAuthorize("hasAuthority('ADMIN')")     
     public ResponseEntity<Custo> criarCustoParaViagem(@RequestBody @Valid CustoViagemDTO custoViagemDTO){
     	try { 
-    return ResponseEntity.ok(custoService.criarCustoParaViagem(custoViagemDTO)); 
+      return ResponseEntity.ok(custoService.criarCustoParaViagem(custoViagemDTO)); 
     	}catch(Exception e) {     
     	return ResponseEntity.badRequest().build(); 
     	} 
@@ -103,18 +103,18 @@ public ResponseEntity<CustoDTO> criar(@RequestBody @Valid CustoRequestDTO reques
         return ResponseEntity.ok(dashboard);
     }   
 // listar por data inicio e fim apenas
-@GetMapping("/relatorio-por-periodo")    
+@GetMapping("/relatorio-por-periodo")      
 @PreAuthorize("hasAuthority('ADMIN')")     
 public ResponseEntity<List<CustoDTO>> relatorioPorPeriodo( 
        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
    return ResponseEntity.ok(custoService.buscarPorPeriodo(inicio, fim)); 
 }    
- @PostMapping("/relatorio")         
+ @PostMapping("/relatorio")                         
  @PreAuthorize("hasAuthority('ADMIN')")       
 public ResponseEntity<?> relatorio(@RequestBody @Valid RelatorioFilterDTO filtro) {
-    try {       
-   
+    try {        
+     
        RelatorioCustosDetalhadoDTO relatorio = custoService.gerarRelatorioDetalhado(filtro);
         return ResponseEntity.ok(relatorio); 
        } catch (Exception e) {             

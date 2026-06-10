@@ -23,6 +23,7 @@ import com.GestaoRotas.GestaoRotas.Email.EmailService;
 import com.GestaoRotas.GestaoRotas.auth.LoginRepository;
 import com.GestaoRotas.GestaoRotas.auth.Usuario;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 
@@ -41,7 +42,7 @@ public class RecuperacaoSenhaService  {
      
     private static final Logger logger = LoggerFactory.getLogger(RecuperacaoSenhaService.class);
     
-  
+@Transactional 
 public Map<String, String> solicitarRecuperacaoSenha(String username, String email) {
     Optional<Usuario> usuarioOpt = loginRepository.findByUsernameAndEmail(username, email);
     Map<String, String> response = new HashMap<>();
@@ -55,21 +56,21 @@ public Map<String, String> solicitarRecuperacaoSenha(String username, String ema
         } 
     String token = UUID.randomUUID().toString(); 
     usuario.setResetToken(token);
-   usuario.setResetTokenExpiry(LocalDateTime.now().plusHours(2));
+    usuario.setResetTokenExpiry(LocalDateTime.now().plusHours(2));
     usuario.setTokenUtilizado(false);
     
      
-    // Gerar código de 6 dígitos
+    // Gerar código de 6 dígitos 
     String codigo = String.format("%06d", new Random().nextInt(999999));
     
     // Salvar código no banco
     usuario.setCodigoVerificacao(codigo);
     usuario.setCodigoVerificacaoExpiry(LocalDateTime.now().plusMinutes(10)); // Expira em 10 minutos
     usuario.setCodigoVerificado(false);
-   
+              
     // Enviar código por email de uma forma ASSÍNCRONO
     emailService.enviarCodigoVerificacao(usuario.getEmail(), usuario.getUsername(), codigo);
-     
+      
     // Retornar resposta NÃO retorna o código por segurança! 
     response.put("status", "sucesso");
     response.put("mensagem", "Código de verificação enviado para seu email");
@@ -90,8 +91,9 @@ public Map<String, String> solicitarRecuperacaoSenha(String username, String ema
     Map<String, String> errorResponse = new HashMap<>();
     errorResponse.put("status", "erro");
     errorResponse.put("mensagem", "Usuário não encontrado");
-    return errorResponse;
+    return errorResponse; 
    }
+@Transactional
 public boolean verificarRespostaSeguranca(String username, String respostaSeguranca) {
   Optional<Usuario> usuarioOpt = loginRepository.findByUsername(username);
     
@@ -101,6 +103,7 @@ public boolean verificarRespostaSeguranca(String username, String respostaSegura
     }  
     return false;  
 }   
+@Transactional
 public boolean redefinirSenhaComToken(String token, String novaSenha) {
     Optional<Usuario> usuarioOpt = loginRepository.findByResetToken(token);
     
@@ -116,18 +119,18 @@ public boolean redefinirSenhaComToken(String token, String novaSenha) {
     return false;
 }
 @Transactional 
-public boolean redefinirSenhaComVerificacao(recuperacaoSenhaDTO dto) {
+public boolean redefinirSenhaComVerificacao(@Valid recuperacaoSenhaDTO dto) {
     Optional<Usuario> usuarioOpt = loginRepository.findByUsername(dto.getUsername());
-
-    if (usuarioOpt.isPresent()) {
+   
+    if (usuarioOpt.isPresent()) { 
         Usuario usuario = usuarioOpt.get();   
-     
+        
         boolean emailValido = usuario.getEmail().equalsIgnoreCase(dto.getEmail());
-        boolean nuitValido = usuario.getNuit().equals(dto.getNuit());
+        boolean nuitValido = usuario.getNuit().equalsIgnoreCase(dto.getNuit());
         boolean respostaValida = usuario.getRespostaSeguranca()
             .equalsIgnoreCase(dto.getRespostaSeguranca());
         boolean codigoVerificacao = usuario.getCodigoVerificacao().equalsIgnoreCase(dto.getCodigoVerificacao()) ; 
-         
+           
         if (emailValido && nuitValido && respostaValida && codigoVerificacao && usuario.isTokenValido()) {
             usuario.setPassword(passwordEncoder.encode(dto.getNovaSenha()));
             loginRepository.save(usuario);

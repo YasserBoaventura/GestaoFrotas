@@ -28,12 +28,12 @@
 	import static org.junit.jupiter.api.Assertions.*;
 	import static org.mockito.ArgumentMatchers.*;
 	import static org.mockito.Mockito.*;
+
+@SpringBootTest
+@ActiveProfiles("test")
+@Transactional
+public class travelServiceIntegration {
 	
-	@SpringBootTest
-	@ActiveProfiles("test")
-	@Transactional
-	public class travelServiceIntegration {
-		
 	    @Autowired
 	    private ServiceViagem serviceViagem;
 	
@@ -218,7 +218,7 @@
 	Viagem viagemCancelada = repositoryViagem.findById(viagemId).get();
 	assertEquals("CANCELADA", viagemCancelada.getStatus());
 	assertTrue(viagemCancelada.getObservacoes().contains("Problemas logísticos"));
-	
+	 
 	Veiculo veiculoAtualizado = repositoryVeiculo.findById(veiculo.getId()).get();
 	assertEquals("DISPONIVEL", veiculoAtualizado.getStatus());
 	}
@@ -233,10 +233,10 @@
 	viagemDTO2.setVeiculoId(veiculo.getId());
 	viagemDTO2.setRotaId(rota.getId());
 	viagemDTO2.setStatus("AGENDADA");
-	        viagemDTO2.setDataHoraPartida(LocalDateTime.now().plusDays(2));
-	        viagemDTO2.setKilometragemInicial(veiculo.getKilometragemAtual());
-	        viagemDTO2.setTipoCarga(TipoCarga.FRÁGIL);
-	        serviceViagem.salvar(viagemDTO2);
+    viagemDTO2.setDataHoraPartida(LocalDateTime.now().plusDays(2));
+    viagemDTO2.setKilometragemInicial(veiculo.getKilometragemAtual());
+    viagemDTO2.setTipoCarga(TipoCarga.FRÁGIL);
+    serviceViagem.salvar(viagemDTO2);
 	 
 	        // Act
 	List<Viagem> viagens = serviceViagem.findAll();
@@ -344,7 +344,7 @@
 	List<Viagem> viagens = repositoryViagem.findAll();
 	Long viagemId = viagens.get(viagens.size() - 1).getId();
 	
-	// Act - O método iniciarViagem não valida veiculo, então deve funcionar
+	// Act  O método iniciarViagem não valida veiculo, então deve funcionar
 	Map<String, String> response = serviceViagem.iniciarViagem(viagemId);
 	
 	// Assert
@@ -357,7 +357,7 @@
 	@Test
 	void salvar_ComMotoristaJaEmViagem_DeveBloquear() {
 	    // Arrange
-	
+	//a regra de negocio e nunca salvar uma viagem se o motrista nao estiver disponivel
 	motorista.setStatus(statusMotorista.EM_VIAGEM);
 	repositoryMotorista.save(motorista);
 	 

@@ -121,7 +121,7 @@ public String update(AbastecimentoDTO abstecimentos, long id) {
 // relario de de abastecimento por veiculo 
 public List<RelatorioCombustivelDTO> relatorioPorVeiculo() {   
     return repositoryAbastecimentos.relatorioPorVeiculo();  
-   }
+   } 
 public List<RelatorioCombustivelDTO> relatorioPorPeriodo(LocalDate inicio, LocalDate fim) {
     return repositoryAbastecimentos.relatorioPorPeriodo(inicio, fim); 
    }

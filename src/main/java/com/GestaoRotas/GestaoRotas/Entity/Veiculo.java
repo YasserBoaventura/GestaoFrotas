@@ -94,6 +94,8 @@ public class Veiculo {
 	     
 	    @Column(name = "custo_manutencao")
 	    private Double custoManutencao;
+	    @Column(name = "custo_Viagem") 
+	    private Double custoViagem;
 	    
 	    @Column(name = "custo_pedagios")
 	    private Double custoPedagios;
