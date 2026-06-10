@@ -1,4 +1,4 @@
-package com.GestaoRotas.GestaoRotas.config;
+package com.GestaoRotas.GestaoRotas.authConfig;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

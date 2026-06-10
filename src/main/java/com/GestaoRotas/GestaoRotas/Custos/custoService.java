@@ -27,7 +27,7 @@ import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryViagem;
 import com.GestaoRotas.GestaoRotas.Service.ServiceAbastecimentos;
 import com.GestaoRotas.GestaoRotas.Service.ServiceVeiculo;
-import com.GestaoRotas.GestaoRotas.config.BusinessException;
+import com.GestaoRotas.GestaoRotas.authConfig.BusinessException;
 
 import jakarta.transaction.Transactional;
 

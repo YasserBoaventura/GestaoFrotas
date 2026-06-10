@@ -29,7 +29,7 @@ import java.util.Collections;
 @NoArgsConstructor   
 @Getter
 @Setter
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown = true) 
 public class Usuario implements UserDetails {
     
     @Id     

@@ -42,8 +42,8 @@ import java.util.stream.Collectors;
 @RestController 
 @RequestMapping("api/custo")
 @CrossOrigin("*")  
-@RequiredArgsConstructor
-public class CustoController {
+@RequiredArgsConstructor 
+public class CustoController { 
 	  
    private final custoService custoService; 
 	      

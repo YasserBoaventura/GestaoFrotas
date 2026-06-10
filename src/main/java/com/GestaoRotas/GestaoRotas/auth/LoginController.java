@@ -33,8 +33,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor  
 public class LoginController {
  
-    private final LoginService loginService;
-    private final PasswordEncoder passwordEncoder;
+    private final LoginService loginService;  
     private final LoginRepository loginRepository;
  
 
@@ -50,11 +49,7 @@ public class LoginController {
         return ResponseEntity.badRequest().body(error);
     }        
     }   
-    
-    @PostMapping("/auto-cadastro")
-    public ResponseEntity<?> autoCadastro(@RequestBody AutoCadastroDTO dto) {
-       return loginService.autoCadastro(dto);  
-    }   
+      
     @PostMapping("/trocar-senha")  
     public ResponseEntity<String> alterSenhaNoPrimeiroLogin(@RequestBody trocarSenhaDTO dto){ 
     	return ResponseEntity.ok(loginService.trocarSenha(dto));  
@@ -117,14 +112,12 @@ public ResponseEntity<Map<String, String>> bloquearConta( @PathVariable long id)
         Usuario usuarioAtualizadoo = this.loginService.atualizarUsuario(id, usuario);
         return ResponseEntity.ok(usuarioAtualizadoo);
     }
-    
+     
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('ADMIN')") 
     public ResponseEntity<String> delete(@PathVariable long id){
-    	try {
-    		String frase=this.loginService.delete(id);
-    		return new ResponseEntity<>(frase, HttpStatus.OK);
-    	    }catch(Exception e) {
+    	try {return  ResponseEntity.ok(loginService.delete(id)); 
+    	    }catch(Exception e) { 
     		return new ResponseEntity<>("erro ao deletar usuario", HttpStatus.BAD_REQUEST);
     	}
     	 

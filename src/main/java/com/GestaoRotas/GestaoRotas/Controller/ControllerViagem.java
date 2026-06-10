@@ -181,10 +181,9 @@ public ResponseEntity<List<RelatorioPorVeiculoDTO>> relatorioPorPeriodoVeiculo(
        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime inicio,
        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fim) {
 	   System.out.println("Recebendo as datas de relatorio por veiculo: "+ inicio); 
-	  return ResponseEntity.ok(serviceViagem.relatorioPorVeiculoPeriodo(inicio, fim));  // Corrigido para pas
+	  return ResponseEntity.ok(serviceViagem.relatorioPorVeiculoPeriodo(inicio, fim));
 }
  
-    /////ainda por implementar
      @GetMapping("/geral")
     public ResponseEntity<RelatorioGeralDTO> relatorioGeral(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
@@ -197,11 +196,11 @@ public ResponseEntity<List<RelatorioPorVeiculoDTO>> relatorioPorPeriodoVeiculo(
             RelatorioGeralDTO dados = repositoryViagem.relatorioGeralPorPeriodo(inicio, fim);
             return ResponseEntity.ok(dados);
         } catch (Exception e) {
-            
+           //mock no catch
             return ResponseEntity.ok(new RelatorioGeralDTO(115L, 8L, 5L, 10100.5, 982.3, 87.8));
         }
     }
-  // Ainda por implementar
+  
     @GetMapping("/top-motoristas")
     public ResponseEntity<List<RelatorioTopMotoristasDTO>> topMotoristas(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
@@ -225,6 +224,7 @@ public ResponseEntity<List<RelatorioPorVeiculoDTO>> relatorioPorPeriodoVeiculo(
             
             return ResponseEntity.ok(dados);
         } catch (Exception e) {
+        	//mock no cacth 
             return ResponseEntity.ok(Arrays.asList(
                 new RelatorioTopMotoristasDTO("Ana Oliveira", 20L, 1560.2),
                 new RelatorioTopMotoristasDTO("João Silva", 15L, 1250.5),

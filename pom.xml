@@ -50,7 +50,7 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
-		</dependency>
+		</dependency>  
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -86,7 +86,7 @@
 	    <artifactId>spring-security-test</artifactId>
 	    <scope>test</scope>
 	     </dependency>
-		
+	  
 		<!-- Spring security-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -23,7 +23,7 @@ import com.GestaoRotas.GestaoRotas.auth.Login;
 import com.GestaoRotas.GestaoRotas.auth.LoginRepository;
 import com.GestaoRotas.GestaoRotas.auth.LoginService;
 import com.GestaoRotas.GestaoRotas.auth.Usuario;
-import com.GestaoRotas.GestaoRotas.config.JwtServiceGenerator;
+import com.GestaoRotas.GestaoRotas.authConfig.JwtServiceGenerator;
 
 import jakarta.persistence.EntityNotFoundException;
 

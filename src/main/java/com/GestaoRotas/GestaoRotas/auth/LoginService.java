@@ -22,7 +22,7 @@ import com.GestaoRotas.GestaoRotas.DTO.UserSaveDTO;
 import com.GestaoRotas.GestaoRotas.DTO.trocarSenhaDTO;
 import com.GestaoRotas.GestaoRotas.Email.EmailService;
 import com.GestaoRotas.GestaoRotas.Entity.Viagem;
-import com.GestaoRotas.GestaoRotas.config.JwtServiceGenerator;
+import com.GestaoRotas.GestaoRotas.authConfig.JwtServiceGenerator;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;

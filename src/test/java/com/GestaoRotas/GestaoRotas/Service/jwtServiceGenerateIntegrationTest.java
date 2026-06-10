@@ -11,7 +11,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import com.GestaoRotas.GestaoRotas.auth.LoginRepository;
 import com.GestaoRotas.GestaoRotas.auth.Usuario;
-import com.GestaoRotas.GestaoRotas.config.JwtServiceGenerator;
+import com.GestaoRotas.GestaoRotas.authConfig.JwtServiceGenerator;
+
 import io.jsonwebtoken.Claims;
 import jakarta.transaction.Transactional;
 import java.util.*;

@@ -6,12 +6,15 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import com.GestaoRotas.GestaoRotas.Model.TipoManutencao;
+
 import java.util.*;
 import java.time.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactory; 
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -44,12 +47,36 @@ public void enviarBoasVindasAoUsuario(String emailDestinatario, String mensagem)
 
         mailSender.send(message);
 
-        logger.info("✅ Email de boas-vindas enviado para: {}", emailDestinatario);
+        logger.info(" Email de boas-vindas enviado para: {}", emailDestinatario);
 
     } catch (Exception e) {
-        logger.error("❌ Erro ao enviar email: {}", e.getMessage());
+        logger.error("Erro ao enviar email: {}", e.getMessage());
     }
 
+}
+@Async 
+public void enviarNotificacaoManutencaoDoProximoDia(String destinatario,
+        String matricula,
+        TipoManutencao tipoManutencao,
+        LocalDate dataManutencao) {
+
+    SimpleMailMessage mensagem = new SimpleMailMessage();
+
+    mensagem.setFrom(emailFrom); 
+    mensagem.setTo(destinatario);
+    mensagem.setSubject("Lembrete de Manutenção Agendada");
+
+    mensagem.setText(
+            "Olá,\n\n" +
+            "Este é um lembrete de que existe uma manutenção agendada para amanhã.\n\n" +
+            "Veículo: " + matricula + "\n" +
+            "Tipo de Manutenção: " + tipoManutencao + "\n" +
+            "Data: " + dataManutencao + "\n\n" +
+            "Atenciosamente,\n" +
+            "Sistema de Gestão de Frotas"
+    );
+
+    mailSender.send(mensagem);
 }
 //para o envio de codigos
 @Async
@@ -70,10 +97,10 @@ public void enviarCodigoVerificacao(String emailDestino, String nome, String cod
         ));
          
         mailSender.send(message);
-        logger.info("✅ Código de verificação enviado para: {}", emailDestino);
+        logger.info("Código de verificação enviado para: {}", emailDestino);
         
     } catch (Exception e) {
-        logger.error("❌ Erro ao enviar código: {}", e.getMessage());
+        logger.error("Erro ao enviar código: {}", e.getMessage());
     }
 }
 
@@ -89,11 +116,11 @@ public void enviarAlertaManutencao(String emailDestinatario, String placa, Strin
     // Verifica se já enviou nas últimas 24 horas
     Long ultimoEnvio = emailsEnviados.get(chaveUnica);
     if (ultimoEnvio != null && System.currentTimeMillis() - ultimoEnvio < 86400000) { // 24h
-        logger.info("⏭️ Email já enviado para {} nas últimas 24h, ignorando duplicata", placa);
+        logger.info("Email já enviado para {} nas últimas 24h, ignorando duplicata", placa);
         return;
     }
     
-    logger.info("📧 ===== ENVIANDO EMAIL PARA {} =====", placa);
+    logger.info(" ===== ENVIANDO EMAIL PARA {} =====", placa);
     
     try {
         SimpleMailMessage message = new SimpleMailMessage();
@@ -124,11 +151,11 @@ public void enviarAlertaManutencaoVencida(String emailDestinatario, String placa
     String chaveUnica = placa + "_VENCIDA_" + LocalDate.now();
     
     if (emailsEnviados.containsKey(chaveUnica)) {
-        logger.info("⏭️ Alerta vencido já enviado para {}", placa);
+        logger.info("Alerta vencido já enviado para {}", placa);
         return;
     }
     
-    logger.info("📧 ===== ENVIANDO ALERTA VENCIDO PARA {} =====", placa);
+    logger.info("===== ENVIANDO ALERTA VENCIDO PARA {} =====", placa);
     
     try {
         SimpleMailMessage message = new SimpleMailMessage();
@@ -160,11 +187,11 @@ public void enviarNotificacaoDaViagemMotorista(String emailDestinatario, String 
     // Verifica se já enviou nas últimas 24 horas
     Long ultimoEnvio = emailsEnviados.get(chaveUnica);
     if (ultimoEnvio != null && System.currentTimeMillis() - ultimoEnvio < 86400000) {
-        logger.info("⏭️ Email já enviado para viagem {} nas últimas 24h, ignorando duplicata", viagemRef);
+        logger.info("Email já enviado para viagem {} nas últimas 24h, ignorando duplicata", viagemRef);
         return;
     }
     
-    logger.info("📧 ===== ENVIANDO EMAIL DE VIAGEM PARA {} =====", emailDestinatario);
+    logger.info("===== ENVIANDO EMAIL DE VIAGEM PARA {} =====", emailDestinatario);
     
     try {
         SimpleMailMessage message = new SimpleMailMessage();
@@ -177,8 +204,8 @@ public void enviarNotificacaoDaViagemMotorista(String emailDestinatario, String 
           
         // Registra o envio bem-sucedido
         emailsEnviados.put(chaveUnica, System.currentTimeMillis());
-        logger.info("✅ EMAIL DE VIAGEM enviado com sucesso para {}", emailDestinatario);
-        
+        logger.info("EMAIL DE VIAGEM enviado com sucesso para {}", emailDestinatario);
+         
     } catch (MailException e) {
         logger.error(" Falha no envio de email para {}: {}", emailDestinatario, e.getMessage());
     }

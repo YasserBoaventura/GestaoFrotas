@@ -7,7 +7,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.GestaoRotas.GestaoRotas.auth.Usuario;
-import com.GestaoRotas.GestaoRotas.config.JwtServiceGenerator;
+import com.GestaoRotas.GestaoRotas.authConfig.JwtServiceGenerator;
+
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import io.jsonwebtoken.Claims;

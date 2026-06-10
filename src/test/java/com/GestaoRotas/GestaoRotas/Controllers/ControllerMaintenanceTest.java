@@ -68,7 +68,7 @@ public class ControllerMaintenanceTest {
 
         // Setup ManutencaoDTO
         manutencaoDTO = new manuntecaoDTO();
-        manutencaoDTO.setVeiculoId(1L);
+        manutencaoDTO.setVeiculo_id(1L); 
         manutencaoDTO.setTipoManutencao(TipoManutencao.PREVENTIVA);
         manutencaoDTO.setDataManutencao(LocalDate.now().plusDays(15));
         manutencaoDTO.setDescricao("Troca de óleo");

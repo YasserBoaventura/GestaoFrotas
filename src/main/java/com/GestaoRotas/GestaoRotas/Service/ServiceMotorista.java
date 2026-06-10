@@ -55,7 +55,7 @@ public class ServiceMotorista {
    return this.repositoryMotorista.findById(id).get();
 	 
 	 } 	
-	 //Faz a busca pelo nome do motorista
+
 	 public List<Motorista> findByNome(String nomeMotorista){
 		    if (nomeMotorista == null) {
 		        throw new IllegalArgumentException("Nome não pode ser null");

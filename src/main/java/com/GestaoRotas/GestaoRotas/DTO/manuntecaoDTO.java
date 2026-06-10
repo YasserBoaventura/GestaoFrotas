@@ -38,7 +38,7 @@ public class manuntecaoDTO {
     private Double kilometragemVeiculo;
     private Double proximaManutencaoKm;
     private LocalDate proximaManutencaoData;
-    private Long veiculoId; 
+    private Long veiculo_id; 
     
        
 	

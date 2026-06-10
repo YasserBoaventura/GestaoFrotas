@@ -73,8 +73,8 @@ public class MaintenanceServiceUnitTest {
     manutencao.setProximaManutencaoKm(20000.0);
     manutencao.setProximaManutencaoData(LocalDate.now().plusMonths(6));
 
-    manutencaoDTO = new manuntecaoDTO(); 
-    manutencaoDTO.setVeiculoId(1L); 
+    manutencaoDTO = new manuntecaoDTO();  
+    manutencaoDTO.setVeiculo_id(1L); 
     manutencaoDTO.setDataManutencao(LocalDate.now().plusDays(5));
     manutencaoDTO.setDescricao("Troca de óleo");
     manutencaoDTO.setTipoManutencao(TipoManutencao.PREVENTIVA);
