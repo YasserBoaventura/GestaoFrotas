@@ -35,17 +35,32 @@ public class TrackingController {
  @PostMapping("/location")   
  @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
  public ResponseEntity<VehicleLocation> updateLocation(@RequestBody @Valid LocationDTO locationDTO) {
-     VehicleLocation saved = trackingService.saveLocation(locationDTO);
+     VehicleLocation saved = trackingService.saveLocation(locationDTO);<<<<<<< test/supply-service
      return ResponseEntity.ok(saved);           
  }          
- @GetMapping("/location/{vehicleId}/last")
+  @GetMapping("/location/{vehicleId}/last")
  @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
    public ResponseEntity<VehicleLocation> getLastLocation(@PathVariable Long vehicleId) {
     Optional<VehicleLocation> location = trackingService.getLastLocation(vehicleId);
            return location          
              .map(ResponseEntity::ok)     
              .orElseGet(() -> ResponseEntity.notFound().build());
+
  }                            
+
+ }                          
+ 
+                  
+   @GetMapping("/location/{vehicleId}/last")
+   @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+
+
+   public ResponseEntity<VehicleLocation> getLastLocation(@PathVariable Long vehicleId) {
+    Optional<VehicleLocation> location = trackingService.getLastLocation(vehicleId);
+           return location          
+             .map(ResponseEntity::ok)     
+             .orElseGet(() -> ResponseEntity.notFound().build());
+ }                         
   @GetMapping("/location/{vehicleId}/history")
   @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')") 
     public ResponseEntity<List<VehicleLocation>> getLocationHistory(

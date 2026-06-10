@@ -35,6 +35,7 @@ public class LoginController {
  
     private final LoginService loginService;  
     private final LoginRepository loginRepository;
+
  
 
     @PostMapping("/login")
@@ -54,6 +55,7 @@ public class LoginController {
     public ResponseEntity<String> alterSenhaNoPrimeiroLogin(@RequestBody trocarSenhaDTO dto){ 
     	return ResponseEntity.ok(loginService.trocarSenha(dto));  
     }
+
 @PostMapping("/save")
 public ResponseEntity<?> save(@RequestBody Usuario userSave){ 
 	try {      
@@ -64,7 +66,16 @@ public ResponseEntity<?> save(@RequestBody Usuario userSave){
 	return ResponseEntity.badRequest().body(erroResponse); 
 	}
 }
-   //Devo fazer aqui ate porque o Repositorio e do tipo usuario
+
+ 
+//  POST para pre registro
+  
+   @PostMapping("/auto-cadastro")
+   public ResponseEntity<?> autoCadastro(@RequestBody AutoCadastroDTO dto) {
+      return loginService.autoCadastro(dto);  
+   }  
+		//Devo fazer aqui ate porque o Repositorio e do tipo usuario
+
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/findAll")
     public ResponseEntity<List<Usuario>> findAll(){

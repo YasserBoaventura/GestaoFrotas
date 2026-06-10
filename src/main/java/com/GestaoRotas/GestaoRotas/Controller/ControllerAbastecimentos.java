@@ -45,8 +45,7 @@ public class ControllerAbastecimentos {
 	   try { 
 	   return ResponseEntity.ok(abastecimentosService.save(abastecimentoDTO)); 
 	  }catch(Exception e) { 
-
-	   e.printStackTrace();        
+       e.printStackTrace();        
 	  return ResponseEntity.badRequest().build(); 
 	  }   
     }            
