@@ -57,8 +57,7 @@ public class Custo implements Serializable {
     @Enumerated(EnumType.STRING)
     private StatusCusto status = StatusCusto.PAGO; //pago como default
      
-    // RELACIONAMENTOS - Usar @JsonIgnore em vez de @JsonBackReference/@JsonManagedReference
-    
+ 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "veiculo_id")
     @JsonIgnoreProperties({"custos", "abastecimentos", "manutencoes", "viagem"})
@@ -91,7 +90,7 @@ public class Custo implements Serializable {
         return "MANUAL"; 
     }
     
-    // Adicione este método para evitar loop infinito
+ 
     @Override
     public String toString() {
         return "Custo{id=" + id + 

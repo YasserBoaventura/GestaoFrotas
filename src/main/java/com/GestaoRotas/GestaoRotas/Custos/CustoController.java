@@ -113,7 +113,7 @@ public ResponseEntity<List<CustoDTO>> relatorioPorPeriodo(
  @PostMapping("/relatorio")                         
  @PreAuthorize("hasAuthority('ADMIN')")       
 public ResponseEntity<?> relatorio(@RequestBody @Valid RelatorioFilterDTO filtro) {
-    try {        
+    try {         
      
        RelatorioCustosDetalhadoDTO relatorio = custoService.gerarRelatorioDetalhado(filtro);
         return ResponseEntity.ok(relatorio); 
