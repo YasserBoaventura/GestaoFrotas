@@ -28,7 +28,7 @@ public class AgendamentoEmailService {
     // Executa todo sábado às 8:00 da manhã
 @Scheduled(cron = "0 0 8 * * SAT")
 public void enviarEmailsViagensSemana() {
-    logger.info("📅 ===== INICIANDO ENVIO DE EMAILS DE VIAGENS (SÁBADO) =====");
+    logger.info(" ===== INICIANDO ENVIO DE EMAILS DE VIAGENS (SÁBADO) =====");
     
     LocalDate hoje = LocalDate.now();
     LocalDate inicioSemana = hoje.plusDays(1); // Domingo
@@ -36,7 +36,7 @@ public void enviarEmailsViagensSemana() {
     
     logger.info("Período: {} a {}", inicioSemana, fimSemana);
      
-    try {//git reb
+    try {
         // Busca todas as viagens da próxima semana
         List<Viagem> viagensSemana = viagemRepository.findViagensEntreDatas(inicioSemana, fimSemana);
     
@@ -57,10 +57,10 @@ public void enviarEmailsViagensSemana() {
         }
         }
         
-        logger.info("✅ Processo de envio de emails concluído!");
+        logger.info("Processo de envio de emails concluído!");
         
     } catch (Exception e) {
-        logger.error("❌ Erro no agendamento de emails: {}", e.getMessage());
+        logger.error("Erro no agendamento de emails: {}", e.getMessage());
     }
     }
     
@@ -112,7 +112,7 @@ public void enviarEmailsViagensSemana() {
         logger.info("Email enviado para motorista {} - Viagem ID {}", nomeMotorista, viagem.getId());
     }
      
-    // Método para envio manual (útil para testes)
+    // Método para envio manual 
     public void enviarEmailManual(Long viagemId) {
         Viagem viagem = viagemRepository.findById(viagemId).orElse(null);
         if (viagem != null) {

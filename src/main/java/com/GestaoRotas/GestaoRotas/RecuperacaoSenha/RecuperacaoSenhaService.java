@@ -122,7 +122,7 @@ public boolean redefinirSenhaComToken(String token, String novaSenha) {
 public boolean redefinirSenhaComVerificacao(@Valid recuperacaoSenhaDTO dto) {
     Optional<Usuario> usuarioOpt = loginRepository.findByUsername(dto.getUsername());
    
-    if (usuarioOpt.isPresent()) { 
+    if (usuarioOpt.isPresent()) {  
         Usuario usuario = usuarioOpt.get();   
         
         boolean emailValido = usuario.getEmail().equalsIgnoreCase(dto.getEmail());

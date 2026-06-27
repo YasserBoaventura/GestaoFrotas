@@ -137,7 +137,7 @@ public class LoginService {
 	}  
 	@Transactional
 	   public ResponseEntity<?> autoCadastro(@Valid AutoCadastroDTO dto) {
-	       // Verificar se username, email ou nuit já existem
+	       // Verificar se username, email ou nuit já existem 
 	   if (repository.existsByUsername(dto.getUsername())) {
 	       return ResponseEntity.badRequest().body("Username já está em uso");
 	   }
