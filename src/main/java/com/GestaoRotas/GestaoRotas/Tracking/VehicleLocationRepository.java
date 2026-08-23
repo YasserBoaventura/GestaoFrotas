@@ -19,6 +19,5 @@ public interface VehicleLocationRepository extends JpaRepository<VehicleLocation
 
     @Query(value = "SELECT * FROM vehicle_locations v WHERE v.veiculo_id = :vehicleId ORDER BY v.timestamp DESC, v.id DESC LIMIT 1", nativeQuery = true)
     Optional<VehicleLocation> findLastLocation(@Param("vehicleId") Long vehicleId);
-   
+
 }
- 

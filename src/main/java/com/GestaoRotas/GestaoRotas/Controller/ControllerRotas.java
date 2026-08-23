@@ -26,48 +26,26 @@ public class ControllerRotas {
 	
 	 @PostMapping("/save") 
 	public ResponseEntity<String>  salvar(@RequestBody Rotas rotas){
-		 try { 
-		  return ResponseEntity.ok(serviceRotas.save(rotas)); 	
-		}catch(Exception e) {
-			e.getStackTrace().notifyAll();
-		return new ResponseEntity<>(" Erro" , HttpStatus.BAD_REQUEST);
-		}
-                
+		 return ResponseEntity.ok(serviceRotas.save(rotas));
+
 	}
 	 @DeleteMapping("/delete/{id}")
 	 public ResponseEntity<String> deleteByID(@PathVariable long id){
-		 try {
-			 return ResponseEntity.ok(serviceRotas.deleteById(id)); 
-		 }catch(Exception e) {
-			 return new ResponseEntity<>("Erro: ",HttpStatus.BAD_REQUEST);
-		} 
+		 return ResponseEntity.ok(serviceRotas.deleteById(id));
 	 }
 	 @GetMapping("/findAll")
 	public ResponseEntity<List<Rotas>> findAll(){
-		try { 
-			 return ResponseEntity.ok(serviceRotas.findAll()); 
-		 }catch(Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);  
-		 }
-		 
+			 return ResponseEntity.ok(serviceRotas.findAll());
 } 
    @PutMapping("update/{id}")
 public ResponseEntity<String> update(@RequestBody Rotas rotas, @PathVariable Long id) {
-    try {
         return ResponseEntity.ok(serviceRotas.update(rotas, id)); 
-    } catch (Exception e) {  
-        return ResponseEntity.badRequest()
-            .body("Erro ao atualizar rota: " + e.getMessage());
-    }
+
 }
  @GetMapping("findById/{id}")
   public ResponseEntity<Rotas> findById(@PathVariable long id){
-	 try {
-	 return  ResponseEntity.ok(serviceRotas.findById(id));
-	}catch(Exception e) {
-	 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-		 
- }
+		 return  ResponseEntity.ok(serviceRotas.findById(id));
+
 		 
 	 }
 }

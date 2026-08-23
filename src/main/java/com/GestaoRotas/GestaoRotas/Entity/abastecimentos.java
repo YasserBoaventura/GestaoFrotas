@@ -7,6 +7,7 @@ import com.GestaoRotas.GestaoRotas.Model.StatusCusto;
 import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 import com.GestaoRotas.GestaoRotas.Model.statusAbastecimentos;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -29,6 +30,7 @@ public class abastecimentos {
 	    private Long id; 
 	    
 	    @Column(name = "data_abastecimento")
+		@JsonFormat(pattern = "dd/MM/yyyy")
 	    private LocalDate dataAbastecimento;
 	     
 	    @Column(name = "quantidade_litros")

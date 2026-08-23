@@ -98,7 +98,8 @@ public class Viagem {
 	    public void iniciarViagem() {
 	        this.status = "EM_ANDAMENTO";
 	        this.dataHoraPartida = LocalDateTime.now();
-	    } 
+
+	    }
 	    
 	    public void concluirViagem() {
 	        this.status = "CONCLUIDA";

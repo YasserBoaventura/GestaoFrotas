@@ -1,10 +1,8 @@
 //AuthenticationService.java
 package com.GestaoRotas.GestaoRotas.auth;
-import java.beans.Transient;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,13 +13,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.GestaoRotas.GestaoRotas.DTO.AutoCadastroDTO;
-import com.GestaoRotas.GestaoRotas.DTO.UserSaveDTO;
 import com.GestaoRotas.GestaoRotas.DTO.trocarSenhaDTO;
 import com.GestaoRotas.GestaoRotas.Email.EmailService;
-import com.GestaoRotas.GestaoRotas.Entity.Viagem;
 import com.GestaoRotas.GestaoRotas.authConfig.JwtServiceGenerator;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -35,7 +30,7 @@ public class LoginService {
    
 
 	private final LoginRepository repository;
-	
+
 	private final JwtServiceGenerator jwtService;
 	
 	private final AuthenticationManager authenticationManager;
@@ -121,7 +116,8 @@ public class LoginService {
         usuario.setPerguntaSeguranca(userSave.getPerguntaSeguranca());
         usuario.setRespostaSeguranca(userSave.getRespostaSeguranca());
 		usuario.setContaBloqueada(false);
-		usuario.setPrimeiroLogin(true); 
+		usuario.setPrimeiroLogin(true);
+		//senha padrao ao se candidatar
 		usuario.setPassword(passwordEncoder.encode("0000")); 
 	    repository.save(usuario);
 
@@ -215,8 +211,8 @@ public Map<String , String> bloquearConta(long id){
 	return response;  
    }
 } 
-//desativar/ativar
-public Map<String, String > desativarConta(long id){
+
+public Map<String, String > desativarEndActivarConta(long id){
 	Map<String , String> contaAtivada = new HashMap<>();
 	Usuario usuario = repository.findById(id).orElseThrow(()-> new RuntimeException("usuario nao encontrado"));
     // desativar a conta se estiver ativa     
@@ -235,22 +231,18 @@ public Map<String, String > desativarConta(long id){
 	 
 }
 	
-	//metodo para listar
-	public List<Usuario> findAll(){
+ public List<Usuario> findAll(){
 		return repository.findAll();
 	}
-	//Metodo pra iliminar usuario
+
 	public String delete(long id) {
 		this.repository.deleteById(id);
 		return "Usuario deletado com sucesso";
 	}
-	
-	
-	
-	//Metodo para gerar token
+
 public String gerarToken(Login login) {
     try {
-        // 1. Autenticação com tratamento de erro
+        //Autenticação com tratamento de erro
     Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(
             login.getUsername(),
@@ -258,12 +250,12 @@ public String gerarToken(Login login) {
         )    
     );
     
-    // 2. Buscar usuário com tratamento de Optional
+    // Buscar usuário com tratamento de Optional
     Usuario user = repository.findByUsername(login.getUsername())
         .orElseThrow(() -> new UsernameNotFoundException(
             "Usuário não encontrado: " + login.getUsername()));
     
-    // 3. Validar se o usuário está ativo
+    // Validar se o usuário está ativo
     if (!user.isEnabled()) {
         throw new DisabledException("Usuário desativado: " + login.getUsername());
     }
@@ -272,16 +264,15 @@ public String gerarToken(Login login) {
      throw new DisabledException("Conta bloqueada porfavor entre em Contato com o administrador: "+login.getUsername());	
     } 
      
-    // 4. Gerar token JWT
+    //Gerar token JWT
     String jwtToken = jwtService.generateToken(user);
  
     
     
     return jwtToken;
-    
+
 } catch (BadCredentialsException e) {
-   
-    throw new BadCredentialsException("Credenciais inválidas para usuário: " + login.getUsername());
+		throw new BadCredentialsException("Credenciais inválidas para usuário: " + login.getUsername());
 } catch (DisabledException e) {
     throw new DisabledException("Conta desativada: " + login.getUsername());
 } catch (LockedException e) {

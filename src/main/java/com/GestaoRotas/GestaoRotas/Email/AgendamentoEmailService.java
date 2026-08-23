@@ -5,6 +5,8 @@ import com.GestaoRotas.GestaoRotas.Repository.RepositoryViagem;
 import java.util.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,12 +15,10 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor 
-@Service 
+@Service
+@Slf4j
 public class AgendamentoEmailService {
 
-    
-    private static final Logger logger = LoggerFactory.getLogger(AgendamentoEmailService.class);
-    
 
     private  final RepositoryViagem viagemRepository;
     
@@ -28,46 +28,46 @@ public class AgendamentoEmailService {
     // Executa todo sábado às 8:00 da manhã
 @Scheduled(cron = "0 0 8 * * SAT")
 public void enviarEmailsViagensSemana() {
-    logger.info(" ===== INICIANDO ENVIO DE EMAILS DE VIAGENS (SÁBADO) =====");
+    log.info(" ===== INICIANDO ENVIO DE EMAILS DE VIAGENS (SÁBADO) =====");
     
     LocalDate hoje = LocalDate.now();
     LocalDate inicioSemana = hoje.plusDays(1); // Domingo
     LocalDate fimSemana = hoje.plusDays(7);    // Próximo sábado
     
-    logger.info("Período: {} a {}", inicioSemana, fimSemana);
+    log.info("Período: {} a {}", inicioSemana, fimSemana);
      
     try {
         // Busca todas as viagens da próxima semana
         List<Viagem> viagensSemana = viagemRepository.findViagensEntreDatas(inicioSemana, fimSemana);
     
     if (viagensSemana.isEmpty()) {
-        logger.info("Nenhuma viagem agendada para a próxima semana");
+        log.info("Nenhuma viagem agendada para a próxima semana");
         return;
     }
-    
-    logger.info("Encontradas {} viagens para a próxima semana", viagensSemana.size());
+
+        log.info("Encontradas {} viagens para a próxima semana", viagensSemana.size());
     
     // Agrupa por motorista e envia emails
     for (Viagem  viagem : viagensSemana) {
         try {
             enviarEmailViagemMotorista(viagem);
         } catch (Exception e) {
-            logger.error("Erro ao enviar email para viagem ID {}: {}", 
+            log.error("Erro ao enviar email para viagem ID {}: {}",
                 viagem.getId(), e.getMessage());
         }
         }
-        
-        logger.info("Processo de envio de emails concluído!");
+
+        log.info("Processo de envio de emails concluído!");
         
     } catch (Exception e) {
-        logger.error("Erro no agendamento de emails: {}", e.getMessage());
+        log.error("Erro no agendamento de emails: {}", e.getMessage());
     }
     }
     
     private void enviarEmailViagemMotorista(Viagem viagem) {
         // Verifica se tem motorista e email
         if (viagem.getMotorista() == null || viagem.getMotorista().getEmail() == null) {
-            logger.warn("Viagem ID {} não tem motorista ou email cadastrado", viagem.getId());
+            log.warn("Viagem ID {} não tem motorista ou email cadastrado", viagem.getId());
             return;
         }
         
@@ -108,8 +108,8 @@ public void enviarEmailsViagensSemana() {
             "Viagem " + viagem.getId(),
             detalhes.toString()
         );
-        
-        logger.info("Email enviado para motorista {} - Viagem ID {}", nomeMotorista, viagem.getId());
+
+        log.info("Email enviado para motorista {} - Viagem ID {}", nomeMotorista, viagem.getId());
     }
      
     // Método para envio manual 

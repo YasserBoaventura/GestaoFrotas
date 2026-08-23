@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.*;
 
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
@@ -35,7 +36,8 @@ public class VehicleLocation implements Serializable{
     private Double latitude;
     private Double longitude;
     private Double speed;
-    private String status; 
+    private String status;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime timestamp;
      
     @PrePersist  

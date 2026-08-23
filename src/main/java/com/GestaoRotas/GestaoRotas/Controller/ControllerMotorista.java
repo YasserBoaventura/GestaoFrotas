@@ -27,51 +27,30 @@ import lombok.RequiredArgsConstructor;
 public class ControllerMotorista {
 	
 	private final ServiceMotorista serviceMotorista;
-	 
+
 	 
  @PostMapping("/save")
   public ResponseEntity<Map<String, String>> salvar(@RequestBody Motorista motorista) {
-    try { 
         return ResponseEntity.ok(serviceMotorista.salvar(motorista)); 
-       }catch (Exception e) {
-        Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", e.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-    } 
+
 }
  @DeleteMapping("/delete/{id}")
  public ResponseEntity<String> delete(@PathVariable Long id){
-     try { 
         return ResponseEntity.ok(serviceMotorista.deleteById(id));
-     } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-         .body("Erro ao apagar Motorista: " + e.getMessage());
-    } 
  }
 @PutMapping("/update/{id}")  
 public ResponseEntity<String> update(@RequestBody Motorista motorista ,@PathVariable long id){
-	 try {
-		 return ResponseEntity.ok(serviceMotorista.update(motorista, id)); 
- }catch(Exception e) {
-	return new ResponseEntity<>("nao foi possivel actualizar", HttpStatus.BAD_REQUEST);
-}
+     return ResponseEntity.ok(serviceMotorista.update(motorista, id));
   }
 	@GetMapping("/findAll")
 	 public ResponseEntity<List<Motorista>>  findAll(){
-      try {
-    	  return ResponseEntity.ok(serviceMotorista.findAll()); 
-   	 }catch(Exception e) {
-   		 return ResponseEntity.badRequest().build();  
-   	 }
+     return ResponseEntity.ok(serviceMotorista.findAll());
+
    	} 
 	@GetMapping("/findByNome/{nomeMotorista}")
 	public ResponseEntity <List<Motorista>>  findByNome(@PathVariable String nomeMotorista){
-	try {
 		return ResponseEntity.ok(serviceMotorista.findByNome(nomeMotorista)); 
-		} catch(Exception e) {
-			e.getMessage(); 
-			 return ResponseEntity.badRequest().build();   
-		}
+
 	}
 	
 	

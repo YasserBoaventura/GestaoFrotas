@@ -12,7 +12,7 @@ import java.util.*;
 import com.GestaoRotas.GestaoRotas.DTO.LocationDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
-import com.GestaoRotas.GestaoRotas.Tracking.TrackingService;
+import com.GestaoRotas.GestaoRotas.Tracking.TrackingService_Impl;
 import com.GestaoRotas.GestaoRotas.Tracking.VehicleLocation;
 import com.GestaoRotas.GestaoRotas.Tracking.VehicleLocationRepository;
 
@@ -39,7 +39,7 @@ private SimpMessagingTemplate messagingTemplate;
 	private RepositoryVeiculo veiculoRepository;
 	
 	@InjectMocks
-	private TrackingService trackingService;
+	private TrackingService_Impl trackingService;
 	
 	private Veiculo veiculo;
 	private VehicleLocation vehicleLocation;

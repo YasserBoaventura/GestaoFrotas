@@ -15,8 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import com.GestaoRotas.GestaoRotas.Custos.Custo;
-import com.GestaoRotas.GestaoRotas.Custos.custoService;
+import com.GestaoRotas.GestaoRotas.Custos.custoService_Impl;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.manuntecaoDTO;
 import com.GestaoRotas.GestaoRotas.Email.EmailService;
@@ -40,7 +39,7 @@ public class MaintenanceServiceUnitTest {
     private ServiceVeiculo veiculoService;
 
     @Mock
-    private custoService custoService;
+    private custoService_Impl custoService;
 
     @Mock
     private EmailService emailService;

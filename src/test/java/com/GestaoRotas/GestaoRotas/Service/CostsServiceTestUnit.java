@@ -1,5 +1,6 @@
 package com.GestaoRotas.GestaoRotas.Service;
 
+import com.GestaoRotas.GestaoRotas.Custos.custoService_Impl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -7,8 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.GestaoRotas.GestaoRotas.CustoDTO.CustoListDTO;
 import com.GestaoRotas.GestaoRotas.CustoDTO.CustoRequestDTO;
@@ -20,9 +19,6 @@ import com.GestaoRotas.GestaoRotas.DTO.CustoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.CustoUpdateDTO;
 import com.GestaoRotas.GestaoRotas.DTO.DashboardCustosDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioCustosDetalhadoDTO;
-import com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO;
-import com.GestaoRotas.GestaoRotas.DTO.manuntecaoDTO;
-import com.GestaoRotas.GestaoRotas.Email.EmailService;
 import com.GestaoRotas.GestaoRotas.Entity.Manutencao;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Entity.Viagem;
@@ -30,7 +26,6 @@ import com.GestaoRotas.GestaoRotas.Entity.abastecimentos;
 import com.GestaoRotas.GestaoRotas.Model.StatusCusto;
 import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 import com.GestaoRotas.GestaoRotas.Model.TipoManutencao;
-import com.GestaoRotas.GestaoRotas.Model.statusManutencao;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryAbastecimentos;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryManutencao;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
@@ -61,7 +56,7 @@ public class CostsServiceTestUnit {
 	    private RepositoryViagem repositoryViagem;
 
 	    @InjectMocks
-	    private com.GestaoRotas.GestaoRotas.Custos.custoService custoService;
+	    private custoService_Impl custoService;
 
 	    private Veiculo veiculo;
 	    private abastecimentos abastecimento;
