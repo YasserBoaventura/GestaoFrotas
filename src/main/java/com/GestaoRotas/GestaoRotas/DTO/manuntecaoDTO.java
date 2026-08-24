@@ -40,7 +40,7 @@ public class manuntecaoDTO {
     private LocalDate proximaManutencaoData;
     private Long veiculo_id; 
     
-   
+       
 	
 
 }

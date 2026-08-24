@@ -84,7 +84,7 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
            "WHERE c.data BETWEEN :inicio AND :fim AND c.status = 'PAGO' " +
            "GROUP BY c.tipo")
     List<Object[]> calcularTotalPorTipoPeriodo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
-               
+                
     // listar tudo por data inicio e fim
     @Query("SELECT NEW com.GestaoRotas.GestaoRotas.DTO.CustoDTO(" +
            "c.id, c.data, c.descricao, c.valor, c.tipo, c.status, " +
@@ -199,7 +199,7 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
 		@Query("SELECT new com.GestaoRotas.GestaoRotas.CustoDTO.CustoDetalhadoDTO(" +
 			       "c.id, c.descricao, c.valor, c.data, c.tipo, c.status, " +
 			       "v.matricula, v.modelo) " + 
-			       "FROM Custo c " +
+			       "FROM Custo c " + 
 			       "JOIN c.veiculo v " +
 			       "WHERE c.status = 'PAGO' " +
 			       "ORDER BY c.valor DESC "+

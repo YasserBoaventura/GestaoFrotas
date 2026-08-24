@@ -1,12 +1,15 @@
-package com.GestaoRotas.GestaoRotas.config;
+package com.GestaoRotas.GestaoRotas.authConfig;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InvalidClassException;
+import org.springframework.security.access.AccessDeniedException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -49,12 +52,14 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<Map<String, String>>(erros, HttpStatus.BAD_REQUEST);
 	}
 
-	//TRATAMENTO DOS DEMAIS ERROS DA APLICAÇÃO E DE REGRAS DE NEGÓCIO
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<String> handle03(Exception ex) {
-		ex.printStackTrace();  
-		return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-	}
+	  @ExceptionHandler(AccessDeniedException.class)
+	    public ResponseEntity<?> handleAccessDenied(AccessDeniedException ex) {
+ 
+	    return ResponseEntity
+	            .status(HttpStatus.FORBIDDEN)
+	            .body(Map.of("erro", "Access Denied"));
+}
+
 	//Tratamentos do Erro throw new IlegalException na aplicacao NB: nomeie com O nome da excecao
 	@ExceptionHandler(IllegalArgumentException.class) 
 	public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex){
@@ -121,7 +126,7 @@ public class GlobalExceptionHandler {
 		Map<String ,String> erro = new HashMap<>();
 		erro.put("erro", ex.getMessage()); 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro); 
-	} 
+	}  
 	@ExceptionHandler(InvalidClassException.class) 
 	public ResponseEntity<Map<String , String>> handleIvalidClassException(InvalidClassException ex){
 		Map<String,String> erro = new HashMap<>();
@@ -177,6 +182,30 @@ public class GlobalExceptionHandler {
 	Map<String,String>  response = new HashMap<>();
 	response.put("erro",ex.getMessage());
 	return ResponseEntity.badRequest().body(response); 
+  }
+  @ExceptionHandler(NoSuchElementException.class) 
+ public ResponseEntity<Map<String, String>> handleNoSuchElementException(NoSuchElementException ex){
+	 Map<String,String> response = new HashMap<>();
+	 response.put("erro", ex.getMessage());
+	 return ResponseEntity.badRequest().body(response); 
+ }
+  @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+  public ResponseEntity<Map<String, String>> handleInvalidDataAccessApiUsageException(InvalidDataAccessApiUsageException ex){
+	  Map<String,String> response = new HashMap<>(); 
+	  response.put("erro", ex.getMessage()); 
+	  return ResponseEntity.badRequest().body(response); 
+  }
+  @ExceptionHandler(InterruptedException.class) 
+  public ResponseEntity<Map<String, String>> handleInterruptedException(InterruptedException ex){
+	  Map<String,String> response = new HashMap<>(); 
+	  response.put("erro", ex.getMessage()); 
+	  return ResponseEntity.badRequest().body(response); 
+  }
+  @ExceptionHandler(IllegalAccessException.class)
+  public ResponseEntity<Map<String, String>> handleIllegalAccessException (IllegalAccessException  ex){
+	  Map<String, String> response = new HashMap<>(); 
+	  response.put("erro", ex.getMessage());
+	  return ResponseEntity.badRequest().body(response); 
   }
   }
 

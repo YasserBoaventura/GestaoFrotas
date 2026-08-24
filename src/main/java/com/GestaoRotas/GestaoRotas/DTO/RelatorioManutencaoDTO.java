@@ -14,13 +14,14 @@ import lombok.Setter;
 
 @Setter
 @Getter
+@NoArgsConstructor
 public class RelatorioManutencaoDTO {
     private String veiculo;
     private Long totalManutencoes;
     private Double custoTotal;
     private Double custoMedio;
     private statusManutencao status;
-	
+	 
 	    public RelatorioManutencaoDTO(String veiculo, Long totalManutencoes, 
                 Double custoTotal, Double custoMedio, 
                 statusManutencao status) {

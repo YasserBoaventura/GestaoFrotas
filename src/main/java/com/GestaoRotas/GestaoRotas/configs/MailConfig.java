@@ -28,7 +28,7 @@ public class MailConfig {
 	     props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 	     props.put("mail.smtp.socketFactory.fallback", "false");
 	     
-	     // Desabilitar validação SSL (APENAS DESENVOLVIMENTO!)
+	     // Desabilitar validação SSL
 	     props.put("mail.smtp.ssl.trust", "*");
 	     props.put("mail.smtp.ssl.checkserveridentity", "false");
 	     

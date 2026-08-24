@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+
+  backend:
+    build: ./GestaoRotas
+    container_name: gestao_frotas-mysql
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/gestaofrotas
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Boaventura
+
+  db:
+    image: mysql:8
+    container_name: gestao_frotas-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: gestaofrotas
+    ports:
+      - "3306:3306"

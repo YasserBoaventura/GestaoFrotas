@@ -1,4 +1,4 @@
-package com.GestaoRotas.GestaoRotas.config;
+package com.GestaoRotas.GestaoRotas.authConfig;
 
 public class BusinessRoles extends RuntimeException{
 	

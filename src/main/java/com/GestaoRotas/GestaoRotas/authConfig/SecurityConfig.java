@@ -1,4 +1,4 @@
-package com.GestaoRotas.GestaoRotas.config;
+package com.GestaoRotas.GestaoRotas.authConfig;
 
 import java.util.Arrays;
 
@@ -26,7 +26,7 @@ import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity 
 public class SecurityConfig {
 
     // ================================

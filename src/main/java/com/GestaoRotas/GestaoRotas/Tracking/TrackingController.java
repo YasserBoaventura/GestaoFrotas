@@ -27,19 +27,34 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/tracking")
 @CrossOrigin("*")
-@RequiredArgsConstructor  
+@RequiredArgsConstructor   
 public class TrackingController {
  
  private final TrackingService trackingService;
-                                                                                                        
+                                                                                                         
  @PostMapping("/location")   
  @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
  public ResponseEntity<VehicleLocation> updateLocation(@RequestBody @Valid LocationDTO locationDTO) {
-     VehicleLocation saved = trackingService.saveLocation(locationDTO);
-     return ResponseEntity.ok(saved);          
- }        
- @GetMapping("/location/{vehicleId}/last")
+     VehicleLocation saved = trackingService.saveLocation(locationDTO);<<<<<<< test/supply-service
+     return ResponseEntity.ok(saved);           
+ }          
+  @GetMapping("/location/{vehicleId}/last")
  @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+   public ResponseEntity<VehicleLocation> getLastLocation(@PathVariable Long vehicleId) {
+    Optional<VehicleLocation> location = trackingService.getLastLocation(vehicleId);
+           return location          
+             .map(ResponseEntity::ok)     
+             .orElseGet(() -> ResponseEntity.notFound().build());
+
+ }                            
+
+ }                          
+ 
+                  
+   @GetMapping("/location/{vehicleId}/last")
+   @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+
+
    public ResponseEntity<VehicleLocation> getLastLocation(@PathVariable Long vehicleId) {
     Optional<VehicleLocation> location = trackingService.getLastLocation(vehicleId);
            return location          
@@ -56,7 +71,7 @@ public class TrackingController {
         }               
     List<VehicleLocation> history = trackingService.getLocationHistory(vehicleId, since);
         return ResponseEntity.ok(history);
-    }     
+    }       
      @GetMapping("/findAll")  
      public ResponseEntity<List<VehicleLocation>> findAll(){
     	 return ResponseEntity.ok(trackingService.findAll()); 

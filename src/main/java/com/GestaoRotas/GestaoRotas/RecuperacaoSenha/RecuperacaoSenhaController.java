@@ -1,4 +1,4 @@
-package com.GestaoRotas.GestaoRotas.RecuperacaoSenha;
+ package com.GestaoRotas.GestaoRotas.RecuperacaoSenha;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,12 +12,14 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import java.util.*;
 
 @RestController
 @RequestMapping("api/auth")
 @RequiredArgsConstructor  
+@CrossOrigin("*")
 public class RecuperacaoSenhaController {
 	
 	private final RecuperacaoSenhaService recuperacaoService;
@@ -35,7 +37,7 @@ public class RecuperacaoSenhaController {
     	   
          return ResponseEntity.status(404).body(response);
      }
- }
+ }  
     
 @PostMapping("/redefinir-senha-token")
 public ResponseEntity<?> redefinirSenhaComToken(@RequestBody RedefinirSenhaTokenRequest request) {

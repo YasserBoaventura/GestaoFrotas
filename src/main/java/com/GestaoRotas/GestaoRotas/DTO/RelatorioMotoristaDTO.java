@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor 
 public class RelatorioMotoristaDTO {
  
     private String nomeMotorista;
@@ -19,8 +19,7 @@ public class RelatorioMotoristaDTO {
     private Double totalCombustivel;
     //media combustivel
     private Double mediaCombustivel; 
-    
-  
+
  
 
 }

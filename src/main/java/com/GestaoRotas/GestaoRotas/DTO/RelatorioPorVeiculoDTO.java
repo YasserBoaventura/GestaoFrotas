@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
-@AllArgsConstructor
+@Setter 
 @NoArgsConstructor
+@AllArgsConstructor 
 public class RelatorioPorVeiculoDTO {
   
 	
@@ -23,6 +23,8 @@ public class RelatorioPorVeiculoDTO {
     //media combustivel
     private Double mediaCombustivel; 
   
-  
+    // Construtor para os campos principais (usado nos testes)
+
 	
 }
+    
