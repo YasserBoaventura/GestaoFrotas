@@ -10,13 +10,12 @@ import java.util.*;
 import com.GestaoRotas.GestaoRotas.DTO.LocationDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
-import com.GestaoRotas.GestaoRotas.Tracking.TrackingService;
+import com.GestaoRotas.GestaoRotas.Tracking.TrackingService_Impl;
 import com.GestaoRotas.GestaoRotas.Tracking.VehicleLocation;
 import com.GestaoRotas.GestaoRotas.Tracking.VehicleLocationRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
@@ -25,7 +24,7 @@ import jakarta.transaction.Transactional;
 public class TrackingServiceIntegrationTest {
 
     @Autowired
-    private TrackingService trackingService;
+    private TrackingService_Impl trackingService;
 
     @Autowired
     private VehicleLocationRepository locationRepository;

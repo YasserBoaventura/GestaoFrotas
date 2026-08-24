@@ -2,11 +2,7 @@ package com.GestaoRotas.GestaoRotas.Service;
 
 
 
-import java.beans.Customizer;
-import java.lang.foreign.Linker.Option;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 //import java.util.NoSuchElementException;
@@ -17,16 +13,15 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 
+import com.GestaoRotas.GestaoRotas.Custos.custoService_Impl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 import com.GestaoRotas.GestaoRotas.Custos.Custo;
 import com.GestaoRotas.GestaoRotas.DTO.AbastecimentoDTO;
-import com.GestaoRotas.GestaoRotas.DTO.RelatorioCombustivelDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Entity.Viagem;
 import com.GestaoRotas.GestaoRotas.Entity.abastecimentos;
@@ -49,7 +44,7 @@ public class supplyServiceUnitTest {
     private RepositoryVeiculo repositorioveiculos;
 
     @Mock
-    private com.GestaoRotas.GestaoRotas.Custos.custoService custoService;
+    private custoService_Impl custoService;
 
     @InjectMocks
     private ServiceAbastecimentos serviceAbastecimentos;

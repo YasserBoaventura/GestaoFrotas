@@ -17,10 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.GestaoRotas.GestaoRotas.DTO.LocationDTO;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 
-import java.lang.foreign.Linker.Option;
+
 import java.time.*;
 import lombok.RequiredArgsConstructor;
 
@@ -29,38 +28,23 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin("*")
 @RequiredArgsConstructor   
 public class TrackingController {
- 
+
  private final TrackingService trackingService;
-                                                                                                         
+
  @PostMapping("/location")   
  @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
  public ResponseEntity<VehicleLocation> updateLocation(@RequestBody @Valid LocationDTO locationDTO) {
-     VehicleLocation saved = trackingService.saveLocation(locationDTO);<<<<<<< test/supply-service
-     return ResponseEntity.ok(saved);           
- }          
-  @GetMapping("/location/{vehicleId}/last")
+     VehicleLocation saved = trackingService.saveLocation(locationDTO);
+     return ResponseEntity.ok(saved);
+ }
+ @GetMapping("/location/{vehicleId}/last")
  @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
    public ResponseEntity<VehicleLocation> getLastLocation(@PathVariable Long vehicleId) {
     Optional<VehicleLocation> location = trackingService.getLastLocation(vehicleId);
            return location          
-             .map(ResponseEntity::ok)     
+             .map(ResponseEntity::ok)
              .orElseGet(() -> ResponseEntity.notFound().build());
-
- }                            
-
- }                          
- 
-                  
-   @GetMapping("/location/{vehicleId}/last")
-   @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
-
-
-   public ResponseEntity<VehicleLocation> getLastLocation(@PathVariable Long vehicleId) {
-    Optional<VehicleLocation> location = trackingService.getLastLocation(vehicleId);
-           return location          
-             .map(ResponseEntity::ok)     
-             .orElseGet(() -> ResponseEntity.notFound().build());
- }                         
+ }                             
   @GetMapping("/location/{vehicleId}/history")
   @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')") 
     public ResponseEntity<List<VehicleLocation>> getLocationHistory(
@@ -68,7 +52,7 @@ public class TrackingController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime since) {
         if (since == null) {  
             since = LocalDateTime.now().minusHours(1);
-        }               
+        }
     List<VehicleLocation> history = trackingService.getLocationHistory(vehicleId, since);
         return ResponseEntity.ok(history);
     }       

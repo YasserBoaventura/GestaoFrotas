@@ -3,18 +3,15 @@ package com.GestaoRotas.GestaoRotas.Service;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import com.GestaoRotas.GestaoRotas.Custos.Custo;
-import com.GestaoRotas.GestaoRotas.Custos.custoService;
+import com.GestaoRotas.GestaoRotas.Custos.custoService_Impl;
 import com.GestaoRotas.GestaoRotas.DTO.AbastecimentoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioCombustivelDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Entity.Viagem;
 import com.GestaoRotas.GestaoRotas.Entity.abastecimentos;
-import com.GestaoRotas.GestaoRotas.Model.statusAbastecimentos;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryAbastecimentos;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryVeiculo;
 import com.GestaoRotas.GestaoRotas.Repository.RepositoryViagem;
@@ -30,7 +27,7 @@ public class ServiceAbastecimentos {
 	private final RepositoryAbastecimentos repositoryAbastecimentos;
 	private final RepositoryViagem  repositorioViagem;
 	private final RepositoryVeiculo repositorioveiculos;
-	private final custoService custoService;
+	private final custoService_Impl custoService;
 	////////////
  @Transactional
     public Map<String, String> save(AbastecimentoDTO dto) {
@@ -82,7 +79,7 @@ public String deletar(long id) {
 	this.repositoryAbastecimentos.deleteById(id);  
     return "abastecimento  deletado com sucesso";
 	
-}  
+}
 public abastecimentos findById(long id) {
   return this.repositoryAbastecimentos.findById(id).get();
 }

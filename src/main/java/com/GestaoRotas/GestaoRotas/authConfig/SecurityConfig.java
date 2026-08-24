@@ -29,26 +29,22 @@ import org.springframework.web.filter.CorsFilter;
 @EnableMethodSecurity 
 public class SecurityConfig {
 
-    // ================================
-    // INJEÇÕES
-    // ================================
+
     @Autowired
     private JwtAuthenticationFilter jwtAuthFilter;
 
     @Autowired
     private UserDetailsService userDetailsService;
 
-    // ================================
+
     // PASSWORD ENCODER
-    // ================================
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // ================================
-    // AUTH PROVIDER (OBRIGATÓRIO NO JWT)
-    // ================================
+    // AUTH PROVIDER
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -57,9 +53,8 @@ public class SecurityConfig {
         return authProvider;
     }
 
-    // ================================
+
     // SECURITY FILTER CHAIN
-    // ================================
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -71,9 +66,12 @@ public class SecurityConfig {
                             "/api/auto-cadastro",
                             "/api/auth/solicitar-recuperacao",
                             "/api/auth/redefinir-senha-token",
-                            "/api/auth/redefinir-senha-verificacao"                       
+                            "/api/auth/redefinir-senha-verificacao",
+                            "/swagger-ui/**",
+                            "/v3/api-docs/**",
+                            "/swagger-ui.html"
                           ).permitAll() 
-                    .anyRequest().permitAll()
+                    .anyRequest().authenticated()
             )  
             .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -84,9 +82,9 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // ================================
-    // CORS CONFIG (RECOMENDADA)
-    // ================================
+
+    // CORS CONFIG
+
     @Bean
     FilterRegistrationBean<CorsFilter> corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

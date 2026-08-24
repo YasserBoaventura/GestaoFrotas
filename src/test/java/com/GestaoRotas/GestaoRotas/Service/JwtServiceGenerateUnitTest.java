@@ -1,5 +1,6 @@
 package com.GestaoRotas.GestaoRotas.Service;
 
+import com.GestaoRotas.GestaoRotas.authConfig.JwtServiceGenerator_Impl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,13 +25,13 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class JwtServiceGenerateUnitTest {
 
-	 private JwtServiceGenerator jwtServiceGenerator;
+	 private JwtServiceGenerator_Impl jwtServiceGenerator;
 	    private Usuario usuario;
 	    private UserDetails userDetails;
 
 	    @BeforeEach
 	    void setUp() {
-	        jwtServiceGenerator = new JwtServiceGenerator();
+	        jwtServiceGenerator = new JwtServiceGenerator_Impl();
 	        
 	        usuario = new Usuario();
 	        usuario.setId(1L);

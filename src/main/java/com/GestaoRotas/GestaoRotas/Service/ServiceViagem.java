@@ -1,16 +1,11 @@
 package com.GestaoRotas.GestaoRotas.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import java.time.*;
+
 import java.time.LocalDateTime;
 import java.util.*;
 
-import com.GestaoRotas.GestaoRotas.Custos.custoService;
+import com.GestaoRotas.GestaoRotas.Custos.custoService_Impl;
 import com.GestaoRotas.GestaoRotas.DTO.CancelarViagemRequest;
 import com.GestaoRotas.GestaoRotas.DTO.ConcluirViagemRequest;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioMotoristaDTO;
@@ -40,7 +35,7 @@ public class ServiceViagem {
     private final RepositoryMotorista motoristaRepository;
     private final RepositoryVeiculo veiculoRepository;
     private final RepositoryRotas rotaRepository;
-    private final custoService custoService;
+    private final custoService_Impl custoService;
     
 @Transactional   
 public String update(ViagensDTO viagemDTO, long id) {  
@@ -80,35 +75,52 @@ public String update(ViagensDTO viagemDTO, long id) {
     repositoryViagem.save(viagem);
     return  "viagem atualizada com sucesso!";
 }
-//inicializar viagem
-	public Map<String ,String> iniciarViagem(Long id){
-	Map<String,String> response = new HashMap<>();
+public Map<String, String> iniciarViagem(Long id) {
+
+	Map<String, String> response = new HashMap<>();
+
 	try {
-	Viagem viagem = this.repositoryViagem.findById(id).orElseThrow(()-> new RuntimeException("viagem nao existente"));
-   viagem.iniciarViagem(); 
-  
-     Motorista  motorista = viagem.getMotorista();
-   
-     motorista.setStatus(statusMotorista.EM_VIAGEM);
-     motoristaRepository.save(motorista);
-    
-     repositoryViagem.save(viagem);
-   //para a actualizacao do veiculo 
-   Veiculo veiculo = viagem.getVeiculo();
-   if(veiculo!= null) {
-   veiculo.setStatus("EM_VIAGEM");
-   veiculo.setDataAtualizacaoStatus(LocalDateTime.now());
-   veiculoRepository.save(veiculo);
-     
-	
-	  }  
-	response.put("message", "viagem inicializada com sucesso");
-	   return response; 
-	 }catch(Exception e) { 
-  response.put("error", e.getMessage()); 
-	return response; 
-	
+
+		Viagem viagem = repositoryViagem.findById(id)
+				.orElseThrow(() ->
+						new RuntimeException("Viagem nao existente"));
+
+		System.out.println("ID: " + viagem.getId());
+		System.out.println("Status antes: " + viagem.getStatus());
+
+		viagem.setStatus("EM_ANDAMENTO");
+
+		System.out.println("Status depois: " + viagem.getStatus());
+
+		repositoryViagem.saveAndFlush(viagem);
+
+		System.out.println("Viagem salva no banco!");
+
+		Motorista motorista = viagem.getMotorista();
+
+		if (motorista != null) {
+			motorista.setStatus(statusMotorista.EM_VIAGEM);
+			motoristaRepository.save(motorista);
+		}
+
+		Veiculo veiculo = viagem.getVeiculo();
+
+		if (veiculo != null) {
+			veiculo.setStatus("EM_VIAGEM");
+			veiculo.setDataAtualizacaoStatus(LocalDateTime.now());
+			veiculoRepository.save(veiculo);
+		}
+
+		response.put("message", "Viagem inicializada com sucesso");
+
+	} catch (Exception e) {
+
+		e.printStackTrace();
+
+		response.put("error", e.getMessage());
 	}
+
+	return response;
 }
 @Transactional
  public Map<String, String> ConcluirViagem(
@@ -174,7 +186,8 @@ public String update(ViagensDTO viagemDTO, long id) {
 
     viagem.cancelarViagem();
     Viagem viagemCancelada = this.repositoryViagem.save(viagem);
-    
+
+
     //atualize o veiculo para disponivel se a  viagem for cancelada
     Veiculo veiculo = viagem.getVeiculo();
     if(veiculo!= null) {
@@ -283,24 +296,25 @@ public Long getContByStatus(String status) {
 	public List<Viagem> findByIdMotorista(long id){
 		return this.repositoryViagem.findByMotoristaId(id);
 	} 
-	//Mostra o motorista totalViagens , totalEmKm e totalConbustivel usado
+
 public List<RelatorioMotoristaDTO> relatorioPorMotorista() {
         return repositoryViagem.relatorioPorMotorista();
-    } 
+    }
+
 public List<RelatorioMotoristaDTO> relatorioPorMotoristaPeriodo(LocalDateTime inicio, LocalDateTime fim){
 	return repositoryViagem.relatorioPorMotoristaPorPeriodo(inicio, fim);  
 } 
 public List<RelatorioPorVeiculoDTO> relatorioPorVeiculoPeriodo( LocalDateTime incio, LocalDateTime fim){
 	return repositoryViagem.relatorioPorVeiculoPorPeriodo(incio, fim); 
 } 
-   //Mostra o plca do carro , totalViagens , totalEmKm e totalConbustivel usado
+
    public List<RelatorioPorVeiculoDTO> gerarRelatorioPorVeiculo() {
         return repositoryViagem.relatorioPorVeiculo();  
     } 
     public  List<Viagem>  findByVeiculoId(long id) {
      return this.repositoryViagem.findByVeiculoId(id);
         }
-    //Busca pelo o id da viagem   
+
     public Viagem findById(long id) {
     	return this.repositoryViagem.findById(id).orElseThrow(()-> new RuntimeException("Viagem nao encontrada"));
     }	

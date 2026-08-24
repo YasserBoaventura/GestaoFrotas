@@ -93,8 +93,8 @@ public class LoginControllerTest {
 	        
 	        Map<String, String> desativarResponse = new HashMap<>();
 	        desativarResponse.put("message", "Conta desativada com sucesso");
-	        when(loginService.desativarConta(1L)).thenReturn(desativarResponse);
-	        when(loginService.desativarConta(99L)).thenThrow(new ClassCastException("Erro ao desativar"));
+	        when(loginService.desativarEndActivarConta(1L)).thenReturn(desativarResponse);
+	        when(loginService.desativarEndActivarConta(99L)).thenThrow(new ClassCastException("Erro ao desativar"));
 	         
 	        when(loginService.atualizarUsuario(eq(1L), any(Usuario.class))).thenReturn(usuario);
 	        when(loginService.atualizarUsuario(eq(99L), any(Usuario.class))).thenThrow(new RuntimeException("Usuário não encontrado"));
@@ -344,7 +344,7 @@ public class LoginControllerTest {
 	    void testDesativarConta_ComSucesso_RetornaOk() {
 	        Map<String, String> desativarResponse = new HashMap<>();
 	        desativarResponse.put("message", "Conta desativada com sucesso");
-	        when(loginService.desativarConta(1L)).thenReturn(desativarResponse);
+	        when(loginService.desativarEndActivarConta(1L)).thenReturn(desativarResponse);
 	        
 	        ResponseEntity<Map<String, String>> response = loginController.desativarConta(1L);
 	        
@@ -353,7 +353,7 @@ public class LoginControllerTest {
 	        assertNotNull(response.getBody());
 	        assertEquals("Conta desativada com sucesso", response.getBody().get("message"));
 	        
-	        verify(loginService, atLeastOnce()).desativarConta(1L);
+	        verify(loginService, atLeastOnce()).desativarEndActivarConta(1L);
 	    }
 	    
 	    @Test 
@@ -367,12 +367,12 @@ public class LoginControllerTest {
 	        assertNotNull(response.getBody());
 	        assertEquals("erro ao tentar fazer altercoes", response.getBody().get("erro"));
 	        
-	        verify(loginService, atLeastOnce()).desativarConta(99L);
+	        verify(loginService, atLeastOnce()).desativarEndActivarConta(99L);
 	    }
 	    
 	    @Test
 	    void testDesativarConta_ComIdInexistente_RetornaBadRequest() {
-	        when(loginService.desativarConta(999L)).thenThrow(new RuntimeException("Usuário não encontrado"));
+	        when(loginService.desativarEndActivarConta(999L)).thenThrow(new RuntimeException("Usuário não encontrado"));
 	        
 	        assertThrows(RuntimeException.class, () -> {
 	            loginController.desativarConta(999L);

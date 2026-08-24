@@ -1,5 +1,6 @@
 package com.GestaoRotas.GestaoRotas.Service;
 
+import com.GestaoRotas.GestaoRotas.Custos.custoService_Impl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,6 @@ import com.GestaoRotas.GestaoRotas.DTO.CustoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.CustoUpdateDTO;
 import com.GestaoRotas.GestaoRotas.DTO.DashboardCustosDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioCustosDetalhadoDTO;
-import com.GestaoRotas.GestaoRotas.DTO.ViagensDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Manutencao;
 import com.GestaoRotas.GestaoRotas.Entity.Motorista;
 import com.GestaoRotas.GestaoRotas.Entity.Rotas;
@@ -42,8 +42,6 @@ import jakarta.transaction.Transactional;
 import java.util.*; 
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @Transactional
@@ -51,7 +49,7 @@ import static org.mockito.Mockito.*;
 public class CostsServiceIntegrationTest {
 
     @Autowired
-    private com.GestaoRotas.GestaoRotas.Custos.custoService custoService;
+    private custoService_Impl custoService;
 
     @Autowired
     private CustoRepository custoRepository;

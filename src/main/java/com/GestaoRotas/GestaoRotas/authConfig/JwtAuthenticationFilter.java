@@ -23,13 +23,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-	private  final JwtServiceGenerator jwtService;
+	private final  JwtServiceGenerator jwtService;
 
 	private final UserDetailsService userDetailsService;
-	//melhorado com inversao de controle com o o construtor
 
-	
-	
 
 	@Override
 	protected void doFilterInternal(

@@ -44,7 +44,7 @@ public class ServiceVeiculo {
 	}
 	public String deletar(Long id) {
 		this.repositoryVeiculo.deleteById(id);
-		return "Veiculo deletado com sucess";    
+		return "Veículo apagado com sucesso";
 	}
 	
   public List<Veiculo> findAll() {

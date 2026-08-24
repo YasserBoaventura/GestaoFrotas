@@ -8,8 +8,9 @@ import org.springframework.data.repository.query.Param;
 
 import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 import com.GestaoRotas.GestaoRotas.auth.Usuario;
+import org.springframework.stereotype.Repository;
 
-
+@Repository
 public interface LoginRepository extends JpaRepository<Usuario, Long>{
 
 

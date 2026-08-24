@@ -39,7 +39,7 @@ import java.time.*;
 @NoArgsConstructor 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Custo implements Serializable {
-	   
+
 	private static final long serialVersionUID = 1L;
 	 
     @Id
@@ -49,8 +49,7 @@ public class Custo implements Serializable {
     @Column(name = "data", updatable = false)
     private LocalDate data;
     private String descricao;
-    private Double valor;  
-     
+    private Double valor;
     @Enumerated(EnumType.STRING)
     private TipoCusto tipo;
     

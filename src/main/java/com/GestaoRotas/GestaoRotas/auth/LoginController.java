@@ -34,104 +34,46 @@ import lombok.RequiredArgsConstructor;
 public class LoginController {
  
     private final LoginService loginService;  
-    private final LoginRepository loginRepository;
-
- 
 
     @PostMapping("/login")
     public ResponseEntity<?> logar(@RequestBody Login login) {
-    try { 
-        String token = loginService.logar(login);
-         return ResponseEntity.ok(token); 
-
-    } catch (Exception e) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", e.getMessage());
-        return ResponseEntity.badRequest().body(error);
-    }        
-    }   
-      
+        return ResponseEntity.ok(loginService.logar(login));
+    }
     @PostMapping("/trocar-senha")  
     public ResponseEntity<String> alterSenhaNoPrimeiroLogin(@RequestBody trocarSenhaDTO dto){ 
     	return ResponseEntity.ok(loginService.trocarSenha(dto));  
     }
-
 @PostMapping("/save")
-public ResponseEntity<?> save(@RequestBody Usuario userSave){ 
-	try {      
+@PreAuthorize("hasAuthority('ADMIN')")
+public ResponseEntity<?> save(@RequestBody Usuario userSave){
 		return ResponseEntity.ok(loginService.registar(userSave)); 	
-	}catch (Exception e) {
-		Map<String,String> erroResponse = new HashMap<>();
-		erroResponse.put("Erro Ao Cadastrar User", e.getMessage()); 
-	return ResponseEntity.badRequest().body(erroResponse); 
-	}
-}
-
- 
-//  POST para pre registro
-  
-   @PostMapping("/auto-cadastro")
-   public ResponseEntity<?> autoCadastro(@RequestBody AutoCadastroDTO dto) {
-      return loginService.autoCadastro(dto);  
-   }  
-		//Devo fazer aqui ate porque o Repositorio e do tipo usuario
-
+    }
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/findAll")
-    public ResponseEntity<List<Usuario>> findAll(){
-	  try {  
-	 	List<Usuario> lista=this.loginService.findAll();
-		return new ResponseEntity<>(lista, HttpStatus.OK);
-	    }catch(Exception e) {
-		return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
-	   }
+    public ResponseEntity<List<Usuario>> findAll(){ return ResponseEntity.ok(loginService.findAll());
   }   
-    //desbloquear/bloquear contas 
+    //desbloquear/bloquear
     @PutMapping("/bloqueio/{id}") 
     @PreAuthorize("hasAuthority('ADMIN')")
-public ResponseEntity<Map<String, String>> bloquearConta( @PathVariable long id){
-	try { 
- 		Map<String, String> response = this.loginService.bloquearConta(id);
-		return ResponseEntity.status(HttpStatus.OK).body(response);
-  	}catch(ClassCastException  e) {
-		Map<String, String> erro = new HashMap<>();
-	 return	ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
-	 	
-	}
+public ResponseEntity<Map<String, String>> bloquearConta(@PathVariable long id){
+        return ResponseEntity.ok(loginService.bloquearConta(id));
 }
-      //ativar/destivar conta
+//ativar/destivar conta
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/ativo/{id}")
     public ResponseEntity<Map<String, String>> desativarConta(@PathVariable long id){
-    	try {
-    		Map<String, String> response = this.loginService.desativarConta(id);
-    		return ResponseEntity.status(HttpStatus.OK).body(response);
-    	}catch(ClassCastException e) {   
-    		Map<String , String> erro =  new HashMap<>();
-    		erro.put("erro", "erro ao tentar fazer altercoes");
-    		e.printStackTrace();
-    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);     		
-    	}
+        return ResponseEntity.ok(loginService.desativarEndActivarConta(id));
     }
-    
-    @PutMapping("/{id}") 
+    @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')") 
-    public ResponseEntity<Usuario> atualizarUsuario( 
-            @PathVariable Long id, 
-            @RequestBody @Valid Usuario usuario) {
-          
-        Usuario usuarioAtualizadoo = this.loginService.atualizarUsuario(id, usuario);
-        return ResponseEntity.ok(usuarioAtualizadoo);
+    public ResponseEntity<Usuario> atualizarUsuario(@PathVariable Long id, @RequestBody @Valid Usuario usuario) {
+        return ResponseEntity.ok(loginService.atualizarUsuario(id, usuario));
     }
-     
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('ADMIN')") 
     public ResponseEntity<String> delete(@PathVariable long id){
-    	try {return  ResponseEntity.ok(loginService.delete(id)); 
-    	    }catch(Exception e) { 
-    		return new ResponseEntity<>("erro ao deletar usuario", HttpStatus.BAD_REQUEST);
-    	}
-    	 
+    	return  ResponseEntity.ok(loginService.delete(id));
+
     }
 
  

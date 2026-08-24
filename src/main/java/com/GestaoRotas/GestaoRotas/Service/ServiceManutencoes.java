@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import com.GestaoRotas.GestaoRotas.Custos.custoService;
+import com.GestaoRotas.GestaoRotas.Custos.custoService_Impl;
 
 
 import java.time.LocalDate;
@@ -12,15 +12,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
-import com.GestaoRotas.GestaoRotas.DTO.RelatorioCombustivelDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO;
-import com.GestaoRotas.GestaoRotas.DTO.concluirManutencaoRequest;
 import com.GestaoRotas.GestaoRotas.DTO.manuntecaoDTO;
 import com.GestaoRotas.GestaoRotas.Email.EmailService;
-import com.GestaoRotas.GestaoRotas.Email.EmailServiceImp;
 import com.GestaoRotas.GestaoRotas.Entity.Manutencao;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Model.TipoManutencao;
@@ -39,7 +34,7 @@ public class ServiceManutencoes {
     private final RepositoryManutencao repositoryManuntencao;
 	private final RepositoryVeiculo repositoryVeiculo; 
 	private final ServiceVeiculo veiculoService; 	
-	private final custoService custoService; 
+	private final custoService_Impl custoService;
 	private final EmailService emailService;
     
   @Transactional  

@@ -1,9 +1,7 @@
 package com.GestaoRotas.GestaoRotas.Custos;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,15 +24,12 @@ import com.GestaoRotas.GestaoRotas.DTO.CustoDTO;
 import com.GestaoRotas.GestaoRotas.DTO.CustoUpdateDTO;
 import com.GestaoRotas.GestaoRotas.DTO.DashboardCustosDTO;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioCustosDetalhadoDTO;
-import com.GestaoRotas.GestaoRotas.DTO.RelatorioManutencaoDTO;
 import com.GestaoRotas.GestaoRotas.Entity.Veiculo;
 import com.GestaoRotas.GestaoRotas.Model.StatusCusto;
 import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -45,9 +40,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor 
 public class CustoController { 
 	  
-   private final custoService custoService; 
+   private final custoService custoService;
 	      
-	    // Registro manual  
+	    // Registro manual
 @PostMapping("/criarCusto")   
 @PreAuthorize("hasAuthority('ADMIN')") 
 public ResponseEntity<CustoDTO> criar(@RequestBody @Valid CustoRequestDTO request) {
@@ -71,36 +66,26 @@ public ResponseEntity<CustoDTO> criar(@RequestBody @Valid CustoRequestDTO reques
  @DeleteMapping("/delete/{id}") 
  @PreAuthorize("hasAuthority('ADMIN')")     
   public ResponseEntity<String> delete(@PathVariable Long id){ 
-	  try {  
-		  return ResponseEntity.ok(custoService.excluirCusto(id)); 
-		}catch(Exception e) { 
-		  e.getCause().getMessage(); 
-		return ResponseEntity.badRequest().body("erro ao excluir custo"); 	  
-	  }
-  }                   
+    return ResponseEntity.ok(custoService.excluirCusto(id));
+
+  }
    @PostMapping("/criarCustoViagem")
    @PreAuthorize("hasAuthority('ADMIN')")     
     public ResponseEntity<Custo> criarCustoParaViagem(@RequestBody @Valid CustoViagemDTO custoViagemDTO){
-    	try { 
       return ResponseEntity.ok(custoService.criarCustoParaViagem(custoViagemDTO)); 
-    	}catch(Exception e) {     
-    	return ResponseEntity.badRequest().build(); 
-    	} 
+
     }  
  @PutMapping("/actualizarCustoParaViagem/{id}")
  @PreAuthorize("hasAuthority('ADMIN')")     
    public ResponseEntity<String>actualizaCustoParaViagem(@RequestBody @Valid CustoViagemDTO custoViagemDTO,@PathVariable Long id){
-	   try {  
-		   return ResponseEntity.ok(custoService.actualizarCustoParaViagem(custoViagemDTO, id)); 
-		  }catch(Exception e) {
-			  return ResponseEntity.badRequest().build(); 
-	   }
-   } 
+    return ResponseEntity.ok(custoService.actualizarCustoParaViagem(custoViagemDTO, id));
+
+   }
    //Dashboard    
-@GetMapping("/dashboard")     
-    public ResponseEntity<DashboardCustosDTO> getDashboard() {
-        DashboardCustosDTO dashboard = custoService.getDashboardCustos();
-        return ResponseEntity.ok(dashboard);
+@GetMapping("/dashboard")
+@PreAuthorize("hasAuthority('ADMIN')")
+public ResponseEntity<DashboardCustosDTO> getDashboard() {
+        return ResponseEntity.ok(custoService.getDashboardCustos());
     }   
 // listar por data inicio e fim apenas
 @GetMapping("/relatorio-por-periodo")      
@@ -112,23 +97,16 @@ public ResponseEntity<List<CustoDTO>> relatorioPorPeriodo(
 }    
  @PostMapping("/relatorio")                         
  @PreAuthorize("hasAuthority('ADMIN')")       
-public ResponseEntity<?> relatorio(@RequestBody @Valid RelatorioFilterDTO filtro) {
-    try {         
-     
-       RelatorioCustosDetalhadoDTO relatorio = custoService.gerarRelatorioDetalhado(filtro);
-        return ResponseEntity.ok(relatorio); 
-       } catch (Exception e) {             
-       Map<String, String> errorResponse = new HashMap<>();   
-        errorResponse.put("erro", e.getMessage()); 
- errorResponse.put("causa", e.getCause() != null ? e.getCause().getMessage() : null);
-            return ResponseEntity.badRequest().body(errorResponse);
-        } 
-    }  
-@GetMapping("/numeroCustos")  
+ public ResponseEntity<?> relatorio(@RequestBody @Valid RelatorioFilterDTO filtro) {
+        return ResponseEntity.ok(custoService.gerarRelatorioDetalhado(filtro));
+    }
+
+    @GetMapping("/numeroCustos")
 @PreAuthorize("hasAuthority('ADMIN')")      
  public ResponseEntity<Integer> numeroCustos(){
 	 return ResponseEntity.ok(custoService.numeroCustos()); 
- }  
+ }
+
  @GetMapping("/valorTotal") 
  @PreAuthorize("hasAuthority('ADMIN')")     
  public ResponseEntity<Double>valorTotalCustos(){
@@ -148,33 +126,20 @@ public ResponseEntity<?> relatorio(@RequestBody @Valid RelatorioFilterDTO filtro
  @GetMapping("/findAll")    
  @PreAuthorize("hasAuthority('ADMIN')")     
  public ResponseEntity<?> findAll(){ 
-	 try {  
- return ResponseEntity.status(HttpStatus.ACCEPTED).body(custoService.listar());  
-	 }catch(Exception e) {
-		 e.getCause().getMessage(); 
-		 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("erro ao listar");
- }
-	 }
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(custoService.listar());
+
+}
  @GetMapping("/veiculosCustosAcimaMedia")
  @PreAuthorize("hasAuthority('ADMIN')")     
   public ResponseEntity<List<Veiculo>> getVeiculosComCustoAcimaDaMedia(){
-	  try {
-		  return ResponseEntity.status(HttpStatus.OK).body(custoService.getVeiculosComCustoAcimaDaMedia()); 
-	  }catch(Exception e) {
-		  e.getCause().getMessage(); 
-		  return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); 
-	  }   
+    return ResponseEntity.status(HttpStatus.OK).body(custoService.getVeiculosComCustoAcimaDaMedia());
+
   } 
  @GetMapping("/custoMesalUltimos12Meses")
  @PreAuthorize("hasAuthority('ADMIN')")     
  public ResponseEntity<Map<?, ?>> getCustoMensalUltimos12Meses(){
-	 try { 
-		 return ResponseEntity.ok(custoService.getCustoMensalUltimos12Meses());
- }catch(Exception e) {
-	 Map<String , String> erro = new HashMap<>();
-	 erro.put("erro", e.getCause().getMessage()); 
-		 return ResponseEntity.badRequest().body(erro); 
-	 }
+    return ResponseEntity.ok(custoService.getCustoMensalUltimos12Meses());
+
  }
  // relatorio por data inicio e fim e veiculo
 @GetMapping("/veiculo/{veiculoId}")  

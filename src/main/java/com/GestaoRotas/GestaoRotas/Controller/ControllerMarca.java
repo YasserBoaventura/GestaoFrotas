@@ -21,51 +21,23 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor 
 public class ControllerMarca {
 
-	
-	 private final ServiceMarca serviceMarca;
-	
-	 
+	private final ServiceMarca serviceMarca;
+
 	 @PostMapping("/save") 
 	 public ResponseEntity<String> save(@RequestBody Marca marca){
-		 try {
-			 String frase=this.serviceMarca.save(marca);
-		      return new ResponseEntity<>(frase, HttpStatus.OK); 
-			}catch(Exception e) {
-			 return new ResponseEntity<>("erro", HttpStatus.BAD_REQUEST);
-		 }
+		 return ResponseEntity.ok(serviceMarca.save(marca));
 	 }
-	 
 	 @DeleteMapping("/deleteById/{id}")
 	 public ResponseEntity<String> delete(@PathVariable long id){
-		 try {
-	        String frase=this.serviceMarca.delete(id);
-	        return new ResponseEntity<>(frase, HttpStatus.OK);
-		 }catch(Exception e) {
-	      return new ResponseEntity<>("Erro", HttpStatus.BAD_REQUEST);
-		 }
-		 
+		 return ResponseEntity.ok(serviceMarca.delete(id));
 	 }
 	 @PutMapping("/update/{id}")
 	 public ResponseEntity<String> update(@RequestBody Marca marca , @PathVariable long id){
-		 try {
-			 String frase=this.serviceMarca.update(marca, id);
-			 return new ResponseEntity<>(frase, HttpStatus.OK);
-			 }catch(Exception e) {
-			   return new ResponseEntity<>("Erro", HttpStatus.BAD_REQUEST); 
-		    }
+		 return ResponseEntity.ok(serviceMarca.update(marca, id));
 	 }
-	 
- @GetMapping("/findAll")
- public ResponseEntity<List<Marca>> findAll(){
-	 try {
-	  List<Marca> lista=this.serviceMarca.findAll();
-	  if(lista.isEmpty()) {
-		  return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	  } 
-	  return new ResponseEntity<>(lista, HttpStatus.OK);
-    }catch(Exception e) {
-	 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-	 
- }
+	 @GetMapping("/findAll")
+	 public ResponseEntity<List<Marca>> findAll(){
+		  return  ResponseEntity.ok(serviceMarca.findAll());
+
 	 }
 }

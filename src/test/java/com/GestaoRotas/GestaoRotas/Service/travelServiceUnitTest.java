@@ -6,14 +6,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.*;
 import java.time.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import com.GestaoRotas.GestaoRotas.Custos.custoService;
+import com.GestaoRotas.GestaoRotas.Custos.custoService_Impl;
 import com.GestaoRotas.GestaoRotas.DTO.CancelarViagemRequest;
 import com.GestaoRotas.GestaoRotas.DTO.ConcluirViagemRequest;
 import com.GestaoRotas.GestaoRotas.DTO.RelatorioMotoristaDTO;
@@ -46,7 +46,7 @@ public class travelServiceUnitTest {
 	    private RepositoryRotas rotaRepository;
 
 	    @Mock
-	    private custoService custoService;
+	    private custoService_Impl custoService;
 	    @InjectMocks
 	    private ServiceViagem serviceViagem; 
 	    

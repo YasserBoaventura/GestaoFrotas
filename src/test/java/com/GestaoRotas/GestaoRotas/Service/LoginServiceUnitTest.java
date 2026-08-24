@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,15 +16,12 @@ import java.util.*;
 import java.time.*;
 
 import com.GestaoRotas.GestaoRotas.DTO.AutoCadastroDTO;
-import com.GestaoRotas.GestaoRotas.DTO.UserSaveDTO;
 import com.GestaoRotas.GestaoRotas.Email.EmailService;
 import com.GestaoRotas.GestaoRotas.auth.Login;
 import com.GestaoRotas.GestaoRotas.auth.LoginRepository;
 import com.GestaoRotas.GestaoRotas.auth.LoginService;
 import com.GestaoRotas.GestaoRotas.auth.Usuario;
 import com.GestaoRotas.GestaoRotas.authConfig.JwtServiceGenerator;
-
-import jakarta.persistence.EntityNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -381,7 +377,7 @@ void desativarConta_QuandoContaAtiva_DeveDesativar() {
     when(repository.findById(1L)).thenReturn(Optional.of(usuario));
     when(repository.save(any(Usuario.class))).thenReturn(usuario);
 
-    Map<String, String> response = loginService.desativarConta(1L);
+    Map<String, String> response = loginService.desativarEndActivarConta(1L);
 
     assertEquals("conta desativada com sucesso", response.get("sucesso"));
     assertFalse(usuario.getAtivo());
@@ -393,7 +389,7 @@ void desativarConta_QuandoContaDesativada_DeveAtivar() {
     when(repository.findById(1L)).thenReturn(Optional.of(usuario));
     when(repository.save(any(Usuario.class))).thenReturn(usuario);
 
-    Map<String, String> response = loginService.desativarConta(1L);
+    Map<String, String> response = loginService.desativarEndActivarConta(1L);
 
     // Assert
     assertEquals("conta ativada com sucesso", response.get("sucesso"));

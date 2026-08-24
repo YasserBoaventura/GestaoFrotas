@@ -12,7 +12,7 @@ import com.GestaoRotas.GestaoRotas.DTO.CustoDTO;
 import com.GestaoRotas.GestaoRotas.Model.StatusCusto;
 import com.GestaoRotas.GestaoRotas.Model.TipoCusto;
 
-import jakarta.*;
+
 import java.util.*;
 import java.awt.print.Pageable;
 import java.time.*; 
@@ -35,7 +35,7 @@ public interface CustoRepository extends JpaRepository<Custo, Long> {
     // Agregações   
     @Query("SELECT SUM(c.valor) FROM Custo c WHERE c.veiculo.id = :veiculoId AND c.status = 'PAGO'")
     Double calcularTotalPorVeiculo(@Param("veiculoId") Long veiculoId);
-       
+
     @Query("SELECT SUM(c.valor) FROM Custo c WHERE YEAR(c.data) = :ano AND MONTH(c.data) = :mes AND c.status = 'PAGO'")
     Double calcularTotalPorPeriodo(@Param("ano") Integer ano, @Param("mes") Integer mes);
  

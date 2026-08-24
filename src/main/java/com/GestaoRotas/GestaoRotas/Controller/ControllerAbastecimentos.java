@@ -42,40 +42,26 @@ public class ControllerAbastecimentos {
    @PostMapping("/save")
    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
   public ResponseEntity<Map<String, String>> salvar(@RequestBody @Valid AbastecimentoDTO abastecimentoDTO) {
-	   try { 
-	   return ResponseEntity.ok(abastecimentosService.save(abastecimentoDTO)); 
-	  }catch(Exception e) { 
-       e.printStackTrace();        
-	  return ResponseEntity.badRequest().build(); 
-	  }   
+       return ResponseEntity.ok(abastecimentosService.save(abastecimentoDTO));
+
     }            
   @PutMapping("/update/{id}")
   @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')") 
   public ResponseEntity<String> update(@PathVariable long id, @RequestBody AbastecimentoDTO abastecimentoDTO) {
-      try {
-      String response = this.abastecimentosService.update(abastecimentoDTO, id);
-      return ResponseEntity.status(HttpStatus.OK).body(response);
-  } catch(Exception e) { 
-      e.printStackTrace();
-       String erro = "erro ao actualizar abastecimento: " + e.getMessage();
-          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
-      }
+      return ResponseEntity.ok(abastecimentosService.update(abastecimentoDTO, id));
   } 
 
-  // relatio de abastecimento por veiculo 
 @GetMapping("/por-veiculo")
 @PreAuthorize("hasAuthority('ADMIN')")  
 public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorVeiculo() {
 	 return ResponseEntity.ok(abastecimentosService.relatorioPorVeiculo());
 }  
-   
-//busca relatorios por periodo dataInicio e dataFim
-@GetMapping("/relatorio-por-periodo") 
+
+@GetMapping("/relatorio-por-periodo")
 @PreAuthorize("hasAuthority('ADMIN')")   
 public ResponseEntity<List<RelatorioCombustivelDTO>> relatorioPorPeriodo(
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
-    System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
     return ResponseEntity.ok(abastecimentosService.relatorioPorPeriodo(inicio, fim));
 }      
 @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')") 
@@ -95,29 +81,18 @@ public ResponseEntity<Optional<Long>> abastecimentosCancelados(){
 @GetMapping("/findAll")  
 @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
 public ResponseEntity<List<abastecimentos>> findAll(){
- try {  
-	 return ResponseEntity.ok(abastecimentosService.findAll()); 
-	}catch(Exception e) {
-	 return ResponseEntity.badRequest().build();
-  }  
-   } 
+     return ResponseEntity.ok(abastecimentosService.findAll());
+ }
 @DeleteMapping("/delete/{id}")
 @PreAuthorize("hasAuthority('ADMIN')")  
     public ResponseEntity<String> deleteById(@PathVariable long id){
-     try { 
-     return ResponseEntity.ok(abastecimentosService.deletar(id)); 
-   }catch(Exception e) {
-    	 return ResponseEntity .badRequest().build(); 
-    }
-	 
+       return ResponseEntity.ok(abastecimentosService.deletar(id));
+
 } 
 @GetMapping("/findById/{id}") 
 public ResponseEntity<abastecimentos> findById(@PathVariable long id){
-	try { 
 		return ResponseEntity.ok(abastecimentosService.findById(id));
-	  }catch(Exception e) {
-		return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-	}
+
 }
  	    
 }

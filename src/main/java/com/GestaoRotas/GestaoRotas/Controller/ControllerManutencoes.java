@@ -39,115 +39,66 @@ public class ControllerManutencoes {
   @PostMapping("/save")
   @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
 public ResponseEntity<String> cadastrar(@RequestBody manuntecaoDTO manutencaoDTO) {
-	  try {       
 return ResponseEntity.ok(manutencaoService.salvar(manutencaoDTO));
-	 }catch(Exception e) {    
-		   e.printStackTrace();
-		  return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-   }
-	     	  
-}@PutMapping("/update/{id}")
+  }
+
+  @PutMapping("/update/{id}")
 @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
-public ResponseEntity<String> update(@PathVariable Long id,
-                                     @RequestBody manuntecaoDTO dto) {
+public ResponseEntity<String> update(@PathVariable Long id, @RequestBody manuntecaoDTO dto) {
     return ResponseEntity.ok(manutencaoService.update(dto, id));
 }
 @GetMapping("/findByIdVeiculo/{veiculoId}")
 public ResponseEntity<List<Manutencao>> listarPorVeiculo(@PathVariable long veiculoId) {
-try {
-	return ResponseEntity.ok(manutencaoService.listarPorVeiculo(veiculoId)); 
-	     }catch(Exception e) {
-	    	return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-	   }
-	    } 
+      return ResponseEntity.ok(manutencaoService.listarPorVeiculo(veiculoId));
+  }
 @DeleteMapping("/delete/{id}")
 @PreAuthorize("hasAuthority('ADMIN')")  
    public ResponseEntity<String> excluir(@PathVariable Long id) {
-      try {
-     String frase = manutencaoService.deleteById(id);
+      String frase = manutencaoService.deleteById(id);
    if (frase.equals("Manutenção não encontrada")) {
-      return new ResponseEntity<>(frase, HttpStatus.NOT_FOUND);
-            }
-      return new ResponseEntity<>(frase, HttpStatus.OK);
-    } catch (Exception e) {
-         return new ResponseEntity<>("Erro ao deletar manutenção", HttpStatus.BAD_REQUEST);
-}
-  }
+       return ResponseEntity
+               .status(HttpStatus.NOT_FOUND)
+               .body(frase);
+   }
+      return ResponseEntity.ok(frase);
+    }
 @PutMapping("/iniciarManutencao/{id}")
 public ResponseEntity<Map<String , String>> iniciarManutencao(@PathVariable Long id){
-	try {  
-    Map<String,String> response =  manutencaoService.iniciarManutencao(id);
-	      return ResponseEntity.status(HttpStatus.CREATED).body(response);
-	      }catch(Exception e) { 
-		Map<String, String> erro = new HashMap<>();
-		 erro.put("message", "erro ao inicializar a manutencao");
-		 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
-		      
-		}
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(manutencaoService.iniciarManutencao(id));
 }
 @PutMapping("/concluirManutencao/{id}")
 public ResponseEntity<Map<String , String>> concluirManutencao(@RequestBody String observacoes, @PathVariable Long id){
-	try { 
    return ResponseEntity.ok(manutencaoService.concluirManutencao(id, observacoes));
-      }catch(Exception e) {
-	Map<String, String> erro = new HashMap<>();
-	 erro.put("erro","erro ao concluir manutencao");
-	 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
-	    }
+
 }
 @PutMapping("/cancelarManutencao/{id}") 
 public ResponseEntity<Map<String, String>> cancelarManutencao(@RequestBody String observacoes, @PathVariable Long id ){
- try {   
-   return ResponseEntity.ok(manutencaoService.cancelarManutencao(id, observacoes)); 
-		}catch(IllegalArgumentException e) {
-		Map<String ,String> erro = new HashMap<>();  
-		e.getMessage();
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
-		}	 
+      return ResponseEntity.ok(manutencaoService.cancelarManutencao(id, observacoes));
+
 }
  @GetMapping("/findAll")
  @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
  public ResponseEntity<List<Manutencao>>  findAll(){
-    	 try {
-    	List<Manutencao> lista=this.manutencaoService.findAll();
-    	if(lista.isEmpty()) {
-    		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    	}else {
-    		return new ResponseEntity<>(lista, HttpStatus.OK);
-    	}
-    	 }catch(Exception e) {
-    		return new ResponseEntity<>(null,  HttpStatus.BAD_REQUEST); 
-    	 } 
-    	  
-    }  
+      return  ResponseEntity.ok(manutencaoService.findAll());
+  }
 	 //  Buscar manutenções por tipo
     @GetMapping("/tipo/{tipoManutencao}")
     public ResponseEntity<List<Manutencao>> listarPorTipo(@PathVariable String tipoManutencao) {
-    try {
-        List<Manutencao> lista = manutencaoService.listarPorTipo(tipoManutencao);
-         if (lista.isEmpty()) {             
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); 
-        } else {
-            return new ResponseEntity<>(lista, HttpStatus.OK);
-        }
-    } catch (Exception e) {
-        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-    }
+              return  ResponseEntity.ok(manutencaoService.listarPorTipo(tipoManutencao));
     }
      @GetMapping("/findById/{id}") 
     public ResponseEntity<Manutencao> findById(@PathVariable long id){
-    	 try {  
      return  ResponseEntity.ok(manutencaoService.findById(id));
-    	}catch(Exception e) {
-    	return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-    	}
     }  
-    //ver relatorio de  manutencoes por veiculo
-    @PreAuthorize("hasAuthority('ADMIN')")  
-    @GetMapping("/por-veiculo") 
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/por-veiculo")
     public ResponseEntity<List<RelatorioManutencaoDTO>> relatorioPorVeiculo() {
+
         return ResponseEntity.ok(manutencaoService.gerarRelatorioPorVeiculo());
-    }                        
+    }
     @GetMapping("/relatorio-por-periodo")  
     @PreAuthorize("hasAuthority('ADMIN')")   
    public ResponseEntity<List<RelatorioManutencaoDTO>> relatorioPorPeriodo(
@@ -155,25 +106,19 @@ public ResponseEntity<Map<String, String>> cancelarManutencao(@RequestBody Strin
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim) {
         System.out.println("Recebendo requisição com datas: " + inicio + " até " + fim); // Para debug
         return ResponseEntity.ok(manutencaoService.relatorioPorPeriodo(inicio, fim)); 
-    }             
+    }
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @GetMapping("/gerarAltertas")
    public ResponseEntity<List<String>> getAlertas() {  
-    	try {
-    	return ResponseEntity.ok(manutencaoService.gerarAlertas());
-    	}catch(Exception e) {
-    		System.err.print("Erro ao carregar a lista: "+ e.getMessage().toString()); 
-    	    return ResponseEntity.badRequest().body(null);
-        }   
-    	} 
+      return ResponseEntity.ok(manutencaoService.gerarAlertas());
+  }
        
-    @GetMapping("/alertas/simplificado")  //os dois geram alertas mais esse simplificado
+    @GetMapping("/alertas/simplificado")
     public ResponseEntity<List<String>> getAlertasSimplificado() {
         List<String> alertas = manutencaoService.gerarAlertasSimplificado();
         return ResponseEntity.ok(alertas);
     }
-    
-    //novas  consultas
+
     @GetMapping("/vencidas")
     public ResponseEntity<List<Manutencao>> vencidas() {
         return ResponseEntity.ok(manutencaoService.buscarVencidas());

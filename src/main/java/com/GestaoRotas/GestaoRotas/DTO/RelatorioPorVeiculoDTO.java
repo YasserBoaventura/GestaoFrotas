@@ -21,7 +21,7 @@ public class RelatorioPorVeiculoDTO {
     private Double totalKm;
     private Double totalCombustivel;
     //media combustivel
-    private Double mediaCombustivel; 
+    private Double mediaCombustivel;
   
     // Construtor para os campos principais (usado nos testes)
 
