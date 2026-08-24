@@ -377,7 +377,7 @@ void desativarConta_QuandoContaAtiva_DeveDesativar() {
     when(repository.findById(1L)).thenReturn(Optional.of(usuario));
     when(repository.save(any(Usuario.class))).thenReturn(usuario);
 
-    Map<String, String> response = loginService.desativarConta(1L);
+    Map<String, String> response = loginService.desativarEndActivarConta(1L);
 
     assertEquals("conta desativada com sucesso", response.get("sucesso"));
     assertFalse(usuario.getAtivo());
@@ -389,7 +389,7 @@ void desativarConta_QuandoContaDesativada_DeveAtivar() {
     when(repository.findById(1L)).thenReturn(Optional.of(usuario));
     when(repository.save(any(Usuario.class))).thenReturn(usuario);
 
-    Map<String, String> response = loginService.desativarConta(1L);
+    Map<String, String> response = loginService.desativarEndActivarConta(1L);
 
     // Assert
     assertEquals("conta ativada com sucesso", response.get("sucesso"));

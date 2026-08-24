@@ -21,7 +21,7 @@ import java.util.*;
 @RequiredArgsConstructor  
 @CrossOrigin("*")
 public class RecuperacaoSenhaController {
-	
+
 	private final RecuperacaoSenhaService recuperacaoService;
 	 
 

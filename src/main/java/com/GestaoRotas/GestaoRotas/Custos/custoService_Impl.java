@@ -249,7 +249,7 @@ public String actualizarCustoParaViagem(CustoViagemDTO custoViagemDTO, Long id) 
  	     return "custo pra viagem actualizado com sucesso"; 
  	
    
- }  // ========== ATUALIZAÇÃO DE TOTAIS ==========
+ }  // ATUALIZAÇÃO DE TOTAIS
     
 @Transactional
 public void atualizarTotaisVeiculo(Long veiculoId) {
@@ -289,7 +289,7 @@ public void atualizarTotaisVeiculo(Long veiculoId) {
         veiculos.forEach(v -> atualizarTotaisVeiculo(v.getId()));
     }
     
-    // ========== CONSULTAS E RELATÓRIOS ==========
+    //  CONSULTAS E RELATÓRIOS
     public DashboardCustosDTO getDashboardCustos() {
         DashboardCustosDTO dashboard = new DashboardCustosDTO();
         dashboard.setMensagem("Dashboard carregado com sucesso");
@@ -355,7 +355,7 @@ public void atualizarTotaisVeiculo(Long veiculoId) {
     }  
         dashboard.setVeiculosMaisCaros(veiculosMaisCaros);
         
-        // 4. Últimos custos
+
     List<Custo> ultimosCustos = custoRepository.findTop10ByOrderByDataDesc();
     if (ultimosCustos != null && !ultimosCustos.isEmpty()) {
         dashboard.setUltimosCustos(ultimosCustos.stream()
@@ -402,7 +402,7 @@ public List<Custo> buscarCustosPorVeiculoPeriodo(Long veiculoId, LocalDate inici
         return resultado; 
     }
     
-    // ========== MIGRAÇÃO DE DADOS EXISTENTES ==========
+    //  MIGRAÇÃO DE DADOS EXISTENTES
     
     @Transactional
 public void migrarAbastecimentosExistentes() {
@@ -486,12 +486,11 @@ public void migrarAbastecimentosExistentes() {
         //pega se o filtro nao estiver associado a um veiculo
 if(filtro.getVeiculoId() == null) {
 custos  = custoRepository.findByPeriodoSemVeiculo(filtro.getDataInicio(), filtro.getDataFim());       
-  // total  porcento por custo //por implementar
+
  } 
  
 Map<String, Double> totalPorcentoPorCusto = new HashMap<>(); 
-//-----
-     
+
     LocalDate  inicio = filtro.getDataInicioTop5VeiculosMaisCarro();
     LocalDate  fim = filtro.getDataFimTop5VeiculosMaisCarro(); 
     List<VeiculoCustoDTO> top5VeiculosMaisCarros = custoRepository.findTop5VeiculosMaisCarosPorPeriodo(inicio,fim);
@@ -573,9 +572,7 @@ Map<String, Double> totalPorcentoPorCusto = new HashMap<>();
      
     @Transactional
     public void processarNovaViagem(Viagem viagem, CustoViagemDTO custoViagemDTO) {
-        // Criar custos padrão para viagem 
-        
-        // Exemplo: criar custo para pedágios se houver
+
         if (viagem.getCustoPedagios() != null && viagem.getCustoPedagios() > 0) {
             criarCustoParaViagem(custoViagemDTO); 
         }

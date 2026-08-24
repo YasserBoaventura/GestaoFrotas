@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin("*")
 @RequiredArgsConstructor   
 public class TrackingController {
- 
+
  private final TrackingService trackingService;
 
  @PostMapping("/location")   
@@ -44,7 +44,7 @@ public class TrackingController {
            return location          
              .map(ResponseEntity::ok)
              .orElseGet(() -> ResponseEntity.notFound().build());
- }                            
+ }                             
   @GetMapping("/location/{vehicleId}/history")
   @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')") 
     public ResponseEntity<List<VehicleLocation>> getLocationHistory(

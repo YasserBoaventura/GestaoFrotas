@@ -66,7 +66,10 @@ public class SecurityConfig {
                             "/api/auto-cadastro",
                             "/api/auth/solicitar-recuperacao",
                             "/api/auth/redefinir-senha-token",
-                            "/api/auth/redefinir-senha-verificacao"                       
+                            "/api/auth/redefinir-senha-verificacao",
+                            "/swagger-ui/**",
+                            "/v3/api-docs/**",
+                            "/swagger-ui.html"
                           ).permitAll() 
                     .anyRequest().authenticated()
             )  

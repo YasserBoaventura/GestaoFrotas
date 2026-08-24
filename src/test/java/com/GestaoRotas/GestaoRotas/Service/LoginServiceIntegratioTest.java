@@ -252,7 +252,7 @@ public class LoginServiceIntegratioTest {
     @Test
     void desativarConta_DeveAlternarEstado() {
         // Act - Desativar
-        Map<String, String> responseDesativar = loginService.desativarConta(usuario.getId());
+        Map<String, String> responseDesativar = loginService.desativarEndActivarConta(usuario.getId());
 
         // Assert
         assertEquals("conta desativada com sucesso", responseDesativar.get("sucesso"));
@@ -261,7 +261,7 @@ public class LoginServiceIntegratioTest {
         assertFalse(usuarioDesativado.get().getAtivo());
         
         // Act - Ativar
-        Map<String, String> responseAtivar = loginService.desativarConta(usuario.getId());
+        Map<String, String> responseAtivar = loginService.desativarEndActivarConta(usuario.getId());
         
         // Assert
         assertEquals("conta ativada com sucesso", responseAtivar.get("sucesso"));
@@ -327,7 +327,7 @@ public class LoginServiceIntegratioTest {
     @Test
     void logar_AposAtivar_DeveFuncionar() {
         // Arrange
-        loginService.desativarConta(usuario.getId());
+        loginService.desativarEndActivarConta(usuario.getId());
         
         // Tentar logar - deve falhar
         assertThrows(RuntimeException.class, () -> {
@@ -335,7 +335,7 @@ public class LoginServiceIntegratioTest {
         });
         
         // Ativar
-        loginService.desativarConta(usuario.getId());
+        loginService.desativarEndActivarConta(usuario.getId());
 
         // Act
         String token = loginService.logar(login);

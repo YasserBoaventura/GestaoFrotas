@@ -30,7 +30,7 @@ public class abastecimentos {
 	    private Long id; 
 	    
 	    @Column(name = "data_abastecimento")
-		@JsonFormat(pattern = "dd/MM/yyyy")
+
 	    private LocalDate dataAbastecimento;
 	     
 	    @Column(name = "quantidade_litros")

@@ -66,36 +66,26 @@ public ResponseEntity<CustoDTO> criar(@RequestBody @Valid CustoRequestDTO reques
  @DeleteMapping("/delete/{id}") 
  @PreAuthorize("hasAuthority('ADMIN')")     
   public ResponseEntity<String> delete(@PathVariable Long id){ 
-	  try {  
-		  return ResponseEntity.ok(custoService.excluirCusto(id)); 
-		}catch(Exception e) { 
-		  e.getCause().getMessage(); 
-		return ResponseEntity.badRequest().body("erro ao excluir custo"); 	  
-	  }
+    return ResponseEntity.ok(custoService.excluirCusto(id));
+
   }
    @PostMapping("/criarCustoViagem")
    @PreAuthorize("hasAuthority('ADMIN')")     
     public ResponseEntity<Custo> criarCustoParaViagem(@RequestBody @Valid CustoViagemDTO custoViagemDTO){
-    	try { 
       return ResponseEntity.ok(custoService.criarCustoParaViagem(custoViagemDTO)); 
-    	}catch(Exception e) {     
-    	return ResponseEntity.badRequest().build(); 
-    	} 
+
     }  
  @PutMapping("/actualizarCustoParaViagem/{id}")
  @PreAuthorize("hasAuthority('ADMIN')")     
    public ResponseEntity<String>actualizaCustoParaViagem(@RequestBody @Valid CustoViagemDTO custoViagemDTO,@PathVariable Long id){
-	   try {  
-		   return ResponseEntity.ok(custoService.actualizarCustoParaViagem(custoViagemDTO, id)); 
-		  }catch(Exception e) {
-			  return ResponseEntity.badRequest().build(); 
-	   }
-   } 
+    return ResponseEntity.ok(custoService.actualizarCustoParaViagem(custoViagemDTO, id));
+
+   }
    //Dashboard    
-@GetMapping("/dashboard")     
-    public ResponseEntity<DashboardCustosDTO> getDashboard() {
-        DashboardCustosDTO dashboard = custoService.getDashboardCustos();
-        return ResponseEntity.ok(dashboard);
+@GetMapping("/dashboard")
+@PreAuthorize("hasAuthority('ADMIN')")
+public ResponseEntity<DashboardCustosDTO> getDashboard() {
+        return ResponseEntity.ok(custoService.getDashboardCustos());
     }   
 // listar por data inicio e fim apenas
 @GetMapping("/relatorio-por-periodo")      
@@ -107,7 +97,7 @@ public ResponseEntity<List<CustoDTO>> relatorioPorPeriodo(
 }    
  @PostMapping("/relatorio")                         
  @PreAuthorize("hasAuthority('ADMIN')")       
-public ResponseEntity<?> relatorio(@RequestBody @Valid RelatorioFilterDTO filtro) {
+ public ResponseEntity<?> relatorio(@RequestBody @Valid RelatorioFilterDTO filtro) {
         return ResponseEntity.ok(custoService.gerarRelatorioDetalhado(filtro));
     }
 
