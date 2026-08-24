@@ -290,8 +290,8 @@ docker compose down -v
 
 Exemplo de configuração:
 
-``
-   version: '3.8'
+```
+version: '3.8'
 
 services:
 
