@@ -427,13 +427,13 @@ O projeto utiliza **Swagger / OpenAPI** para documentação e testes dos endpoin
 Com a aplicação em execução, acesse:
 
 ```text
-http://localhost:8080/swagger-ui/index.html
+http://localhost:9001/swagger-ui/index.html
 ```
 
 Documentação OpenAPI:
 
 ```text
-http://localhost:8080/v3/api-docs
+http://localhost:9001/v3/api-docs
 ```
 
 > Ajuste a porta caso a aplicação esteja configurada para utilizar outra porta.
