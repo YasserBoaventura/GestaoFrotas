@@ -290,30 +290,30 @@ docker compose down -v
 
 Exemplo de configuração:
 
-```yaml
+``
+   version: '3.8'
+
 services:
 
   backend:
-    build: .
-    container_name: fleet-manager-backend
+    build: ./GestaoRotas
+    container_name: gestao_frotas-mysql
     ports:
       - "8080:8080"
     depends_on:
       - db
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/fleet_manager
-      SPRING_DATASOURCE_USERNAME: fleet_user
-      SPRING_DATASOURCE_PASSWORD: fleet_password
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/gestaofrotas
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: Boaventura
 
   db:
     image: mysql:8
-    container_name: fleet-manager-db
+    container_name: gestao_frotas-mysql
     restart: always
     environment:
-      MYSQL_DATABASE: fleet_manager
-      MYSQL_USER: fleet_user
-      MYSQL_PASSWORD: fleet_password
-      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_ROOT_PASSWORD: Boaventura
+      MYSQL_DATABASE: gestaofrotas
     ports:
       - "3306:3306"
 ```
