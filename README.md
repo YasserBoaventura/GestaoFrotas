@@ -368,7 +368,7 @@ Também é possível executar o projeto diretamente na máquina.
 No MySQL:
 
 ```sql
-CREATE DATABASE fleet_manager;
+CREATE DATABASE gestaofrotas;
 ```
 
 Configure as credenciais correspondentes no ambiente da aplicação.
